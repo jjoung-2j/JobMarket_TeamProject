@@ -1,8 +1,7 @@
     show user;
-    --USER이(가) "MINI_ORAUSER1"입니다.
+    -- USER이(가) "MINI_ORAUSER1"입니다.
+   
     
-    
-         
   select * from tab;  
   
   
@@ -135,5 +134,5 @@ CREATE TABLE ACADEMY (
 	academy_name NVARCHAR2(10) NOT NULL /* 학력명 */
 );
 
-nnnn
 
+    
