@@ -1,4 +1,4 @@
--- 조회하기
+    -- 조회하기
     select * from user_tables;
     select * from tab;
 
