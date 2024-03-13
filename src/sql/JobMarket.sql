@@ -145,6 +145,179 @@
 
 
 
+<<<<<<< HEAD
+ -- tbl_local 지역별 값넣기
+ 
+    create sequence seq_local_code
+    start with 1 
+    increment by 1 
+    nomaxvalue
+    nominvalue
+    nocycle
+    nocache;
+    -- Sequence SEQ_LOCAL_CODE이(가) 생성되었습니다.
+  
+ 
+ insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'서울' ,'강남구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'서울' ,'강북구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'서울' ,'강서구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'서울' ,'광진구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'서울' ,'구로구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'서울' ,'노원구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'서울' ,'도봉구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'서울' ,'동작구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'서울' ,'마포구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'서울' ,'서초구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'서울' ,'성동구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'서울' ,'송파구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'서울' ,'양천구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'서울' ,'용산구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'서울' ,'은평구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'서울' ,'중구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'서울' ,'중랑구');
+
+
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'고양시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'과천시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'광명시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'구리시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'군포시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'남양주시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'동두천시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'부천시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'성남시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'수원시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'시흥시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'안산시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'안성시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'안양시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'여주시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'오산시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'용인시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'의정부시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'이천시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'평택시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'포천시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'경기' ,'화성시');
+
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'인천' ,'남동구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'인천' ,'동구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'인천' ,'부평구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'인천' ,'서구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'인천' ,'중구');
+
+select * from tbl_local;
+
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'부산' ,'강서구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'부산' ,'남구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'부산' ,'동래구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'부산' ,'부산진구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'부산' ,'사상구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'부산' ,'사하구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'부산' ,'수영구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'부산' ,'연제구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'부산' ,'중구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'부산' ,'해운대구');
+
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'대구' ,'달서구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'대구' ,'북구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'대구' ,'서구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'대구' ,'중구');
+
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'광주' ,'광산구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'광주' ,'동구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'광주' ,'북구');
+
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'대전' ,'대덕구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'대전' ,'서구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'대전' ,'유성구');
+
+
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'울산' ,'남구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'울산' ,'북구');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'울산' ,'울주군');
+
+
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval ,'세종' ,'세종특별자치시');
+
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '강원' , '강릉시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '강원' , '동해시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '강원' , '삼척시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '강원' , '원주시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '강원' , '춘천시');
+
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '경남' , '거제시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '경남' , '김해시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '경남' , '밀양시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '경남' , '사천시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '경남' , '양산시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '경남' , '창원시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '경남' , '통영시');
+
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '경북' , '경산시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '경북' , '구미시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '경북' , '김천시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '경북' , '문경시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '경북' , '상주시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '경북' , '영천시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '경북' , '포항시');
+
+
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '전남' , '광양시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '전남' , '나주시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '전남' , '여수시');
+
+
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '전북' , '김제시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '전북' , '남원시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '전북' , '익산시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '전북' , '전주시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '전북' , '정읍시');
+
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '충남' , '계룡시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '충남' , '논산시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '충남' , '보령시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '충남' , '아산시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '충남' , '천안시');
+
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '충북' , '제천시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '충북' , '청주시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '충북' , '충주시');
+
+
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '제주' , '제주시');
+insert into tbl_local (local_code , local_name, city_name) values (seq_local_code.nextval , '제주' , '서귀포시');
+
+select * from tbl_local;
+
+
+
+
+insert into tbl_academy (academy_code, academy_name) values (1, '고등학교졸업미만');
+    insert into tbl_academy (academy_code, academy_name) values (2, '고등학교졸업');
+    insert into tbl_academy (academy_code, academy_name) values (3, '대학교 재학중');
+    insert into tbl_academy (academy_code, academy_name) values (4, '대학교 졸업2년제');
+    insert into tbl_academy (academy_code, academy_name) values (5, '대학교 졸업2년제');
+    
+    
+    insert into tbl_academy (academy_code, academy_name) values (6, '대학교 졸업4년제');
+    insert into tbl_academy (academy_code, academy_name) values (7, '대학원 석사 졸업');
+    insert into tbl_academy (academy_code, academy_name) values (8, '대학원 박사 졸업');
+    select * from tbl_academy
+    
+    commit;
+    
+    --5,6,7,
+       insert into tbl_priority (priority_code , priority_name) values (1 , '컴퓨터활용능력 우수자');
+    insert into tbl_priority (priority_code , priority_name) values (2 , '국가유공자');
+    insert into tbl_priority (priority_code , priority_name) values (3 , '보훈대상자');
+    insert into tbl_priority (priority_code , priority_name) values (4 , '고용촉진지원금 대상자');
+    insert into tbl_priority (priority_code , priority_name) values (5 , '취업보호대상자');
+    insert into tbl_priority (priority_code , priority_name) values (6 , '병역특례');
+    insert into tbl_priority (priority_code , priority_name) values (7 , '공모전입상자');
+    insert into tbl_priority (priority_code , priority_name) values (8 , '외국어가능자');
+    insert into tbl_priority (priority_code , priority_name) values (9 , '인근거주자');
+=======
     -- 고용형태(채용공고일련번호 제외)
     CREATE TABLE TBL_HIRETYPE ( -- 고용형태 테이블
    hiretype_code VARCHAR2(10) NOT NULL -- 고용형태코드 
@@ -200,3 +373,4 @@
     );
    -- Table TBL_RECRUIT_APPLY이(가) 생성되었습니다.
    
+>>>>>>> develop
