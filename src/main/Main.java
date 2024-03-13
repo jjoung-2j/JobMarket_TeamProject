@@ -1,13 +1,5 @@
 package main;
 
-<<<<<<< HEAD
-public class Main {
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		System.out.println("2222");
-	}
-=======
 import java.util.Scanner;
 
 import Controller.Controller;
@@ -26,6 +18,5 @@ public class Main {
 		System.out.println("~~~ 프로그램 종료 ~~~");
 	
 	}	// end of public static void main(String[] args)-------------
->>>>>>> develop
 
 }
