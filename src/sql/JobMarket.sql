@@ -297,7 +297,7 @@
     insert into tbl_academy (academy_code, academy_name) values (6, '대학교 졸업4년제');
     insert into tbl_academy (academy_code, academy_name) values (7, '대학원 석사 졸업');
     insert into tbl_academy (academy_code, academy_name) values (8, '대학원 박사 졸업');
-    select * from tbl_academy
+    select * from tbl_academy;
     -- 학력 값넣기 완료
     
     
@@ -425,6 +425,39 @@
     명령어 : alter table 테이블명 modify (컬럼명 null);
 */
     
+    ----------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------
+    
+    -- 테이블 데이터타입 조회
+   select table_name  , column_name  , data_type  , 
+          data_length  , nullable  , data_default 
+    from USER_TAB_COLUMNS;
+    
+   
+    alter table tbl_company drop column company_type; -- 기업테이블의 기업형태 컬럼 삭제
+    -- Table TBL_COMPANY이(가) 변경되었습니다.
+    
+    alter table tbl_company_type add company_type Nvarchar2(10); -- 기업형태 테이블의 기업형태명 컬럼 추가
+    -- Table TBL_COMPANY_TYPE이(가) 변경되었습니다.
+    
+    ALTER TABLE tbl_company MODIFY status number(1) DEFAULT 1; -- 기업테이블 가입구분 기본값 1로 세팅
+    -- Table TBL_COMPANY이(가) 변경되었습니다.
+    
+    ALTER TABLE tbl_user_info MODIFY status number(1) DEFAULT 1; -- 구직자테이블 가입구분 기본값 1로 세팅
+    -- Table TBL_USER_INFO이(가) 변경되었습니다.
+    
+    select * from tbl_user_info;
+/*  
+    user_id 가 admin , test4 , 2 , leess	 이미 만들어진 테스트 계정이라 status가 null, update하거나 drop하거나 해야합니다 by 정수		
+*/    
+    
+    select * from tbl_company;
+/*  
+    company_id 가 sa , 1	 이미 만들어진 테스트 계정이라 status가 null, update하거나 drop하거나 해야합니다 by 정수		
+*/   
+    commit;
+    -- 커밋 완료.
     ----------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------
