@@ -15,8 +15,9 @@ public class Company_Controller {
 	User_DAO udao = new User_DAO_imple();
 	Company_DAO cdao = new Company_DAO_imple();
 	
+	
 	// 기업로그인된 메뉴출력하는 메소드
-   public void companyMenu_Start(Scanner sc, Company_DTO company) {
+   public void company_menu(Scanner sc, Company_DTO company, User_DTO user) {
       
       String c_Choice = "";
       
@@ -35,8 +36,8 @@ public class Company_Controller {
             
             switch (c_Choice) {
             case "1": // 기업정보 보기
-               
-               break;
+            	cdao.company_menu2(sc, company);
+            	break;
                
             case "2": // 채용정보 보기
                
@@ -47,11 +48,15 @@ public class Company_Controller {
                break;
             
             case "4": // 로그아웃
-               
-               return;
-                              
+            	System.out.println(">>>" + company.getCompany_id() + "님 로그아웃 되었습니다. <<<\n");
+				company = null;
+				break;             
             case "5": // 회원탈퇴 
-            	Withdrawal(sc,company);
+            	int c = cdao.Withdrawal(sc,company);
+            	if(c==1) {
+					company = null;
+					System.out.println(">>> 회원탈퇴 성공되었습니다. <<<");
+				}
             	break;   
       
             default:
@@ -65,31 +70,10 @@ public class Company_Controller {
       
    } // end of public void companyMenu_Start(Scanner sc, Company_DTO company)
 
+
+
+
+
+
 	
-   // ◆◆◆ ==  회원탈퇴  == ◆◆◆ //
-	private void Withdrawal(Scanner sc, Company_DTO company) {
-		
-		String yn = "";
-		do {
-			System.out.print(">>> 정말로 탈퇴하시겠습니까? [Y/N] : ");
-			yn = sc.nextLine();
-		
-			if("y".equalsIgnoreCase(yn)) {
-				//◆◆◆ === company 탈퇴 === ◆◆◆ //
-				int c = cdao.companyDelete(sc, company.getCompany_id());
-				
-				if(c==1) {	// user -> delete 일 경우 1행 이니까 1
-					company = null;			// 회원탈퇴
-					System.out.println(">>> 회원탈퇴가 성공했습니다. <<<\n");
-				}
-			} else if("n".equalsIgnoreCase(yn)) {
-				System.out.println(">>> 회원탈퇴를 취소하셨습니다. <<<\n");
-			} else {
-				System.out.println(">>> Y 또는 N 만 입력하세요. <<<\n");
-			}	// end of if~else(회원탈퇴 유무 확인)---------------
-		}while(!("y".equalsIgnoreCase(yn) || "n".equalsIgnoreCase(yn)));
-		// Y 또는 N 을 누르면 멈춘다.
-		
-	}	// end of private void Withdrawal(Scanner sc, Company_DTO company)---------
-   
 }

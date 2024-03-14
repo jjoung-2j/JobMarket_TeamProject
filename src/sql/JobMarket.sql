@@ -144,8 +144,6 @@
     -- Table TBL_COMPANY_TYPE이(가) 생성되었습니다.
 
 
-
-<<<<<<< HEAD
  -- tbl_local 지역별 값넣기
  
     create sequence seq_local_code
@@ -411,5 +409,22 @@
   drop column fk_recruit_no;
   -- 완료
   
+    alter table TBL_USER_INFO
+    add status number(1);
+    
+    alter table TBL_COMPANY
+    add status number(1);
   
->>>>>>> develop
+  /*
+    [테이블 null값 허용으로 변경_20240314]
+    fk_local_code
+    fk_jobtype_code
+    company_type
+    
+    // 참고
+    명령어 : alter table 테이블명 modify (컬럼명 null);
+*/
+    
+    ----------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------

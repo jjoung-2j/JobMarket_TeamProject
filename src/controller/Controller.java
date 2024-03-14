@@ -1,5 +1,7 @@
 package controller;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import common.MYDBConnection;
@@ -17,16 +19,16 @@ public class Controller {
 	// field
 	User_DAO udao = new User_DAO_imple();
 	Company_DAO cdao = new Company_DAO_imple();
+	User_Controller user_menu = new User_Controller();
+	Company_Controller company_menu = new Company_Controller();
 	
-	User_Controller user_menu = null;
-	Company_Controller company_menu = null;
+	User_DTO user = null;
+	Company_DTO company = null;
 	
 	// == 시작메뉴 == //
 	public void menu_Start(Scanner sc) {
 		
 		String s_Choice = "";
-		User_DTO user = null;
-		Company_DTO company = null;
 		
 		do {
 			/////////////////////////////////////////////////////////
@@ -47,13 +49,13 @@ public class Controller {
 				case "2": 	// 구직자 로그인
 					user = user_login(sc);	
 					if(user != null) {	// 로그인 성공
-						System.out.println(">> 로그인 성공!! <<");
 						user_menu.user_menu(sc,user,company);
 					}
 					break;
 				case "3":	// 기업 로그인
 					company = company_login(sc);
 					if(company != null)
+						company_menu.company_menu(sc,company,user);
 					break;
 				case "4":	// 프로그램 종료
 					MYDBConnection.closeConnection(); 	// Connection 객체 자원 반납
@@ -75,30 +77,193 @@ public class Controller {
 
 	// ◆◆◆ ==  회원가입  == ◆◆◆ //
 	private void Regiser(Scanner sc) {
-		// TODO Auto-generated method stub
-		
+		String Join_Membership = "";
+	      
+		do {
+	        //////////////////////////////////////////////////////////
+	        System.out.println("\n[회원가입 메뉴]\n"
+	             + "1. 구직자 회원가입" + "\n" 
+	             + "2. 기업 회원가입" + "\n"
+	             + "3. 이전 메뉴로 돌아가기" + "\n");
+	        System.out.print("▷ 메뉴번호 선택 : ");
+	           Join_Membership = sc.nextLine();
+		           
+			switch (Join_Membership) {
+				case "1":   //   1. 구직자 회원가입
+				     Join_Membership_User(sc);   
+				     break;
+				case "2":   //   2. 기업 회원가입
+				     Join_Membership_Company(sc);
+				     break;
+				case "3":   //   3. 이전 메뉴로 돌아가기
+				     break;
+				default:
+				     System.out.println(">>> 메뉴에 없는 번호입니다. 다시 선택하세요!! <<<");
+				     continue;
+			}	// end of switch (Join_Membership)-------------
+		} while(false);
+
 	}	// end of private void Regiser(Scanner sc)---------------
 
 	
 	
-	
-	
+	// ◆◆◆ == 기업 회원가입 == ◆◆◆ //
+	private void Join_Membership_Company(Scanner sc) {
+		System.out.println("\n >>> 기업 회원가입 입력");
+         
+		System.out.print("▶ 기업아이디 : ");
+		String company_id = sc.nextLine();
+		 
+		System.out.print("▶ 비밀번호 : ");
+		String company_passwd = sc.nextLine();
+		 
+		System.out.print("▶ 기업명 : ");
+		String company_name = sc.nextLine();
+		 
+		System.out.print("▶ 주소 : ");
+		String company_address = sc.nextLine();
+		 
+		System.out.print("▶ 사업자등록번호 : ");
+		String business_number = sc.nextLine();
+		 
+		System.out.print("▶ 대표자명 : ");
+		String ceo_name = sc.nextLine();
+		 
+		Company_DTO company = new Company_DTO();
+		company.setCompany_id(company_id);
+		company.setCompany_passwd(company_passwd);
+		company.setCompany_name(company_name);
+		company.setCompany_address(company_address);
+		company.setBusiness_number(business_number);
+		company.setCeo_name(ceo_name);
+		 
+		int n = cdao.companyRegister(company);
+		 
+		if(n == 1) 
+		    System.out.println("\n>>> 회원가입을 축하드립니다. <<<");
+		else 
+		    System.out.println(">>> 회원가입이 실패되었습니다. <<<");
+	}	// end of private void Join_Membership_Company(Scanner sc)------------
+
+
+
+
+
+
+
+	// ◆◆◆ == 구직자 회원가입 == ◆◆◆ //
+	private void Join_Membership_User(Scanner sc) {
+		System.out.println("\n >>> 구직자 회원가입 입력");
+        
+        System.out.print("▶ 개인아이디 : ");
+        String user_id = sc.nextLine();
+        
+        System.out.print("▶ 비밀번호 : ");
+        String user_passwd = sc.nextLine();
+        
+        System.out.print("▶ 성명 : ");
+        String user_name = sc.nextLine();
+        
+        System.out.print("▶ 주소 : ");
+        String user_address = sc.nextLine();
+        
+        System.out.print("▶ 연락처 : ");
+        String user_tel = sc.nextLine();
+        
+        System.out.print("▶ 주민번호 :  ");
+        String user_security_num = sc.nextLine();
+        
+        System.out.print("▶ 이메일 : ");
+        String user_email = sc.nextLine();
+        
+        User_DTO user = new User_DTO();
+        user.setUser_id(user_id);
+        user.setUser_passwd(user_passwd);
+        user.setUser_name(user_name);
+        user.setUser_address(user_address);
+        user.setUser_tel(user_tel);
+        user.setUser_security_num(user_security_num);
+        user.setUser_email(user_email);
+        
+        int n = udao.userRegister(user);
+        
+        if(n == 1) 
+           System.out.println("\n>>> 회원가입을 축하드립니다. <<<");
+        else 
+           System.out.println(">>> 회원가입이 실패되었습니다. <<<");
+	}	// end of private void Join_Membership_User(Scanner sc)-------------------
+
+
+
+
+
+
+
 	// ◆◆◆ == 구직자 로그인 == ◆◆◆ //
 	private User_DTO user_login(Scanner sc) {
-		// TODO Auto-generated method stub
-		return null;
+		User_DTO user = null;
+		  
+		System.out.println("\n >>> --- 로그인 --- <<<");
+		  
+		System.out.print("▶ 아이디 : ");
+		String user_id = sc.nextLine();
+		  
+		System.out.print("▶ 비밀번호 : ");
+		String user_passwd = sc.nextLine();
+		  
+		Map<String, String> paraMap = new HashMap<>(); 
+		paraMap.put("user_id", user_id);
+		paraMap.put("user_passwd", user_passwd);
+		  
+		user = udao.user_login(paraMap);
+		  
+		if(user != null) 
+		     System.out.println("\n >>> 로그인 성공!! <<<");
+		else 
+		     System.out.println("\n >>> 로그인 실패!! <<<");
+		
+		return user;
 	}	// end of private User_DTO user_login(Scanner sc)-----------
 
 	
-	
+	 
 	
 	
 	
 	
 	// ◆◆◆ == 기업 로그인 == ◆◆◆ //
 	private Company_DTO company_login(Scanner sc) {
-		// TODO Auto-generated method stub
-		return null;
+		company  = null;
+	      
+	      System.out.println("\n >>> --- 로그인 --- <<<");
+	      
+	      
+	      System.out.print("▷ 아이디 : ");
+	      String company_id = sc.nextLine();
+	      
+	      System.out.print("▷ 비밀번호 : ");
+	      String passwd = sc.nextLine();
+	   
+	      
+	      Map<String, String> paraMap = new HashMap<>();
+	      // 몇개의 변수이던간에 하나의 변수에 담아서 처리하려면?? MAP
+	      paraMap.put("company_id", company_id); // 문법 복습하자
+	      paraMap.put("company_passwd", passwd);
+	      
+	      company = cdao.login(paraMap);
+	      
+	      if(company != null) {
+	         System.out.println("\n >>> 로그인 성공!! <<< \n");
+	         
+	         company_menu.company_menu(sc, company, user);
+	      }
+	      else {
+	         
+	         System.out.println("\n >>> 로그인 실패ㅜㅜ <<< \n");
+	      }
+	      
+	      return company;
+
 	}	// end of private Company_DTO company_login(Scanner sc)---------
 
 

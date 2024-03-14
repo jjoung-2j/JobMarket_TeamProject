@@ -40,11 +40,15 @@ public class User_Controller {
 				
 				break;
 			case "4":	// 로그아웃
-				user = null;
 				System.out.println(">>>" + user.getUser_name() + "님 로그아웃 되었습니다. <<<\n");
+				user = null;
 				break;
 			case "5":	// 회원탈퇴
-				Withdrawal(sc,user);
+				int u = udao.Withdrawal(sc,user);
+				if(u==1) {
+					user = null;
+					System.out.println(">>> 회원탈퇴 성공되었습니다. <<<");
+				}
 				break;
 			default:
 				break;
@@ -62,33 +66,9 @@ public class User_Controller {
 	}	// end of private void Paper(Scanner sc, User_DTO user2)-------
 
 
-	
-	
-	// ◆◆◆ ==  회원탈퇴  == ◆◆◆ //
-	private void Withdrawal(Scanner sc, User_DTO user) {
-		
-		String yn = "";
-		do {
-			System.out.print(">>> 정말로 탈퇴하시겠습니까? [Y/N] : ");
-			yn = sc.nextLine();
-		
-			if("y".equalsIgnoreCase(yn)) {
-				// ◆◆◆ === user 탈퇴 === ◆◆◆ //
-				int u = udao.memberDelete(sc, user.getUser_id());
-				
-				if(u==1) {	// user -> delete 일 경우 1행 이니까 1
-					user = null;			// 회원탈퇴
-					System.out.println(">>> 회원탈퇴가 성공했습니다. <<<\n");
-				}
-			} else if("n".equalsIgnoreCase(yn)) {
-				System.out.println(">>> 회원탈퇴를 취소하셨습니다. <<<\n");
-			} else {
-				System.out.println(">>> Y 또는 N 만 입력하세요. <<<\n");
-			}	// end of if~else(회원탈퇴 유무 확인)---------------
-		}while(!("y".equalsIgnoreCase(yn) || "n".equalsIgnoreCase(yn)));
-		// Y 또는 N 을 누르면 멈춘다.
-		
-	}	// end of private void Withdrawal(Scanner sc, User_DTO user)---------
+
+
+
 
 
 

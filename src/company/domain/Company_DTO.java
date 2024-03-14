@@ -93,6 +93,19 @@ public class Company_DTO {
 	public void setCompany_address(String company_address) {
 		this.company_address = company_address;
 	}
+	
+	// === 기업정보 === //
+   @Override
+   public String toString() { // 기업정보를 출력하는 toString메소드 오버라이드
+      
+      return "=== 기업 정보 ===\n"
+            + "▶ 기업명 : " + company_name + "\n"
+          + "▶ 사업자등록번호 : " + business_number + "\n"
+          + "▶ 업종 : " + company_type + "\n"
+          + "▶ 기업대표 : " + ceo_name + "\n"
+          + "▶ 기업소재지 : " + company_address + "\n";
+      
+   } // end of public String toString() @Override
 
 	
 	
