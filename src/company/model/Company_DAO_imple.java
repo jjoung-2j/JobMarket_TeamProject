@@ -134,7 +134,7 @@ public class Company_DAO_imple implements Company_DAO {
 	    try {
 	         // conn = MyDBConnection.getConn(); 데이터베이스 연결하기
 	
-	         String sql = " select company_id , company_name , businees_number , company_type, ceo_name , company_address "
+	         String sql = " select company_id , company_name , businees_number , ceo_name , company_address "
 	                  + " from tbl_company " 
 	                  + " where company_id = ? and company_passwd = ? " ;  
 	         
@@ -151,7 +151,6 @@ public class Company_DAO_imple implements Company_DAO {
 	            company.setCompany_id(rs.getString("company_id")); 
 	            company.setCompany_name(rs.getString("company_name"));
 	            company.setBusiness_number(rs.getString("businees_number"));
-	            company.setCompany_type(rs.getString("company_type"));
 	            company.setCeo_name(rs.getString("ceo_name"));
 	            company.setCompany_address(rs.getString("company_address"));
 	            }	// end of if----------    
