@@ -1,4 +1,4 @@
-package member.domain;
+package user.domain;
 
 public class Priority_DTO {
 

@@ -1,6 +1,6 @@
-package member.domain;
+package user.domain;
 
-public class Member_DTO {
+public class User_DTO {
 
 	// ==== field ====
 	// insert 용

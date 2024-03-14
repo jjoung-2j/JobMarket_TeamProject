@@ -1,4 +1,4 @@
-package member.domain;
+package user.domain;
 
 public class License_Detail_DTO {
 
