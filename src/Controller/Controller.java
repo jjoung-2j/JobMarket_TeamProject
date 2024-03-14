@@ -2,7 +2,7 @@ package Controller;
 
 import java.util.Scanner;
 
-import Comment.MYDBConnection;
+import Common.MYDBConnection;
 import company.domain.Company_DTO;
 import company.model.Company_DAO;
 import company.model.Company_DAO_imple;

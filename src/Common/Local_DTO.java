@@ -1,4 +1,4 @@
-package Comment;
+package Common;
 
 public class Local_DTO {
 

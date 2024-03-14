@@ -1,4 +1,4 @@
-package Comment;
+package Common;
 
 public class Recruit_Apply_DTO {
 

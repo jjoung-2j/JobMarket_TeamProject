@@ -1,4 +1,4 @@
-package Comment;
+package Common;
 
 import java.sql.DriverManager;
 import java.sql.Connection;

@@ -1,4 +1,4 @@
-package Comment;
+package Common;
 
 public class Recruit_INFO_DTO {
 
