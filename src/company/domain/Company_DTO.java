@@ -1,10 +1,12 @@
 package company.domain;
 
+import common.Local_DTO;
+
 public class Company_DTO {
 
 	// ==== field ====
 	// insert 용
-	private String company_id;		// 
+	private String company_id;		
 	private String company_passwd;
 	private String company_name;
 	private String business_number;
@@ -14,16 +16,25 @@ public class Company_DTO {
 	private int fk_local_code;
 	private String company_address;
 	
+	// JobType
+	private String jobtype_name;
+	
 	/////////////////////////////
 		
 	// select 용
+	private Local_DTO local = new Local_DTO();
+	private Company_type_DTO company_type_detail = new Company_type_DTO();
+	private Recruit_INFO_DTO recruit = new Recruit_INFO_DTO();
 	
-	
+
+
+
 	///////////////////////////////////////
 	// ==== method ====
 	public String getCompany_id() {
 		return company_id;
 	}
+	
 	public void setCompany_id(String company_id) {
 		this.company_id = company_id;
 	}
@@ -94,19 +105,62 @@ public class Company_DTO {
 		this.company_address = company_address;
 	}
 	
+	
+	
+
+	public String getJobtype_name() {
+		return jobtype_name;
+	}
+	public void setJobtype_name(String jobtype_name) {
+		this.jobtype_name = jobtype_name;
+	}
+	
+	
+	
+    public Local_DTO getLocal() {
+		return local;
+	}
+	public void setLocal(Local_DTO local) {
+		this.local = local;
+	}
+	
+	
+	
+	
+	public Company_type_DTO getCompany_type_detail() {
+		return company_type_detail;
+	}
+
+	public void setCompany_type_detail(Company_type_DTO company_type_detail) {
+		this.company_type_detail = company_type_detail;
+	}
+	
+	
+	
+	
+	public Recruit_INFO_DTO getRecruit() {
+		return recruit;
+	}
+
+	public void setRecruit(Recruit_INFO_DTO recruit) {
+		this.recruit = recruit;
+	}
+	
+	
+	
+	
 	// === 기업정보 === //
    @Override
-   public String toString() { // 기업정보를 출력하는 toString메소드 오버라이드
-      
-      return "=== 기업 정보 ===\n"
-            + "▶ 기업명 : " + company_name + "\n"
-          + "▶ 사업자등록번호 : " + business_number + "\n"
-          + "▶ 업종 : " + company_type + "\n"
-          + "▶ 기업대표 : " + ceo_name + "\n"
-          + "▶ 기업소재지 : " + company_address + "\n";
-      
-   } // end of public String toString() @Override
+   public String toString() { // 기업정보를 출력하는 toString 메소드 오버라이드
+  
+	   return "=== 기업 정보 ===\n"
+		  + "▶ 기업명 : " + company_name + "\n"
+		  + "▶ 사업자등록번호 : " + business_number + "\n"
+		  + "▶ 업종 : " + company_type + "\n"
+		  + "▶ 기업대표 : " + ceo_name + "\n"
+		  + "▶ 기업소재지 : " + company_address + "\n";
+   } // end of public String toString()--------------------
 
 	
-	
+
 }

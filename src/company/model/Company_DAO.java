@@ -4,6 +4,9 @@ import java.util.Map;
 import java.util.Scanner;
 
 import company.domain.Company_DTO;
+import company.domain.Recruit_INFO_DTO;
+import user.domain.Recruit_Apply_DTO;
+import user.domain.User_DTO;
 
 public interface Company_DAO {
 
@@ -13,10 +16,17 @@ public interface Company_DAO {
 	//◆◆◆ === company 탈퇴 === ◆◆◆ //
 	int Withdrawal(Scanner sc, Company_DTO company);
 	
-	//◆◆◆ === company 로그인 === ◆◆◆ //
+	//◆◆◆ === 기업 로그인 === ◆◆◆ //
 	Company_DTO login(Map<String, String> paraMap);
 	
-	//◆◆◆ === company 정보메뉴 === ◆◆◆ //
-	void company_menu2(Scanner sc, Company_DTO company);
+	//◆◆◆ === 기업 정보 메뉴 === ◆◆◆ //
+	void company_info(Scanner sc, Company_DTO company);
+	
+	// ◆◆◆ === 채용정보 메뉴 === ◆◆◆ //
+	void recruit_info(Scanner sc, Company_DTO company);
+
+	// ◆◆◆ === 구직자정보 메뉴 === ◆◆◆ //
+	void user_info(Scanner sc, Company_DTO company);
+	
 
 }

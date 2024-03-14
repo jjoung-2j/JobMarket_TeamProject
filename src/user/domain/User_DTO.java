@@ -1,5 +1,7 @@
 package user.domain;
 
+import common.Local_DTO;
+
 public class User_DTO {
 
 	// ==== field ====
@@ -14,10 +16,16 @@ public class User_DTO {
 	private int fk_priority_code;
 	private int fk_academy_code;
 	
+	private String priority_name;
+	private String academy_name;
 	
 	/////////////////////////////
 		
 	// select 용
+	private Local_DTO local = new Local_DTO();
+	private Paper_DTO paper = new Paper_DTO();
+	private Recruit_Apply_DTO rcapply = new Recruit_Apply_DTO();
+	
 	
 	
 	///////////////////////////////////////
@@ -93,8 +101,42 @@ public class User_DTO {
 		this.fk_academy_code = fk_academy_code;
 	}
 	
-	
 
+	public String getPriority_name() {
+		return priority_name;
+	}
+	public void setPriority_name(String priority_name) {
+		this.priority_name = priority_name;
+	}
+	
+	
+	public String getAcademy_name() {
+		return academy_name;
+	}
+	public void setAcademy_name(String academy_name) {
+		this.academy_name = academy_name;
+	}
+
+	
+	
+	public Local_DTO getLocal() {
+		return local;
+	}
+	public void setLocal(Local_DTO local) {
+		this.local = local;
+	}
+	public Paper_DTO getPaper() {
+		return paper;
+	}
+	public void setPaper(Paper_DTO paper) {
+		this.paper = paper;
+	}
+	public Recruit_Apply_DTO getRcapply() {
+		return rcapply;
+	}
+	public void setRcapply(Recruit_Apply_DTO rcapply) {
+		this.rcapply = rcapply;
+	}
 	
 	
 }

@@ -1,4 +1,4 @@
-package common;
+package company.domain;
 
 public class Recruit_INFO_DTO {
 

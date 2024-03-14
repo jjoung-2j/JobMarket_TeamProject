@@ -1,4 +1,4 @@
-package common;
+package user.domain;
 
 public class Recruit_Apply_DTO {
 

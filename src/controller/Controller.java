@@ -3,14 +3,18 @@ package controller;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
 import common.MYDBConnection;
 import company.controller.Company_Controller;
 import company.domain.Company_DTO;
+import company.domain.Recruit_INFO_DTO;
 import company.model.Company_DAO;
 import company.model.Company_DAO_imple;
 import user.controller.User_Controller;
+import user.domain.Paper_DTO;
+import user.domain.Recruit_Apply_DTO;
 import user.domain.User_DTO;
+import user.model.Recruit_apply_DAO;
+import user.model.Recruit_apply_DAO_imple;
 import user.model.User_DAO;
 import user.model.User_DAO_imple;
 
@@ -19,11 +23,13 @@ public class Controller {
 	// field
 	User_DAO udao = new User_DAO_imple();
 	Company_DAO cdao = new Company_DAO_imple();
+	Recruit_apply_DAO rdao = new Recruit_apply_DAO_imple();
+	
 	User_Controller user_menu = new User_Controller();
 	Company_Controller company_menu = new Company_Controller();
 	
-	User_DTO user = null;
-	Company_DTO company = null;
+	//User_DTO user = null;
+	//Company_DTO company = null;
 	
 	// == 시작메뉴 == //
 	public void menu_Start(Scanner sc) {
@@ -47,15 +53,14 @@ public class Controller {
 					Regiser(sc);
 					break;
 				case "2": 	// 구직자 로그인
-					user = user_login(sc);	
-					if(user != null) {	// 로그인 성공
-						user_menu.user_menu(sc,user,company);
-					}
+					User_DTO user = user_login(sc);	
+					if(user != null) 	// 로그인 성공
+						user_menu.user_menu(sc, user);
 					break;
 				case "3":	// 기업 로그인
-					company = company_login(sc);
-					if(company != null)
-						company_menu.company_menu(sc,company,user);
+					Company_DTO company = company_login(sc);
+					if(company != null)	// 로그인 성공
+						company_menu.company_menu(sc, company);
 					break;
 				case "4":	// 프로그램 종료
 					MYDBConnection.closeConnection(); 	// Connection 객체 자원 반납
@@ -113,7 +118,7 @@ public class Controller {
          
 		System.out.print("▶ 기업아이디 : ");
 		String company_id = sc.nextLine();
-		 
+		
 		System.out.print("▶ 비밀번호 : ");
 		String company_passwd = sc.nextLine();
 		 
@@ -233,7 +238,7 @@ public class Controller {
 	
 	// ◆◆◆ == 기업 로그인 == ◆◆◆ //
 	private Company_DTO company_login(Scanner sc) {
-		company  = null;
+		Company_DTO company  = null;
 	      
 	      System.out.println("\n >>> --- 로그인 --- <<<");
 	      
@@ -252,15 +257,10 @@ public class Controller {
 	      
 	      company = cdao.login(paraMap);
 	      
-	      if(company != null) {
+	      if(company != null) 
 	         System.out.println("\n >>> 로그인 성공!! <<< \n");
-	         
-	         company_menu.company_menu(sc, company, user);
-	      }
-	      else {
-	         
+	      else 
 	         System.out.println("\n >>> 로그인 실패ㅜㅜ <<< \n");
-	      }
 	      
 	      return company;
 
