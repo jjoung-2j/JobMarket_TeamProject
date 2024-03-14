@@ -1,8 +1,8 @@
-package Controller;
+package controller;
 
 import java.util.Scanner;
 
-import Common.MYDBConnection;
+import common.MYDBConnection;
 import company.domain.Company_DTO;
 import company.model.Company_DAO;
 import company.model.Company_DAO_imple;

@@ -2,7 +2,7 @@ package main;
 
 import java.util.Scanner;
 
-import Controller.Controller;
+import controller.Controller;
 
 public class Main {
 
