@@ -36,8 +36,6 @@ public class Company_Controller {
             switch (c_Choice) {
             case "1": // 기업정보 보기
                
-               viewMyCompanyInfo(sc, company);
-               
                break;
                
             case "2": // 채용정보 보기
