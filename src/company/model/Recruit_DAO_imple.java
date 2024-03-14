@@ -3,7 +3,6 @@ package company.model;
 import java.util.Scanner;
 
 import company.domain.Company_DTO;
-import company.domain.Recruit_INFO_DTO;
 import user.domain.User_DTO;
 
 public class Recruit_DAO_imple implements Recruit_DAO {

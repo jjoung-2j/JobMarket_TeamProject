@@ -2,11 +2,8 @@ package company.model;
 
 import java.util.Map;
 import java.util.Scanner;
-
 import company.domain.Company_DTO;
-import company.domain.Recruit_INFO_DTO;
-import user.domain.Recruit_Apply_DTO;
-import user.domain.User_DTO;
+
 
 public interface Company_DAO {
 

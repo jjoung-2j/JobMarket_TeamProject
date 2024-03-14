@@ -3,13 +3,10 @@ package company.controller;
 import java.util.Scanner;
 
 import company.domain.Company_DTO;
-import company.domain.Recruit_INFO_DTO;
 import company.model.Company_DAO;
 import company.model.Company_DAO_imple;
 import company.model.Recruit_DAO;
 import company.model.Recruit_DAO_imple;
-import user.domain.Recruit_Apply_DTO;
-import user.domain.User_DTO;
 import user.model.User_DAO;
 import user.model.User_DAO_imple;
 

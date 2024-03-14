@@ -3,9 +3,6 @@ package user.model;
 import java.util.Scanner;
 
 import company.domain.Company_DTO;
-import company.domain.Recruit_INFO_DTO;
-import user.domain.Paper_DTO;
-import user.domain.Recruit_Apply_DTO;
 import user.domain.User_DTO;
 
 public class Recruit_apply_DAO_imple implements Recruit_apply_DAO {
