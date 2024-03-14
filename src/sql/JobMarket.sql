@@ -300,20 +300,23 @@
     insert into tbl_academy (academy_code, academy_name) values (7, '대학원 석사 졸업');
     insert into tbl_academy (academy_code, academy_name) values (8, '대학원 박사 졸업');
     select * from tbl_academy
+    -- 학력 값넣기 완료
     
-    
-    commit;
     
     -- 취업우대 테이블 값넣기
-    insert into tbl_priority (priority_code , priority_name) values (1 , '컴퓨터활용능력 우수자');
+    insert into tbl_priority (priority_code , priority_name) values (1 , '컴퓨터활용능력 우수');
     insert into tbl_priority (priority_code , priority_name) values (2 , '국가유공자');
     insert into tbl_priority (priority_code , priority_name) values (3 , '보훈대상자');
-    insert into tbl_priority (priority_code , priority_name) values (4 , '고용촉진지원금 대상자');
+    insert into tbl_priority (priority_code , priority_name) values (4 , '고용촉진지원금 대상');
     insert into tbl_priority (priority_code , priority_name) values (5 , '취업보호대상자');
     insert into tbl_priority (priority_code , priority_name) values (6 , '병역특례');
     insert into tbl_priority (priority_code , priority_name) values (7 , '공모전입상자');
     insert into tbl_priority (priority_code , priority_name) values (8 , '외국어가능자');
     insert into tbl_priority (priority_code , priority_name) values (9 , '인근거주자');
+    -- 채용우대혜택 값넣기 완료
+    commit;
+    select * from tbl_priority;
+    
 =======
     -- 고용형태(채용공고일련번호 제외)
     CREATE TABLE TBL_HIRETYPE ( -- 고용형태 테이블
@@ -322,8 +325,24 @@
    ,hiretype_name NVARCHAR2(10) NOT NULL -- 고용형태명
    ,CONSTRAINT PK_TBL_HIRETYPE_HIRETYPE_CODE PRIMARY KEY(HIRETYPE_CODE) -- HIRETYPE_CODE PK지정
        );
-       -- 
-
+       
+    -- 고용형태 값넣기 
+   insert into tbl_hiretype (hiretype_code , hiretype_name) values (1 , '정규직');
+   insert into tbl_hiretype (hiretype_code , hiretype_name) values (2 , '계약직');
+   insert into tbl_hiretype (hiretype_code , hiretype_name) values (3 , '인턴');
+   insert into tbl_hiretype (hiretype_code , hiretype_name) values (4 , '파견직');
+   insert into tbl_hiretype (hiretype_code , hiretype_name) values (5 , '프리랜서');
+   insert into tbl_hiretype (hiretype_code , hiretype_name) values (6 , '아르바이트');
+   insert into tbl_hiretype (hiretype_code , hiretype_name) values (7 , '연수생');
+   insert into tbl_hiretype (hiretype_code , hiretype_name) values (8 , '위촉직');
+   insert into tbl_hiretype (hiretype_code , hiretype_name) values (9 , '개인사업자');
+   commit;
+   -- 고용형태 값넣기 완료
+   select * from tbl_hiretype;
+   
+   
+       
+    select * from tbl_hiretype;
 
     -- 채용공고
     CREATE TABLE TBL_RECRUIT_INFO ( -- 채용공고 테이블
@@ -350,10 +369,7 @@
     -- Table TBL_RECRUIT_INFO이(가) 생성되었습니다.
 
 
-    -- 채용공고테이블까지 생성완료되었다면,
-    ALTER TABLE TBL_HIRETYPE
-    ADD CONSTRAINT FK_TBL_HIRETYPE_FK_RECRUIT_NO FOREIGN KEY(FK_RECRUIT_NO) REFERENCES TBL_RECRUIT_INFO(RECRUIT_NO);
-    -- Table TBL_HIRETYPE이(가) 변경되었습니다.
+    
 
    -- 채용지원
     create table tbl_recruit_apply (
@@ -370,4 +386,30 @@
     );
    -- Table TBL_RECRUIT_APPLY이(가) 생성되었습니다.
    
+   
+   -- 자격증상세등록 테이블 유니크키 해제
+   select * from tbl_license_detail;   
+   
+   select A.table_name, A.constraint_name, A.constraint_type, A.search_condition
+         , B.column_name, B.position 
+    from user_constraints A
+    join user_cons_columns B
+    on A.constraint_name = B.constraint_name
+    where A.constraint_type in('U','R'); 
+   
+   alter table tbl_license_detail
+   drop constraints UK_LICENSE_DETAIL_LICENSE_NAME; 
+   
+   
+   -- 고용형태 테이블 외래키 제거 및 컬럼제거
+   alter table tbl_HIRETYPE
+   drop constraints FK_TBL_HIRETYPE_FK_RECRUIT_NO;
+   
+   select * from tbl_hiretype;
+   
+  alter table tbl_HIRETYPE
+  drop column fk_recruit_no;
+  -- 완료
+  
+  
 >>>>>>> develop
