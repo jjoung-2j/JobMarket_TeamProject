@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import common.MYDBConnection;
+import common.Set_util;
 import company.controller.Company_Controller;
 import company.domain.Company_DTO;
 import company.model.Company_DAO;
@@ -51,13 +52,15 @@ public class Controller {
 					break;
 				case "2": 	// 구직자 로그인
 					User_DTO user = user_login(sc);	
-					if(user != null) 	// 로그인 성공
+					if(user != null) {	// 로그인 성공
 						user_menu.user_menu(sc, user);
+					}
 					break;
 				case "3":	// 기업 로그인
 					Company_DTO company = company_login(sc);
-					if(company != null)	// 로그인 성공
+					if(company != null)	{ // 로그인 성공
 						company_menu.company_menu(sc, company);
+					}
 					break;
 				case "4":	// 프로그램 종료
 					MYDBConnection.closeConnection(); 	// Connection 객체 자원 반납
@@ -119,69 +122,93 @@ public class Controller {
 		System.out.println("\n >>> 구직자 회원가입 입력 <<<");
 		
 		// 아이디 유효성 검사
+		String user_id = null;
 		do {
+			System.out.println("\n[ 4~20 자리 / 영문, 숫자, 특수문자 '_','-' 사용 ]");
 	        System.out.print("▶ 개인아이디 : ");
-	        String user_id = sc.nextLine();
-	        user.setUser_id(user_id);
-	        if(user.getUser_id() != null)
-	        	break;
+	        user_id = sc.nextLine();
+			if(Set_util.Check_id(user_id)) {
+				break;
+			}
 		} while(true);		// do~while----------------------
-		
-        // 비밀번호 유효성 검사
+		user.setUser_id(user_id);
+        
+		// 비밀번호 유효성 검사
+		String user_passwd = null;
 		do {
+			System.out.println("\n[ 8~16자리 / 영문 대소문자, 숫자, 특수문자 조합 ]");
 	        System.out.print("▶ 비밀번호 : ");
-	        String user_passwd = sc.nextLine();
-	        user.setUser_passwd(user_passwd);
-	        if(user.getUser_passwd() != null)
+	        user_passwd = sc.nextLine();
+	        if(Set_util.Check_passwd(user_passwd)) {
 	        	break;
+	        }
 		} while(true);	// do~while---------------------------
+		user.setUser_passwd(user_passwd);
 		
 		// 성명 유효성 검사
+		String user_name = null;
         do {
+        	System.out.println("\n[ 2~6자리 / 영문, 한글 사용 ]");
 	        System.out.print("▶ 성명 : ");
-	        String user_name = sc.nextLine();
-	        user.setUser_name(user_name);
-	        if(user.getUser_name() != null)
+	        user_name = sc.nextLine();
+	        if(Set_util.Check_name(user_name)) {
 	        	break;
+	        }
         } while(true);	// do~while---------------------------
+        user.setUser_name(user_name);
         
-        System.out.print("▶ 주소 : ");
+        // 주소
+        System.out.print("\n▶ 주소 : ");
         String user_address = sc.nextLine();
         user.setUser_address(user_address);
         
         // 연락처 유효성 검사
+        String user_tel = null;
         do {
+        	System.out.println("\n[ 숫자만 사용 ] ");
 	        System.out.print("▶ 연락처 : ");
-	        String user_tel = sc.nextLine();
-	        user.setUser_tel(user_tel);
-	        if(user.getUser_tel() != null)
+	        user_tel = sc.nextLine();
+	        if(Set_util.Check_tel(user_tel)) {
 	        	break;
+	        }
         } while(true);	// do~while---------------------------
+        user.setUser_tel(user_tel);
         
         // 주민번호 유효성 검사
+        String user_security_num = null;
         do {
+        	System.out.println("\n[ 숫자만 사용 ( - 를 빼고 작성해주세요.) ]");
 	        System.out.print("▶ 주민번호 :  ");
-	        String user_security_num = sc.nextLine();
-	        user.setUser_security_num(user_security_num);
-	        if(user.getUser_security_num() != null)
+	        user_security_num = sc.nextLine();
+	        
+	        if(Set_util.Check_security_num(user_security_num)) {
 	        	break;
+	        }
+	        else {
+	        	System.out.println(">>> [경고] 주민번호 13자리를 올바르게 입력해주세요 <<<");
+	        }	// end of if~else-----------
 		} while(true);	// do~while---------------------------
+        user.setUser_security_num(user_security_num);
         
         // 이메일 유효성 검사
+        String user_email = null;
         do {
 	        System.out.print("▶ 이메일 : ");
-	        String user_email = sc.nextLine();
-	        user.setUser_email(user_email);
-	        if(user.getUser_email() != null)
+	        user_email = sc.nextLine();
+	        if(Set_util.Check_email(user_email)) {
 	        	break;
+	        }
         } while(true);	// do~while---------------------------
-
+        user.setUser_email(user_email);
+        
         int n = udao.userRegister(user);
         
-        if(n == 1) 
+        if(n == 1) {
            System.out.println("\n>>> 회원가입을 축하드립니다. <<<");
-        else 
+        }
+        else { 
            System.out.println("\n>>> 회원가입이 실패되었습니다. <<<");
+        }	// end of if~else--------
 	}	// end of private void Join_Membership_User(Scanner sc)-------------------
 		
 		

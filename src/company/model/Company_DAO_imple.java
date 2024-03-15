@@ -13,8 +13,6 @@ import common.MYDBConnection;
 import company.domain.Company_DTO;
 import user.domain.User_DTO;
 
-
-
 public class Company_DAO_imple implements Company_DAO {
 	
 	// field
@@ -65,13 +63,15 @@ public class Company_DAO_imple implements Company_DAO {
             result = pstmt.executeUpdate();      // SQL문 실행
             
          } catch (SQLException e) {
-            if(e.getErrorCode() == 1)    // 유니크 제약(userid)에 중복되어지면,
+            if(e.getErrorCode() == 1) {   // 유니크 제약(userid)에 중복되어지면,
                System.out.println(">> 아이디가 중복되었습니다. 새로운 아이디를 입력하세요!! <<");
-            else 
+            }
+            else {
                e.printStackTrace();
+            }	// end of if~else------------
          } finally {
             close();
-         }
+         }	// end try~catch~finally--------------------
          return result;
 	}	// end of public int companyRegister(Company_DTO company)------------------
 		
