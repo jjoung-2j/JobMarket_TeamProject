@@ -109,6 +109,86 @@ public class Controller {
 
 	
 	
+	
+	
+	
+	// ◆◆◆ == 구직자 회원가입 == ◆◆◆ //
+	private void Join_Membership_User(Scanner sc) {
+		User_DTO user = new User_DTO();
+		
+		System.out.println("\n >>> 구직자 회원가입 입력 <<<");
+		
+		// 아이디 유효성 검사
+		do {
+	        System.out.print("▶ 개인아이디 : ");
+	        String user_id = sc.nextLine();
+	        user.setUser_id(user_id);
+	        if(user.getUser_id() != null)
+	        	break;
+		} while(true);		// do~while----------------------
+		
+        // 비밀번호 유효성 검사
+		do {
+	        System.out.print("▶ 비밀번호 : ");
+	        String user_passwd = sc.nextLine();
+	        user.setUser_passwd(user_passwd);
+	        if(user.getUser_passwd() != null)
+	        	break;
+		} while(true);	// do~while---------------------------
+		
+		// 성명 유효성 검사
+        do {
+	        System.out.print("▶ 성명 : ");
+	        String user_name = sc.nextLine();
+	        user.setUser_name(user_name);
+	        if(user.getUser_name() != null)
+	        	break;
+        } while(true);	// do~while---------------------------
+        
+        System.out.print("▶ 주소 : ");
+        String user_address = sc.nextLine();
+        user.setUser_address(user_address);
+        
+        // 연락처 유효성 검사
+        do {
+	        System.out.print("▶ 연락처 : ");
+	        String user_tel = sc.nextLine();
+	        user.setUser_tel(user_tel);
+	        if(user.getUser_tel() != null)
+	        	break;
+        } while(true);	// do~while---------------------------
+        
+        // 주민번호 유효성 검사
+        do {
+	        System.out.print("▶ 주민번호 :  ");
+	        String user_security_num = sc.nextLine();
+	        user.setUser_security_num(user_security_num);
+	        if(user.getUser_security_num() != null)
+	        	break;
+		} while(true);	// do~while---------------------------
+        
+        // 이메일 유효성 검사
+        do {
+	        System.out.print("▶ 이메일 : ");
+	        String user_email = sc.nextLine();
+	        user.setUser_email(user_email);
+	        if(user.getUser_email() != null)
+	        	break;
+        } while(true);	// do~while---------------------------
+
+        int n = udao.userRegister(user);
+        
+        if(n == 1) 
+           System.out.println("\n>>> 회원가입을 축하드립니다. <<<");
+        else 
+           System.out.println("\n>>> 회원가입이 실패되었습니다. <<<");
+	}	// end of private void Join_Membership_User(Scanner sc)-------------------
+		
+		
+		
+		
+		
+	
 	// ◆◆◆ == 기업 회원가입 == ◆◆◆ //
 	private void Join_Membership_Company(Scanner sc) {
 		System.out.println("\n >>> 기업 회원가입 입력");
@@ -153,47 +233,7 @@ public class Controller {
 
 
 
-	// ◆◆◆ == 구직자 회원가입 == ◆◆◆ //
-	private void Join_Membership_User(Scanner sc) {
-		System.out.println("\n >>> 구직자 회원가입 입력");
-        
-        System.out.print("▶ 개인아이디 : ");
-        String user_id = sc.nextLine();
-        
-        System.out.print("▶ 비밀번호 : ");
-        String user_passwd = sc.nextLine();
-        
-        System.out.print("▶ 성명 : ");
-        String user_name = sc.nextLine();
-        
-        System.out.print("▶ 주소 : ");
-        String user_address = sc.nextLine();
-        
-        System.out.print("▶ 연락처 : ");
-        String user_tel = sc.nextLine();
-        
-        System.out.print("▶ 주민번호 :  ");
-        String user_security_num = sc.nextLine();
-        
-        System.out.print("▶ 이메일 : ");
-        String user_email = sc.nextLine();
-        
-        User_DTO user = new User_DTO();
-        user.setUser_id(user_id);
-        user.setUser_passwd(user_passwd);
-        user.setUser_name(user_name);
-        user.setUser_address(user_address);
-        user.setUser_tel(user_tel);
-        user.setUser_security_num(user_security_num);
-        user.setUser_email(user_email);
-        
-        int n = udao.userRegister(user);
-        
-        if(n == 1) 
-           System.out.println("\n>>> 회원가입을 축하드립니다. <<<");
-        else 
-           System.out.println(">>> 회원가입이 실패되었습니다. <<<");
-	}	// end of private void Join_Membership_User(Scanner sc)-------------------
+	
 
 
 
@@ -216,7 +256,7 @@ public class Controller {
 		Map<String, String> paraMap = new HashMap<>(); 
 		paraMap.put("user_id", user_id);
 		paraMap.put("user_passwd", user_passwd);
-		  
+		
 		user = udao.user_login(paraMap);
 		  
 		if(user != null) 
@@ -239,14 +279,12 @@ public class Controller {
 	      
 	      System.out.println("\n >>> --- 로그인 --- <<<");
 	      
-	      
 	      System.out.print("▷ 아이디 : ");
 	      String company_id = sc.nextLine();
 	      
 	      System.out.print("▷ 비밀번호 : ");
 	      String passwd = sc.nextLine();
 	   
-	      
 	      Map<String, String> paraMap = new HashMap<>();
 	      // 몇개의 변수이던간에 하나의 변수에 담아서 처리하려면?? MAP
 	      paraMap.put("company_id", company_id); // 문법 복습하자
@@ -260,7 +298,6 @@ public class Controller {
 	         System.out.println("\n >>> 로그인 실패ㅜㅜ <<< \n");
 	      
 	      return company;
-
 	}	// end of private Company_DTO company_login(Scanner sc)---------
 
 

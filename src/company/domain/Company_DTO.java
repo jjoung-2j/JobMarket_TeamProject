@@ -10,7 +10,6 @@ public class Company_DTO {
 	private String company_passwd;
 	private String company_name;
 	private String business_number;
-	private String company_type;
 	private String ceo_name;
 	private int fk_jobtype_code;
 	private int fk_local_code;
@@ -80,13 +79,6 @@ public class Company_DTO {
 	}
 	
 	
-	public String getCompany_type() {
-		return company_type;
-	}
-	public void setCompany_type(String company_type) {
-		this.company_type = company_type;
-	}
-	
 	
 	
 	public String getCeo_name() {
@@ -147,20 +139,6 @@ public class Company_DTO {
 	}
 	
 	
-	
-	
-	// === 기업정보 === //
-   @Override
-   public String toString() { // 기업정보를 출력하는 toString 메소드 오버라이드
-  
-	   return "=== 기업 정보 ===\n"
-		  + "▶ 기업명 : " + company_name + "\n"
-		  + "▶ 사업자등록번호 : " + business_number + "\n"
-		  + "▶ 업종 : " + company_type + "\n"
-		  + "▶ 기업대표 : " + ceo_name + "\n"
-		  + "▶ 기업소재지 : " + company_address + "\n";
-   } // end of public String toString()--------------------
 
-	
 
 }

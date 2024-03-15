@@ -1,5 +1,7 @@
 package company.domain;
 
+import java.util.Map;
+
 public class Recruit_INFO_DTO {
 
 	// ==== field ====
@@ -15,6 +17,9 @@ public class Recruit_INFO_DTO {
 	private String career;
 	private String year_salary;
 	private String recruit_content;
+	private String recruit_people;
+	
+
 	private String recruit_field;
 	private String work_day;
 	private String work_time;
@@ -28,6 +33,14 @@ public class Recruit_INFO_DTO {
 	
 	///////////////////////////////////////
 	// ==== method ====
+	
+	public String getRecruit_people() {
+		return recruit_people;
+	}
+
+	public void setRecruit_people(String recruit_people) {
+		this.recruit_people = recruit_people;
+	}
 	public String getRecruint_no() {
 		return recruint_no;
 	}
@@ -175,5 +188,18 @@ public class Recruit_INFO_DTO {
 	public void setHiretype_name(String hiretype_name) {
 		this.hiretype_name = hiretype_name;
 	}
+	
+	
+	// ◆◆◆ === 채용공고 등록 === ◆◆◆ //
+	public Recruit_INFO_DTO recruit_register(Map<String, String> paraMap) {
+		
+		return null;
+	} // end of public Recruit_INFO_DTO recruit_register(Map<String, String> paraMap)
+
+	
+
+	
+	
+
 	
 }

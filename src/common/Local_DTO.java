@@ -4,9 +4,9 @@ public class Local_DTO {
 
 	// ==== field ====
 	// insert 용
-	private int local_code;
-	private String local_name;
-	private String city_name;
+	private int local_code;			// 지역코드
+	private String local_name;		// 지역명
+	private String city_name;		// 도시명
 	
 	/////////////////////////////
 		

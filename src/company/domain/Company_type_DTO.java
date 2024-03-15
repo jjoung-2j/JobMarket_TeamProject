@@ -3,19 +3,19 @@ package company.domain;
 public class Company_type_DTO {
 
 	// ==== field ====
-	private int employee_num;
+	private String employee_num;
 	private String public_status;
 	private String begin_day;
 	private String capital_money;
-	private int companylist_num;
+	private String companylist_num;
 	
 	
 	///////////////////////////////////////
 	// ==== method ====
-	public int getEmployee_num() {
+	public String getEmployee_num() {
 		return employee_num;
 	}
-	public void setEmployee_num(int employee_num) {
+	public void setEmployee_num(String employee_num) {
 		this.employee_num = employee_num;
 	}
 	public String getPublic_status() {
@@ -36,10 +36,18 @@ public class Company_type_DTO {
 	public void setCapital_money(String capital_money) {
 		this.capital_money = capital_money;
 	}
-	public int getCompanylist_num() {
+	public String getCompanylist_num() {
 		return companylist_num;
 	}
-	public void setCompanylist_num(int companylist_num) {
+	public void setCompanylist_num(String companylist_num) {
 		this.companylist_num = companylist_num;
+	}
+	public void setCompany_type(String string) {
+		// TODO Auto-generated method stub
+		
+	}
+	public Object getCompany_type() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

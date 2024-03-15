@@ -4,9 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
 import common.MYDBConnection;
 import company.domain.Company_DTO;
 import user.domain.User_DTO;
@@ -130,8 +130,8 @@ public class User_DAO_imple implements User_DAO {
 	     
 	   rs = pstmt.executeQuery(); // SQL문 실행
 	     
-	   if(rs.next()) {
-	      user = new User_DTO();
+	   if(rs.next()) {	// 행이 있으면
+	      user = new User_DTO();	// user 에 정보를 넣을 수 있게 해준다.
 	        
 	      user.setUser_id(rs.getString("user_id"));
 	      user.setUser_name(rs.getString("user_name"));
@@ -139,6 +139,7 @@ public class User_DAO_imple implements User_DAO {
 	      user.setUser_tel(rs.getString("user_tel"));
 	      user.setUser_security_num(rs.getString("user_security_num"));
 	      user.setUser_email(rs.getString("user_email"));
+	      
 	   }
 	} catch (SQLException e) {
 	     e.printStackTrace();
@@ -151,44 +152,52 @@ public class User_DAO_imple implements User_DAO {
 
 
 
-	// ◆◆◆ === 나의 정보 메뉴 === ◆◆◆ //
+	
+	// ◆◆◆ === 나의 정보 보기 === ◆◆◆ //
 	@Override
-	public void user_info_menu(Scanner sc, User_DTO user) {
-		String u_Choice = "";
-	      
-		do {
-		    
-			System.out.println("\n>>> ---- " + user.getUser_name() + "님의 정보 메뉴 ---- <<<\n"
-		                   + "1. 나의 정보 보기\n"
-		                   + "2. 나의 정보 수정\n"
-		                   + "3. 이전 메뉴로 돌아가기" );
-		      
-		    System.out.print("▶ 메뉴번호 선택 : ");
-		    u_Choice = sc.nextLine();
-		      
-		    switch (u_Choice) {
-		        
-				case "1": // 로그인된 나의 정보 보기
-				   System.out.print(user);	// toString 메소드 override
-				   break;
-				case "2": // 나의 정보 수정
-				   change_information(sc, user);
-				   break;
-				case "3": // 이전 메뉴로 돌아가기
-				   break;   
-				default:
-				   System.out.println(">>> 메뉴에 없는 번호 입니다. 다시 선택하세요!! <<<");
-				   break;
-		    } // end of switch (u_Choice)-----------------
-		} while (!"3".equalsIgnoreCase(u_Choice));	// end of do~while------------------	
+	public User_DTO view_userinfo(User_DTO user) {
+		 User_DTO userdto = null;
+         try {
+            String sql = "select user_id, user_name, user_passwd, user_address, user_tel, user_security_num, user_email  "
+                  + " from tbl_user_info "
+                  + " where user_id = ? " ;
+            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, user.getUser_id()); 
+            
+            rs = pstmt.executeQuery(); // sql문 실행
+            
+            while(rs.next()) {
+               userdto = new User_DTO();
+               
+               userdto.setUser_id(rs.getString("user_id"));
+               userdto.setUser_passwd(rs.getString("user_passwd"));
+               userdto.setUser_name(rs.getString("user_name"));
+               userdto.setUser_address(rs.getString("user_address"));
+               userdto.setUser_tel(rs.getString("user_tel"));
+               userdto.setUser_address(rs.getString("user_address"));
+               userdto.setUser_security_num(rs.getString("User_security_num"));
+               userdto.setUser_email(rs.getString("User_email"));
+            }
+            
+            
+         } catch (SQLException e) {
+            
+            e.printStackTrace();
+         } finally {
+            close();   
+         }      
+         
+         return userdto;
+
 		
-	}	// end of user_info(Scanner sc, User_DTO user)-----------------
-
-
+	}	// end of public void view_userinfo(Scanner sc, User_DTO user)-------
+	
+	
 
 
 	// ◆◆◆ === 나의 정보 수정 === ◆◆◆ //
-	private void change_information(Scanner sc, User_DTO user) {
+	public void change_information(Scanner sc, User_DTO user) {
 		// TODO Auto-generated method stub
 		
 	}	// end of private void change_information(Scanner sc, User_DTO user)------
@@ -196,48 +205,14 @@ public class User_DAO_imple implements User_DAO {
 	
 	
 	
-	// ◆◆◆ === 이력서 관리 메뉴 === ◆◆◆ //
-	@Override
-	public void Paper_menu(Scanner sc, User_DTO user) {
-		String u_Choice = "";
-	      
-		do {
-		    
-			System.out.println("\n>>> ---- " + user.getUser_name() + "님의 이력서 관리 메뉴 ---- <<<\n"
-		                   + "1. 이력서 조회\n"
-		                   + "2. 이력서 작성\n"
-		                   + "3. 이력서 수정\n"
-		                   + "4. 이전 메뉴로 돌아가기" );
-		      
-		    System.out.print("▶ 메뉴번호 선택 : ");
-		    u_Choice = sc.nextLine();
-		      
-		    switch (u_Choice) {
-		        
-				case "1": // 이력서 조회
-					paper_info(sc, user);
-				   	break;
-				case "2": // 이력서 작성
-					write_paper(sc, user);
-				   	break;
-				case "3":	// 이력서 수정
-					change_paper(sc, user);
-					break;
-				case "4": // 이전 메뉴로 돌아가기
-				   break;   
-				default:
-				   System.out.println(">>> 메뉴에 없는 번호 입니다. 다시 선택하세요!! <<<");
-				   break;
-		    } // end of switch (u_Choice)-----------------
-		} while (!"4".equalsIgnoreCase(u_Choice));	// end of do~while------------------	
-	}	// end of public void Paper_menu(Scanner sc, User_DTO user, Paper_DTO paper, License_DTO license)---------
+	
 
 	
 
 
 
 	// ◆◆◆ === 이력서 조회 === ◆◆◆ //
-	private void paper_info(Scanner sc, User_DTO user) {
+	public void paper_info(Scanner sc, User_DTO user) {
 		// TODO Auto-generated method stub
 		
 	}	// end of private void paper_info(Scanner sc, User_DTO user, Paper_DTO paper)------
@@ -247,7 +222,7 @@ public class User_DAO_imple implements User_DAO {
 	
 	
 	// ◆◆◆ === 이력서 작성 === ◆◆◆ //
-	private void write_paper(Scanner sc, User_DTO user) {
+	public void write_paper(Scanner sc, User_DTO user) {
 		// TODO Auto-generated method stub
 		
 	}	// end of private void write_paper(Scanner sc, User_DTO user, Paper_DTO paper, License_DTO license)----
@@ -257,60 +232,56 @@ public class User_DAO_imple implements User_DAO {
 	
 	
 	// ◆◆◆ === 이력서 수정 === ◆◆◆ //
-	private void change_paper(Scanner sc, User_DTO user) {
+	public void change_paper(Scanner sc, User_DTO user) {
 		// TODO Auto-generated method stub
 		
 	}	// end of private void change_paper(Scanner sc, User_DTO user, Paper_DTO paper, License_DTO license)----
 
-	
-	
-	
-	
-	
-	
-	
-	
 
-	// ◆◆◆ === 입사지원 제안 관리 === ◆◆◆ //
+
+
 	Recruit_apply_DAO rdao = new Recruit_apply_DAO_imple();
 	@Override
-	public void Recruit_apply_menu(Scanner sc, User_DTO user, Company_DTO company) {
-		String u_Choice = "";
+	public void company_search(Scanner sc, User_DTO user, Company_DTO company) {
+		System.out.println("\n >>> --- 구인회사 조회 --- <<<");
 	      
-		do {
-		    
-			System.out.println("\n>>> ---- " + user.getUser_name() + "님의 구인 메뉴 ---- <<<\n"
-		                   + "1. 구인회사 조회\n"
-		                   + "2. 채용공고 조회\n"
-		                   + "3. 채용지원\n"
-		                   + "4. 지원현황\n"
-		                   + "5. 이전 메뉴로 돌아가기" );
-		      
-		    System.out.print("▶ 메뉴번호 선택 : ");
-		    u_Choice = sc.nextLine();
-		      
-		    switch (u_Choice) {
-		        
-				case "1": // 구인회사 조회
-					rdao.company_search(sc, user, company);
-				   	break;
-				case "2": // 채용공고 조회
-					rdao.recruit_search(sc, user, company);
-				   	break;
-				case "3":	// 채용지원
-					rdao.recruit_apply(sc, user, company);
-					break;
-				case "4":	// 지원현황
-					rdao.recruit_apply_situation(sc, company);
-					break;
-				case "5": // 이전 메뉴로 돌아가기
-				   break;   
-				default:
-				   System.out.println(">>> 메뉴에 없는 번호 입니다. 다시 선택하세요!! <<<");
-				   break;
-		    } // end of switch (u_Choice)-----------------
-		} while (!"5".equalsIgnoreCase(u_Choice));	// end of do~while------------------	
+	      System.out.print("▶ 기업명 : ");
+	      String search_company_name = sc.nextLine();
+	      
+	      Map<String, String> paraMap = new HashMap<>();
+	      paraMap.put("company_name", search_company_name);
+	      
+	      Company_DTO cdto = rdao.company_search(paraMap);
+	      
+	      if(cdto != null) {
+	         
+	         System.out.println("-".repeat(30));
+	         System.out.println("▶ 기업명 : " + cdto.getCompany_name() + "\n"
+	                      + "▶ 설립일자 : " +cdto.getCompany_type_detail().getBegin_day() + "\n"
+	                      + "▶ 대표자명 : " + cdto.getCeo_name() + "\n"
+	                      + "▶ 기업형태 : " + cdto.getCompany_type_detail().getCompanylist_num() + "\n"
+	                      + "▶ 주소 : " + cdto.getCompany_address() + "\n"
+	                      + "▶ 사원수 : " + cdto.getCompany_type_detail().getEmployee_num() + "\n"
+	                      + "▶ 상장여부 : " + cdto.getCompany_type_detail().getPublic_status() + "\n"
+	                      + "▶ 자본금 : " + cdto.getCompany_type_detail().getCapital_money() + "\n"
+	                      + "▶ 계열회사수 : " + cdto.getCompany_type_detail().getCompanylist_num());
+	         System.out.println("-".repeat(30));
+	      }
+	      else {
+	         System.out.println(">> 기업명 " + search_company_name + "은(는) 존재하지 않습니다. <<\n");
+	      }
+
 		
-	}	// end of public void Recruit_apply(Scanner sc, User_DTO user, Company_DTO company) ------
+	}
+
+
+
+
+
+	
+	
+	
+	
+	
 
 }

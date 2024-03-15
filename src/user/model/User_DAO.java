@@ -17,14 +17,25 @@ public interface User_DAO {
 	// ◆◆◆ === user 로그인 === ◆◆◆ //
 	User_DTO user_login(Map<String, String> paraMap);
 
-	// ◆◆◆ === 나의 정보 메뉴 === ◆◆◆ //
-	void user_info_menu(Scanner sc, User_DTO user);
+	// ◆◆◆ === 나의 정보 보기 === ◆◆◆ //
+	User_DTO view_userinfo(User_DTO user);
+	
+	// ◆◆◆ === 나의 정보 수정 === ◆◆◆ //
+	void change_information(Scanner sc, User_DTO user);
 
-	// ◆◆◆ ===  이력서 관리 메뉴 === ◆◆◆ //
-	void Paper_menu(Scanner sc, User_DTO user);
+	// ◆◆◆ ===  이력서 조회 === ◆◆◆ //
+	void paper_info(Scanner sc, User_DTO user);
 
-	// ◆◆◆ === 입사지원 제안 관리 메뉴 === ◆◆◆ //
-	void Recruit_apply_menu(Scanner sc, User_DTO user, Company_DTO company);
+	// ◆◆◆ ===  이력서 작성 === ◆◆◆ //
+	void write_paper(Scanner sc, User_DTO user);
+
+	// ◆◆◆ ===  이력서 수정 === ◆◆◆ //
+	void change_paper(Scanner sc, User_DTO user);
+
+	// ◆◆◆ === 구인회사 조회 === ◆◆◆ //
+	void company_search(Scanner sc, User_DTO user, Company_DTO company);
+
+	
 
 
 
