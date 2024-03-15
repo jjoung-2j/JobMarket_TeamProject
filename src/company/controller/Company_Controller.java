@@ -208,7 +208,7 @@ public class Company_Controller {
              e.printStackTrace();
        } finally { 
            close();   // 자원 반납
-       } // end of finally 
+       } // end of try~catch~finally------------------- 
       return company;
    } // end of private void company_info(Company_DTO company)
 

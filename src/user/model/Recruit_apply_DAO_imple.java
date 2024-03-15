@@ -111,7 +111,7 @@ public class Recruit_apply_DAO_imple implements Recruit_apply_DAO {
             e.printStackTrace(); 
       } finally {
          close();
-      }
+      }		// end of try~catch~finally------------------
       return cdto;
    }   // end of public Company_DTO company_search(Map<String, String> paraMap)-----
 
