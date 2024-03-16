@@ -340,20 +340,13 @@ public class Company_Controller {
 		System.out.println("\n[ 제한이 없으실 경우 엔터를 입력해주세요. ]");
 		System.out.print("▶ 마감일 : ");
 		String deadline = sc.nextLine();
-		
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate javadate = LocalDate.parse(deadline, dtf);
-        java.sql.Date sqldate = null;
-        
-        
         if(!(deadline == null || deadline.isBlank())) {
           if(Set_util.Check_date(deadline)) {
-             
-             sqldate = java.sql.Date.valueOf(javadate);
+             paraMap.put("recruit_deadline", deadline);
           }
 		}
 		else {
-			paraMap.put("deadline", "채용마감시까지");
+			paraMap.put("recruit_deadline", "채용마감시까지");
 		}
 		
 		do {
@@ -414,7 +407,7 @@ public class Company_Controller {
 			}
 		}while(true);
 		
-		int n = rdao.recruit_write(paraMap, company, sqldate);
+		int n = rdao.recruit_write(paraMap, company);
         
 
         if ( n == 1 ) {

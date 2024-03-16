@@ -1,6 +1,5 @@
 package company.model;
 
-import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -15,7 +14,7 @@ public interface Recruit_DAO {
 	void apply_user_search(Scanner sc, User_DTO user, Company_DTO company);
 
 	// ◆◆◆ === 채용공고 등록 === ◆◆◆ //
-	int recruit_write(Map<String, String> paraMap, Company_DTO company, Date sqldate);
+	int recruit_write(Map<String, String> paraMap, Company_DTO company);
 
 	// ◆◆◆ === 채용공고 조회 === ◆◆◆ //
 	List<Recruit_INFO_DTO> recruit_info_list();

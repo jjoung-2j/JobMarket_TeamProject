@@ -1,7 +1,6 @@
 package company.model;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -45,7 +44,7 @@ public class Recruit_DAO_imple implements Recruit_DAO {
 	
    // ◆◆◆ === 채용공고 등록 === ◆◆◆ //
 	 @Override
-	   public int recruit_write(Map<String, String> paraMap, Company_DTO company, Date sqldate) {
+	   public int recruit_write(Map<String, String> paraMap, Company_DTO company) {
 	      
 
 	      int result = 0;
@@ -64,7 +63,7 @@ public class Recruit_DAO_imple implements Recruit_DAO {
 	            pstmt.setString(3, paraMap.get("manager_email") );   
 	            pstmt.setString(4, paraMap.get("recruit_title") );
 	            pstmt.setString(5, paraMap.get("recruit_people") );
-	            pstmt.setDate(6, sqldate);
+	            pstmt.setString(6, paraMap.get("recruit_deadline"));
 	            pstmt.setString(7, paraMap.get("year_salary") );
 	            pstmt.setString(8, paraMap.get("recruit_content") );
 	            pstmt.setString(9, paraMap.get("work_day") );
