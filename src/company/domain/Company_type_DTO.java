@@ -8,6 +8,7 @@ public class Company_type_DTO {
 	private String begin_day;
 	private String capital_money;
 	private String companylist_num;
+	private String company_type;
 	
 	
 	///////////////////////////////////////
@@ -42,12 +43,11 @@ public class Company_type_DTO {
 	public void setCompanylist_num(String companylist_num) {
 		this.companylist_num = companylist_num;
 	}
-	public void setCompany_type(String string) {
-		// TODO Auto-generated method stub
-		
+	public String getCompany_type() {
+		return company_type;
 	}
-	public Object getCompany_type() {
-		// TODO Auto-generated method stub
-		return null;
+	public void setCompany_type(String company_type) {
+		this.company_type = company_type;
 	}
+
 }

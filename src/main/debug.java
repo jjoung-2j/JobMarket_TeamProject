@@ -5,9 +5,9 @@ import common.Set_util;
 public class debug {
 
 	public static void main(String[] args) {
-		String input = "010-1234-1234";
+		String input = "24-03-18";
 		
-		System.out.println(Set_util.Check_tel(input));
+		System.out.println(Set_util.Check_date(input));
 		
         
 	}

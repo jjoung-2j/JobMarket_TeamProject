@@ -2,14 +2,10 @@ package user.model;
 
 import java.util.Map;
 import java.util.Scanner;
-
 import company.domain.Company_DTO;
 import user.domain.User_DTO;
 
 public interface Recruit_apply_DAO {
-
-	// ◆◆◆ === 채용공고 조회 === ◆◆◆ //
-	void recruit_search(Scanner sc, User_DTO user, Company_DTO company);
 
 	// ◆◆◆ === 채용지원 === ◆◆◆ //
 	void recruit_apply(Scanner sc, User_DTO user, Company_DTO company);

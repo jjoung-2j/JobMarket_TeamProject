@@ -1,7 +1,15 @@
     -- 조회하기
     select * from user_tables;
     select * from tab;
-
+    select * from tbl_priority;
+    select * from tbl_local;
+    select * from tbl_hiretype;
+    select * from tbl_recruit_info;
+    select * from tbl_license_detail;
+    select * from tbl_company_type;
+    select * from tbl_hiretype;
+    select * from tbl_jobtype;
+    
     -- 취업우대
     CREATE TABLE TBL_PRIORITY (
     priority_code NUMBER(1) NOT NULL -- 취업우대코드
@@ -87,7 +95,6 @@
     );
     -- Table TBL_PAPER이(가) 생성되었습니다.
 
-    
 
     -- 업종
     create table tbl_jobtype (
@@ -461,3 +468,20 @@
     ----------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------
+    
+    
+     -- 테이블 데이터타입 조회
+    select table_name  , column_name  , data_type  , 
+          data_length  , nullable  , data_default 
+    from USER_TAB_COLUMNS;
+    
+    
+    select A.company_name, to_char(B.begin_day , 'yyyy-mm-dd') as begin_day
+        , A.ceo_name, B.company_type, A.company_address 
+        , B.employee_num 
+        , decode(B.public_status, 0, '비상장', 1, '상장') AS public_status 
+        , B.capital_money, B.companylist_num 
+    from tbl_company A RIGHT JOIN tbl_company_type B 
+    ON A.company_id = B.fk_company_id
+    where company_name = 'LG';
+    

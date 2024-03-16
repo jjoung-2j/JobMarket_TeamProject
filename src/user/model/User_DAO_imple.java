@@ -369,39 +369,7 @@ public class User_DAO_imple implements User_DAO {
 
 
 
-
-	Recruit_apply_DAO rdao = new Recruit_apply_DAO_imple();
-	@Override
-	public void company_search(Scanner sc, User_DTO user, Company_DTO company) {
-		System.out.println("\n >>> --- 구인회사 조회 --- <<<");
-	      
-	      System.out.print("▶ 기업명 : ");
-	      String search_company_name = sc.nextLine();
-	      
-	      Map<String, String> paraMap = new HashMap<>();
-	      paraMap.put("company_name", search_company_name);
-	      
-	      Company_DTO cdto = rdao.company_search(paraMap);
-	      
-	      if(cdto != null) {
-	         
-	         System.out.println("-".repeat(30));
-	         System.out.println("▶ 기업명 : " + cdto.getCompany_name() + "\n"
-	                      + "▶ 설립일자 : " +cdto.getCompany_type_detail().getBegin_day() + "\n"
-	                      + "▶ 대표자명 : " + cdto.getCeo_name() + "\n"
-	                      + "▶ 기업형태 : " + cdto.getCompany_type_detail().getCompanylist_num() + "\n"
-	                      + "▶ 주소 : " + cdto.getCompany_address() + "\n"
-	                      + "▶ 사원수 : " + cdto.getCompany_type_detail().getEmployee_num() + "\n"
-	                      + "▶ 상장여부 : " + cdto.getCompany_type_detail().getPublic_status() + "\n"
-	                      + "▶ 자본금 : " + cdto.getCompany_type_detail().getCapital_money() + "\n"
-	                      + "▶ 계열회사수 : " + cdto.getCompany_type_detail().getCompanylist_num());
-	         System.out.println("-".repeat(30));
-	      }
-	      else {
-	         System.out.println(">> 기업명 " + search_company_name + "은(는) 존재하지 않습니다. <<\n");
-	      }		// end of if~else---------------
-	}	// end of public void company_search(Scanner sc, User_DTO user, Company_DTO company)-------
-
+	
 
 
 

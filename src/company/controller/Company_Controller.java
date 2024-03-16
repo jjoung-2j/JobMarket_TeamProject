@@ -4,14 +4,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 import common.MYDBConnection;
+import common.Set_util;
 import company.domain.Company_DTO;
 import company.domain.Company_type_DTO;
+import company.domain.Recruit_INFO_DTO;
 import company.model.Company_DAO;
 import company.model.Company_DAO_imple;
 import company.model.Recruit_DAO;
@@ -27,11 +31,11 @@ public class Company_Controller {
 	Company_DAO cdao = new Company_DAO_imple();
 	Recruit_DAO rdao = new Recruit_DAO_imple();
 	private Connection conn = MYDBConnection.getConn();      // 데이터베이스 서버 연결
-	   private PreparedStatement pstmt;   // 우편배달부
-	   private ResultSet rs;
+	private PreparedStatement pstmt;   // 우편배달부
+	private ResultSet rs;
 	   
-   // ◆◆◆ === 자원반납을 해주는 메소드 === ◆◆◆ //
-   private void close() {
+	// ◆◆◆ === 자원반납을 해주는 메소드 === ◆◆◆ //
+	private void close() {
       try {
          if(rs != null) {
             rs.close();
@@ -44,7 +48,7 @@ public class Company_Controller {
       } catch(SQLException e) {
          e.printStackTrace();
       }   // end of try~catch----------
-   }   // end of private void close()---------------
+	}   // end of private void close()---------------
 	   
 	
 	
@@ -79,7 +83,7 @@ public class Company_Controller {
 				user_info(sc, company);
 				break;
 			case "4": // 로그아웃
-				System.out.println(">>>" + company.getCompany_id() + "님 로그아웃 되었습니다. <<<\n");
+				System.out.println(">>> " + company.getCompany_id() + "님 로그아웃 되었습니다. <<<\n");
 				company = null;
 				break;             
 			case "5": // 회원탈퇴 
@@ -87,8 +91,8 @@ public class Company_Controller {
 				if(c==1) {
 					company = null;
 					System.out.println(">>> 회원탈퇴 성공되었습니다. <<<");
+					break; 
 				}
-			    break;   
 			default:
 				System.out.println(">>> 메뉴에 없는 번호 입니다. 다시 선택하세요!! <<<");
 				break;
@@ -129,7 +133,7 @@ public class Company_Controller {
 	              
 					StringBuilder sb = new StringBuilder();  
 	               
-					sb.append(" === 기업 정보 ===\n"
+					sb.append("\n=== 기업 정보 ===\n"
 	                     + "▶ 기업명 : " + company.getCompany_name() + "\n"
 	                     + "▶ 기업대표 : " + company.getCeo_name() + "\n"
 	                     + "▶ 사업자등록번호 : " + company.getBusiness_number()+ "\n"
@@ -237,16 +241,16 @@ public class Company_Controller {
 		      
 	         switch (c_Choice) {
 				case "1": 	// 채용공고 등록
-					rdao.recruit_register(sc, company);
+					recruit_register(sc, company);
 				   	break;
 				case "2": 	// 채용공고 조회
-					rdao.recruit_information(sc, company);
+					recruit_information(sc, company);
 				   	break;
 				case "3":	// 채용공고 수정
-					rdao.recruit_fix(sc, company);
+					recruit_fix(sc, company);
 					break;
 				case "4":	// 채용공고 삭제
-					rdao.recruit_delete(sc, company);
+					recruit_delete(sc, company);
 					break;
 				case "5": 	// 이전메뉴로 되돌아가기
 				   break;   
@@ -263,7 +267,234 @@ public class Company_Controller {
 	
 	
 	
+	// ◆◆◆ === 채용공고 등록 === ◆◆◆ //
+	Recruit_INFO_DTO ridto_register = new Recruit_INFO_DTO();
+	public void recruit_register(Scanner sc, Company_DTO company) {
+		
+		Map<String, String> paraMap = new HashMap<>();	// 몇개의 변수이던간에 하나의 변수에 담아서 처리하려면?? MAP
+		
+		System.out.println("\n >> " + company.getCompany_name() + "채용공고 등록 <<");
+		
+		paraMap.put("fk_company_id", company.getCompany_id());
+		
+		// 담당자명
+		do {
+			System.out.print("\n▶ 담당자명 : ");
+			String manager_name = sc.nextLine();
+			
+			if(Set_util.Check_name(manager_name)) {
+				paraMap.put("manager_name", manager_name); 
+				break;
+			}
+		}while(true);	// end of do~while-------------
+		
+		// 담당자 이메일
+		do {
+			System.out.print("\n▶ 담당자 이메일 : ");
+			String manager_email = sc.nextLine();
+			if(Set_util.Check_email(manager_email)) {
+				paraMap.put("manager_email", manager_email);
+				break;
+			}
+		}while(true);	// end of do~while---------------
+		
+		// 채용공고명
+		do {
+			System.out.print("\n▶ 채용공고명 : ");
+			String recruit_title = sc.nextLine();
+			if(!(recruit_title == null || recruit_title.isBlank())) {
+				if(recruit_title.length() <= 40) {
+					paraMap.put("recruit_title", recruit_title);
+					break;
+				}
+				else {
+					System.out.println(">>> [경고] 채용공고명은 40자 미만으로 작성해주세요. <<<");
+				}
+			}
+			else {
+				System.out.println(">>> [경고] 채용공고명을 반드시 입력해주세요. <<<");
+			}
+		}while(true);	// end of do~while------------
+		
+		// 채용인원수
+		do {
+			System.out.println("\n[ 제한이 없으실 경우 엔터를 입력해주세요. ]");
+			System.out.print("▶ 채용인원수 : ");
+			String recruit_people = sc.nextLine();
+			if(recruit_people == null || recruit_people.isBlank()) {
+				paraMap.put("recruit_people", "0");
+				break;
+			}
+			else {
+				if(Set_util.Check_recruit_num(recruit_people)) {
+					paraMap.put("recruit_people", recruit_people);
+					break;
+				}
+				else {
+					System.out.println(">>> [경고] 숫자 3자리 이내로 입력해주세요. <<<");
+				}
+			}
+		}while(true);
+		
+		 
+		System.out.println("\n[ 제한이 없으실 경우 엔터를 입력해주세요. ]");
+		System.out.print("▶ 마감일 : ");
+		String deadline = sc.nextLine();
+		
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate javadate = LocalDate.parse(deadline, dtf);
+        java.sql.Date sqldate = null;
+        
+        
+        if(!(deadline == null || deadline.isBlank())) {
+          if(Set_util.Check_date(deadline)) {
+             
+             sqldate = java.sql.Date.valueOf(javadate);
+          }
+		}
+		else {
+			paraMap.put("deadline", "채용마감시까지");
+		}
+		
+		do {
+			System.out.print("\n▶ 신입/경력 여부[신입/경력/무관] : ");
+			String career = sc.nextLine();
+			if("신입".equals(career) || "경력".equals(career) || "무관".equals(career)) {
+				paraMap.put("career", career);
+				break;
+			}
+			else {
+				System.out.println("[경고] 신입 / 경력 / 무관 중 선택해주세요. <<<");
+			}
+		}while(true);
+		
+		do {
+			System.out.print("\n▶ 연봉 : ");
+			String year_salary = sc.nextLine();
+			if(year_salary != null) {
+				paraMap.put("year_salary", year_salary);
+				break;
+			}
+		}while(true);
+		
+		do {
+			System.out.print("\n▶ 채용공고내용 : ");
+			String recruit_content = sc.nextLine();
+			if(recruit_content != null) {
+				paraMap.put("recruit_content", recruit_content);
+				break;
+			}
+		}while(true);
+		
+		do {
+			System.out.print("\n▶ 채용분야 (1~9) : ");
+			String recruit_field = sc.nextLine();
+			if(recruit_field != null) {
+				paraMap.put("recruit_field", recruit_field);
+				paraMap.put("fk_hiretype_code", recruit_field);
+				break;
+			}
+		}while(true);
+		
+		do {
+			System.out.print("\n▶ 근무요일 : ");
+			String work_day = sc.nextLine();
+			if(work_day != null) {
+				paraMap.put("work_day", work_day);
+				break;
+			}
+		}while(true);
+		
+		do {
+			System.out.print("\n▶ 근무시간 : ");
+			String work_time = sc.nextLine();
+			if(work_time != null) {
+				paraMap.put("work_time", work_time);
+				break;
+			}
+		}while(true);
+		
+		int n = rdao.recruit_write(paraMap, company, sqldate);
+        
+
+        if ( n == 1 ) {
+           
+           System.out.println(">> 채용공고 등록 완료!! <<");
+           System.out.println(company.getCompany_name() + "기업의" + " 채용공고등록일 : " + company.getRecruit().getRecruit_registerday());
+        } 
+        else {
+           
+           System.out.println(">> 채용공고 등록 실패!! <<");
+        }
+	}	// end of public void recruit_register(Scanner sc, Company_DTO company, Recruit_INFO_DTO recruit)-------
+
+
+
+		
+		
+		
+
 	
+	
+	// ◆◆◆ === 채용공고 조회 === ◆◆◆ //
+	public void recruit_information(Scanner sc, Company_DTO company) {
+		String r_choice = "";
+		
+		do {
+			System.out.println("\n>>> ---- 채용공고 조회 메뉴 ---- <<<\n"
+						 	 + "1. 진행중인 채용공고\n"
+						 	 + "2. 마감된 채용공고\n"
+						 	 + "3. 이전 메뉴로 돌아가기");
+			
+			System.out.print("▶ 메뉴번호 선택 : ");
+			r_choice = sc.nextLine();
+			switch (r_choice) {
+				case "1":	// 진행중인 채용공고
+					// current_recruit_info(company); 진행중~~~~~
+					break;
+					
+				case "2":	// 마감된 채용공고
+								
+					break;
+				
+				case "3":	// 이전 메뉴로 돌아가기
+					
+					break;
+	
+				default:
+					System.out.println(">>> 메뉴에 없는 번호 입니다. 다시 선택하세요!! <<<");
+					break;
+			} // end of switch (r_choice)
+		} while(!"3".equals(r_choice));	// end of do~while---------------
+	}	// end of public void recruit_information(Scanner sc, Company_DTO company, Recruit_INFO_DTO recruit)------
+
+
+
+	
+	
+	
+	// ◆◆◆ === 채용공고 수정 === ◆◆◆ //
+	public void recruit_fix(Scanner sc, Company_DTO company) {
+		// TODO Auto-generated method stub
+		
+	}	// end of public void recruit_fix(Scanner sc, Company_DTO company, Recruit_INFO_DTO recruit)------
+
+
+
+
+	
+	
+
+	// ◆◆◆ === 채용공고 삭제 === ◆◆◆ //
+	public void recruit_delete(Scanner sc, Company_DTO company) {
+		// TODO Auto-generated method stub
+		
+	}	// end of public void recruit_delete(Scanner sc, Company_DTO company, Recruit_INFO_DTO recruit)------
+
+
+		
+		
+		
 	// ◆◆◆ === 구직자 정보 메뉴 === ◆◆◆ //
 	public void user_info(Scanner sc, Company_DTO company) {
 		String c_Choice = "";
@@ -287,9 +518,9 @@ public class Company_Controller {
 	               
 	                if(memberList.size() > 0) {
 	                  
-	                	System.out.println("-".repeat(50));
-	                	System.out.println("성명  주소  연락처  이메일  생년월일  ");
-	                	System.out.println("-".repeat(50));
+	                	System.out.println("-".repeat(80));
+	                	System.out.println("성명\t주소\t\t연락처\t\t이메일\t\t생년월일");
+	                	System.out.println("-".repeat(80));
 	                  
 	                	sb = new StringBuilder();
 	                  
@@ -298,7 +529,7 @@ public class Company_Controller {
 	                				member.getUser_address() + " " +
 	                				member.getUser_tel() + " " +
 	                				member.getUser_email() + " " +
-	                				member.getUser_security_num() + "\n");
+	                				member.getUser_security_num().substring(0, 6) + "\n");
 	                	} // end of for
 	                	System.out.println(sb.toString() );  
 		            } else 

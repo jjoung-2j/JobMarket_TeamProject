@@ -114,6 +114,37 @@ public class Set_util {
 	
 	
 	
+	// ◆◆◆ === 기업명 유효성 검사하기 === ◆◆◆ //
+	public static boolean Check_company_name(String company_name) {
+		boolean result = false;
+		if(company_name == null || company_name.isBlank()) {	// 공백일 경우 
+			System.out.println(">>> [경고] 기업명은 공백이 아닌 글자로 입력하셔야 합니다. <<<");
+		} 
+		else {
+			// 정규표현식 패턴 사용
+			Pattern p = Pattern.compile("^[A-Za-z가-힣]{1,20}$");
+			// 시작 ^, 끝 $, 가~힣 최소 1글자에서 최대 20글자로 하기
+			
+			// company_name 가 정규표현식 패턴과 일치하는지 확인 정보 넣기
+			Matcher m = p.matcher(company_name);
+			
+			// 확인 정보 보기
+			if(m.matches()) {	// 확인 정보가 참이라면 
+				result = true;	
+			}
+			else {
+				System.out.println(">>> [경고] 1~20자리 / 영문, 한글만 사용 가능합니다. <<<");
+				result = false;
+			}	// end of if~else-----------
+		}	// end of if~else------------------
+		return result;
+	}	// end of public static boolean Check_name(String name)--------------
+		
+	
+	
+	
+	
+		
 	// ◆◆◆ === 연락처 유효성 검사하기 === ◆◆◆ //
 	public static boolean Check_tel(String tel) {
 		boolean result = false;
@@ -121,7 +152,8 @@ public class Set_util {
 			System.out.println(">>> [경고] 연락처는 공백이 아닌 글자로 입력하셔야 합니다. <<<");
 		} 
 		else {
-			tel = String.join("", tel.split("-"));
+			String[] tel_arr = tel.split("[-]");
+			tel = String.join("", tel_arr);
 			// 정규표현식 패턴 사용
 			Pattern p = Pattern.compile("^[0-9]{1,15}$");
 			// 시작 ^, 끝 $, 0~9 까지 숫자로 하기
@@ -148,7 +180,9 @@ public class Set_util {
 	
 	// ◆◆◆ === 주민번호 유효성 검사하기 === ◆◆◆ //
 	public static boolean Check_security_num(String user_security_num) {
-		user_security_num = String.join("", user_security_num.split("-"));
+		String[] user_security_num_arr = user_security_num.split("[-]");
+		user_security_num = String.join("", user_security_num_arr);
+		
 		if(user_security_num.length() != 13) {
         	System.out.println(">>> [경고] 13자리를 입력해주세요. <<<");
         	return false;
@@ -228,6 +262,104 @@ public class Set_util {
 
 
 
+	
+	
+	// ◆◆◆ === 사업자등록번호 유효성 검사하기 === ◆◆◆ //
+			public static boolean Check_business_number(String business_number) {
+				boolean result = false;
+				if(business_number == null || business_number.isBlank()) {	// 공백일 경우 
+					System.out.println(">>> [경고] 사업자등록번호는 필수로 입력하셔야 합니다. <<<");
+				} 
+				else {
+					// 사업자 등록번호 예시 : 123-45-67890
+					business_number = String.join("", business_number.split("-"));
+					// 정규표현식 패턴 사용
+					Pattern p = Pattern.compile("^[0-9]{1,10}$");
+					// 시작 ^, 끝 $, 0~9 까지 숫자로 하기
+					
+					// user_tel 가 정규표현식 패턴과 일치하는지 확인 정보 넣기
+					Matcher m = p.matcher(business_number);
+					
+					// 확인 정보 보기
+					if(m.matches()) {	// 확인 정보가 참이라면 
+						result = true;	
+					}
+					else {
+						System.out.println(">>> [경고] 공백 없이 10자리 숫자를 입력해주세요. <<<");
+						result =false;
+					}	// end of if~else----------
+				}	// end of if~else---------------
+				return result;
+				
+			}	// end of public static boolean Check_business_number(String business_number)
+			
+			
+			
+			
+			
+			
+	
+
+	
+	
+	
+	
+	
+	
+	// ◆◆◆ === 채용인원수 === ◆◆◆ //
+	public static boolean Check_recruit_num(String number) {
+		
+		boolean result = false;
+		
+		// 정규표현식 패턴 사용
+		Pattern p = Pattern.compile("^[0-9]{1,3}$");
+		
+		Matcher m = p.matcher(number);	// 패턴과 일치하는지 확인
+		
+		// 확인 정보 보기
+		if(m.matches()) { 	// 확인 정보가 참이라면 
+			result = true;
+		}
+		
+		return result;
+	}	// end of public static void Check_num(String recruit_people)-----
+
+
+
+
+
+	// ◆◆◆ === 마감일 유효성 검사하기 === ◆◆◆ //
+	public static boolean Check_date(String deadline) {
+		
+		boolean result = false;
+		
+		String[] deadline_arr = deadline.split("[-]");
+		deadline = String.join("", deadline_arr);
+		
+        SimpleDateFormat sdformat = new SimpleDateFormat("yyyyMMdd");
+        
+        sdformat.setLenient(false);      // 존재하지 않는 날짜는 false로 출력
+        
+        try {
+           Date date_deadline = sdformat.parse(deadline);   // try~catch(ParseException) 선언
+           Date now = new Date();   // 현재 날짜시각
+           String str_now = sdformat.format(now);      // 현재 날짜시각 string 타입(보고싶은 타입 변환)
+           now = sdformat.parse(str_now);            // 문자열 -> date 타입
+        
+           if(date_deadline.compareTo(now) == 0 
+        		   || date_deadline.compareTo(now) > 0) {  	// 마감일이 오늘이거나 미래인 경우
+              result = true;
+           }
+           else {                    // 마감일이 과거인 경우
+        	   System.out.println(">>> [경고] 지난 날짜는 마감일로 설정하실 수 없습니다. <<<");
+        	   result = false;
+           }		// end of if~else------------
+        } catch (ParseException e) {
+        	System.out.println(">>> [경고] 유효하지 않는 날짜입니다. <<<");
+        	result = false;
+        }   // end of try~catch------------------
+        return result;
+	}	// end of public static boolean Check_date(String deadline)--------
 
 	
 }

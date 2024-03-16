@@ -32,9 +32,6 @@ public interface User_DAO {
 	// ◆◆◆ ===  이력서 수정 === ◆◆◆ //
 	void change_paper(Scanner sc, User_DTO user);
 
-	// ◆◆◆ === 구인회사 조회 === ◆◆◆ //
-	void company_search(Scanner sc, User_DTO user, Company_DTO company);
-
 	
 
 

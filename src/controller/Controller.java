@@ -168,7 +168,7 @@ public class Controller {
         // 연락처 유효성 검사
         String user_tel = null;
         do {
-	        System.out.print("▶ 연락처 : ");
+	        System.out.print("\n▶ 연락처 : ");
 	        user_tel = sc.nextLine();
 	        if(Set_util.Check_tel(user_tel)) {
 	        	break;
@@ -179,7 +179,7 @@ public class Controller {
         // 주민번호 유효성 검사
         String user_security_num = null;
         do {
-	        System.out.print("▶ 주민번호 :  ");
+	        System.out.print("\n▶ 주민번호 :  ");
 	        user_security_num = sc.nextLine();
 	        if(Set_util.Check_security_num(user_security_num)) {
 	        	break;
@@ -190,7 +190,7 @@ public class Controller {
         // 이메일 유효성 검사
         String user_email = null;
         do {
-	        System.out.print("▶ 이메일 : ");
+	        System.out.print("\n▶ 이메일 : ");
 	        user_email = sc.nextLine();
 	        if(Set_util.Check_email(user_email)) {
 	        	break;
@@ -214,42 +214,110 @@ public class Controller {
 		
 	
 	// ◆◆◆ == 기업 회원가입 == ◆◆◆ //
-	private void Join_Membership_Company(Scanner sc) {
-		System.out.println("\n >>> 기업 회원가입 입력");
-         
-		System.out.print("▶ 기업아이디 : ");
-		String company_id = sc.nextLine();
-		
-		System.out.print("▶ 비밀번호 : ");
-		String company_passwd = sc.nextLine();
-		 
-		System.out.print("▶ 기업명 : ");
-		String company_name = sc.nextLine();
-		 
-		System.out.print("▶ 주소 : ");
-		String company_address = sc.nextLine();
-		 
-		System.out.print("▶ 사업자등록번호 : ");
-		String business_number = sc.nextLine();
-		 
-		System.out.print("▶ 대표자명 : ");
-		String ceo_name = sc.nextLine();
-		 
-		Company_DTO company = new Company_DTO();
-		company.setCompany_id(company_id);
-		company.setCompany_passwd(company_passwd);
-		company.setCompany_name(company_name);
-		company.setCompany_address(company_address);
-		company.setBusiness_number(business_number);
-		company.setCeo_name(ceo_name);
-		 
-		int n = cdao.companyRegister(company);
-		 
-		if(n == 1) 
-		    System.out.println("\n>>> 회원가입을 축하드립니다. <<<");
-		else 
-		    System.out.println(">>> 회원가입이 실패되었습니다. <<<");
-	}	// end of private void Join_Membership_Company(Scanner sc)------------
+		private void Join_Membership_Company(Scanner sc) {
+			Company_DTO company = new Company_DTO(); 
+			
+			System.out.println("\n >>> 기업 회원가입 입력 <<<");
+	         
+			
+			// 아이디 유효성 검사
+			String company_id = null;
+			
+			do {
+			System.out.println("\n[ 4~20 자리 / 영문, 숫자, 특수문자 '_','-' 사용 ]");
+			System.out.print("▶ 기업아이디 : ");
+			company_id = sc.nextLine();
+			if(Set_util.Check_id(company_id)) {
+				break;
+			}
+			} while(true);
+			// end of do_while
+			company.setCompany_id(company_id);
+			
+			
+			// 비밀번호 유효성 검사
+			String company_passwd = null;
+			
+			do {
+				System.out.println("\n[ 8~16자리 / 영문 대소문자, 숫자, 특수문자 조합 ]");
+				System.out.print("▶ 비밀번호 : ");
+				company_passwd = sc.nextLine();
+				if(Set_util.Check_passwd(company_passwd)) {
+					break;
+				}
+				else {
+					System.out.println(">>> [경고] 올바른 비밀번호를 입력하세요. <<<");
+				}
+			} while(true);
+			// end of do_while
+			company.setCompany_passwd(company_passwd);
+			
+			
+			// 기업명 유효성 검사
+			String company_name = null;
+			
+			do {
+				System.out.println("\n[ 2~6자리 / 영문, 한글 사용 ]");
+				System.out.print("▶ 기업명 : ");
+				company_name = sc.nextLine();
+				if(Set_util.Check_company_name(company_name)) {
+					break;
+				}
+			} while(true);
+			// end of do_while
+			company.setCompany_name(company_name);
+			
+			
+			// 주소
+			System.out.print("\n▶ 주소 : ");
+			String company_address = sc.nextLine();
+			company.setCompany_address(company_address);
+			
+			
+			// 사업자등록번호 유효성 검사
+			String business_number = null;
+			
+			do {
+				System.out.println("\n[ 10자리 / 숫자 사용 ] ");
+				System.out.print("▶ 사업자등록번호 : ");
+				business_number = sc.nextLine();
+				if(Set_util.Check_business_number(business_number)) {
+					break;
+				}
+			} while(true);
+			// end of do_while
+			company.setBusiness_number(business_number);
+			
+			
+			// 업종
+			System.out.print("\n▶ 업종 : ");
+			String jobtype = sc.nextLine();
+			company.setJobtype_name(jobtype);
+			
+			
+			// 대표자명 유효성 검사
+			String ceo_name = null;
+			
+			do {
+				System.out.println("\n[ 2~6자리 / 영문, 한글 사용 ]");
+				System.out.print("▶ 대표자명 : ");
+				ceo_name = sc.nextLine();
+				if(Set_util.Check_name(ceo_name)) {
+					break;
+				}
+			} while(true);
+			// end of do_while
+			company.setCeo_name(ceo_name);
+			
+			int n = cdao.companyRegister(company);
+			 
+			if(n == 1) 
+			    System.out.println("\n>>> 회원가입을 축하드립니다. <<<");
+			else 
+			    System.out.println(">>> 회원가입이 실패되었습니다. <<<");
+		}	// end of private void Join_Membership_Company(Scanner sc)------------
+
+
 
 
 

@@ -1,15 +1,135 @@
 package company.model;
 
-import java.util.HashMap;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+
+import common.MYDBConnection;
 import company.domain.Company_DTO;
 import company.domain.Recruit_INFO_DTO;
 import user.domain.User_DTO;
 
 public class Recruit_DAO_imple implements Recruit_DAO {
 
+	// field
 
+	private Connection conn = MYDBConnection.getConn();		// 데이터베이스 서버 연결
+	private PreparedStatement pstmt;	// 우편배달부
+	private ResultSet rs;
+	
+	// ◆◆◆ === 자원반납을 해주는 메소드 === ◆◆◆ //
+	private void close() {
+		try {
+			if(rs != null) {
+				rs.close();
+				rs = null;
+			}
+			if(pstmt != null) {
+				pstmt.close();
+				pstmt = null;
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}	// end of try~catch----------
+	}	// end of private void close()---------------
+	
+	
+	
+	
+	
+   // ◆◆◆ === 채용공고 등록 === ◆◆◆ //
+	 @Override
+	   public int recruit_write(Map<String, String> paraMap, Company_DTO company, Date sqldate) {
+	      
+
+	      int result = 0;
+	      
+	      try {
+	            String sql = " insert into tbl_recruit_info (recruit_no, fk_company_id , manager_name , manager_email , "            
+	                  + "  recruit_title, recruit_people , recruit_deadline, year_salary, recruit_content , "
+	                  + "  work_day , work_time, career , fk_hiretype_code, recruit_field ) "
+	                  + "  values(to_char(sysdate, 'yyyymmdd') || '-' || SEQ_RECRUIT_NO.nextval , ? , ? , ? , "
+	                  + "   ?, ? , ?  ,? ,? , ? , ? , ? , ? , ?)  ";      
+	            
+	            pstmt = conn.prepareStatement(sql);         
+	            
+	            pstmt.setString(1, paraMap.get("fk_company_id") );   
+	            pstmt.setString(2, paraMap.get("manager_name") ); 
+	            pstmt.setString(3, paraMap.get("manager_email") );   
+	            pstmt.setString(4, paraMap.get("recruit_title") );
+	            pstmt.setString(5, paraMap.get("recruit_people") );
+	            pstmt.setDate(6, sqldate);
+	            pstmt.setString(7, paraMap.get("year_salary") );
+	            pstmt.setString(8, paraMap.get("recruit_content") );
+	            pstmt.setString(9, paraMap.get("work_day") );
+	            pstmt.setString(10, paraMap.get("work_time") );
+	            pstmt.setString(11, paraMap.get("career") );
+	            pstmt.setString(12, paraMap.get("fk_hiretype_code") );
+	            
+	            if("1".equals(paraMap.get("recruit_field") ) ) {
+	               
+	               pstmt.setString(13, "정규직" );
+	               
+	            }
+	            else if("2".equals(paraMap.get("recruit_field") ) ) {
+	               
+	               pstmt.setString(13, "계약직" );
+	               
+	            }else if("3".equals(paraMap.get("recruit_field") ) ) {
+	               
+	               pstmt.setString(13, "인턴" );
+	               
+	            }else if("4".equals(paraMap.get("recruit_field") ) ) {
+	               
+	               pstmt.setString(13, "파견직" );
+	               
+	            }else if("5".equals(paraMap.get("recruit_field") ) ) {
+	               
+	               pstmt.setString(13, "프리랜서" );
+	               
+	            }else if("6".equals(paraMap.get("recruit_field") ) ) {
+	               
+	               pstmt.setString(13, "아르바이트" );
+	               
+	            }else if("7".equals(paraMap.get("recruit_field") ) ) {
+	               
+	               pstmt.setString(13, "연수생" );
+	               
+	            }else if("8".equals(paraMap.get("recruit_field") ) ) {
+	               
+	               pstmt.setString(13, "위촉직" );
+	               
+	            }else if("9".equals(paraMap.get("recruit_field") ) ) {
+	               
+	               pstmt.setString(13, "개인사업자" );
+	               
+	            }
+	            
+	            
+	            result = pstmt.executeUpdate();      // SQL문 실행
+	            
+	         } catch (SQLException e) {
+	            if(e.getErrorCode() == 1) {   // 유니크 제약(userid)에 중복되어지면,
+	               System.out.println(">>  <<");
+	            }
+	            else {
+	               e.printStackTrace();
+	            }   // end of if~else------------
+	         } finally {
+	            close();
+	         }   // end try~catch~finally--------------------
+	      
+	         return result;
+	      
+	   } // end of public int recruit_write(Map<String, String> paraMap, Company_DTO company)
+	
+	
 	// ◆◆◆ === 지원한 구직자 조회 === ◆◆◆ //
 	@Override
 	public void apply_user_search(Scanner sc,  User_DTO user, Company_DTO company) {
@@ -17,148 +137,60 @@ public class Recruit_DAO_imple implements Recruit_DAO {
 		
 	}	// end of public void apply_user_search(Scanner sc, User_DTO user, Company_DTO company, Recruit_INFO_DTO recruit)------
 
-	
-	
-	
-	
-	
-	// ◆◆◆ === 채용공고 등록 === ◆◆◆ //
-	Recruit_INFO_DTO ridto_register = new Recruit_INFO_DTO();
-	@Override
-	public void recruit_register(Scanner sc, Company_DTO company) {
-		System.out.println("\n >> --- 채용공고등록 --- <<");
-		
-		System.out.print("▶ 담당자명 : ");
-		String manager_name = sc.nextLine();
-		
-		System.out.print("▶ 담당자 이메일 : ");
-		String manager_email = sc.nextLine();
-		
-		System.out.print("▶ 채용공고명 : ");
-		String recruit_title = sc.nextLine();
-		
-		System.out.print("▶ 채용인원수 : ");
-		String recruit_people = sc.nextLine();
-		
-		System.out.print("▶ 기업명 : " + company.getCompany_name());
-		 
-		System.out.print("▶ 등록일[자동으로 입력됩니다.]");
-		
-		System.out.print("▶ 마감일 : ");
-		String deadline = sc.nextLine();
-		
-		System.out.print("▶ 신입/경력 여부[신입/경력/무관] : ");
-		String career = sc.nextLine();
-		
-		System.out.print("▶ 연봉 : ");
-		String year_salary = sc.nextLine();
-		
-		System.out.print("▶ 채용공고내용 : ");
-		String recruit_content = sc.nextLine();
-		
-		System.out.print("▶ 채용분야 : ");
-		String recruit_field = sc.nextLine();
-		
-		System.out.print("▶ 근무요일 : ");
-		String work_day = sc.nextLine();
-		
-		System.out.print("▶ 근무시간 : ");
-		String work_time = sc.nextLine();
-		
-		Map<String, String> paraMap = new HashMap<>();	// 몇개의 변수이던간에 하나의 변수에 담아서 처리하려면?? MAP
-	    
-		paraMap.put("manager_name", manager_name); 
-	    paraMap.put("manager_email", manager_email);
-	    paraMap.put("recruit_title", recruit_title);
-	    paraMap.put("recruit_people", recruit_people);
-	    paraMap.put("deadline", deadline);
-	    paraMap.put("career", career);
-	    paraMap.put("year_salary", year_salary);
-	    paraMap.put("recruit_content", recruit_content);
-	    paraMap.put("recruit_field", recruit_field);
-	    paraMap.put("work_day", work_day);
-	    paraMap.put("work_time", work_time);
-	    
-	    
-	    ridto_register.getManager_name();
-	    ridto_register.getManager_email();
-	    ridto_register.getRecruit_title();
-	    ridto_register.getRecruit_people();
-	    ridto_register.getRecruit_deadline();
-	    ridto_register.getCareer();
-	    ridto_register.getYear_salary();
-	    ridto_register.getRecruit_content();
-	    ridto_register.getRecruit_field();
-	    ridto_register.getWork_day();
-	    ridto_register.getWork_time();
-
-		return;// TODO Auto-generated method stub
-	}	// end of public void recruit_register(Scanner sc, Company_DTO company, Recruit_INFO_DTO recruit)-------
 
 
-	
-	
-	
 
 	// ◆◆◆ === 채용공고 조회 === ◆◆◆ //
-	@Override
-	public void recruit_information(Scanner sc, Company_DTO company) {
-		String r_choice = "";
-		
-		do {
-			System.out.println("\n>>> ---- 채용공고 조회 메뉴 ---- <<<\n"
-						 	 + "1. 진행중인 채용공고\n"
-						 	 + "2. 마감된 채용공고\n"
-						 	 + "3. 이전 메뉴로 돌아가기");
-			
-			System.out.print("▶ 메뉴번호 선택 : ");
-			r_choice = sc.nextLine();
-			switch (r_choice) {
-				case "1":	// 진행중인 채용공고
-					// current_recruit_info(company); 진행중~~~~~
-					break;
-					
-				case "2":	// 마감된 채용공고
-								
-					break;
-				
-				case "3":	// 이전 메뉴로 돌아가기
-					
-					break;
-	
-				default:
-					System.out.println(">>> 메뉴에 없는 번호 입니다. 다시 선택하세요!! <<<");
-					break;
-			} // end of switch (r_choice)
-		} while(!"3".equals(r_choice));	// end of do~while---------------
-	}	// end of public void recruit_information(Scanner sc, Company_DTO company, Recruit_INFO_DTO recruit)------
+	   @Override
+	   public List<Recruit_INFO_DTO> recruit_info_list() {
+	   
+	      List<Recruit_INFO_DTO> recruit_info_list = new ArrayList<>();
+	      
+	      try {
+	            String sql = " select B.recruit_no, B.recruit_title, A.company_name, A.company_address, B.career, B.year_salary "
+	                      + "      , '~' || B.recruit_deadline AS recruit_deadline "
+	                      + " from TBL_COMPANY A RIGHT JOIN TBL_RECRUIT_INFO B "
+	                      + " ON A.company_id = B.fk_company_id ";
+	            
+	            pstmt = conn.prepareStatement(sql);
+	            
+	            rs = pstmt.executeQuery(); // SQL문 실행
+	            
+	            while(rs.next()) {
+	               
+	               Recruit_INFO_DTO rdto = new Recruit_INFO_DTO();
+	               
+	               rdto.setRecruint_no(rs.getString("recruit_no"));
+	               rdto.setRecruit_title(rs.getString("recruit_title"));
+	               rdto.setCareer(rs.getString("career"));
+	               rdto.setYear_salary(rs.getString("year_salary"));
+	               rdto.setRecruit_deadline(rs.getString("recruit_deadline"));
+	              
+	               Company_DTO cdto = new Company_DTO();
+	               cdto.setCompany_name(rs.getString("company_name"));
+	               cdto.setCompany_address(rs.getString("company_address"));
+	           
+	               rdto.setCdto(cdto);
+	               
+	               recruit_info_list.add(rdto);
+	               
+	            }   // end of while--------------------  
+	         } catch (SQLException e) {
+	               e.printStackTrace(); 
+	         } finally {
+	            close();
+	         }      // end of try~catch~finally------------------
 
-
-
-	
-	
-	
-	// ◆◆◆ === 채용공고 수정 === ◆◆◆ //
-	@Override
-	public void recruit_fix(Scanner sc, Company_DTO company) {
-		// TODO Auto-generated method stub
-		
-	}	// end of public void recruit_fix(Scanner sc, Company_DTO company, Recruit_INFO_DTO recruit)------
-
-
-
+	      return recruit_info_list;
+	   
+	   }   // end of public List<Recruit_INFO_DTO> recruit_info_list()------
 
 	
 	
-
-	// ◆◆◆ === 채용공고 삭제 === ◆◆◆ //
-	@Override
-	public void recruit_delete(Scanner sc, Company_DTO company) {
-		// TODO Auto-generated method stub
-		
-	}	// end of public void recruit_delete(Scanner sc, Company_DTO company, Recruit_INFO_DTO recruit)------
-
-
+	
+	
+	
+	
 
 	
 	

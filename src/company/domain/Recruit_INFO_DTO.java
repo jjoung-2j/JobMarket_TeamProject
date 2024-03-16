@@ -12,7 +12,7 @@ public class Recruit_INFO_DTO {
 	private String manager_email;
 	private String manager_name;
 	private String recruit_title;
-	private String recriot_registerday;
+	private String recruit_registerday;
 	private String recruit_deadline;
 	private String career;
 	private String year_salary;
@@ -29,7 +29,7 @@ public class Recruit_INFO_DTO {
 	/////////////////////////////
 		
 	// select 용
-	
+	private Company_DTO cdto;
 	
 	///////////////////////////////////////
 	// ==== method ====
@@ -97,16 +97,6 @@ public class Recruit_INFO_DTO {
 
 	public void setRecruit_title(String recruit_title) {
 		this.recruit_title = recruit_title;
-	}
-
-	
-	
-	public String getRecriot_registerday() {
-		return recriot_registerday;
-	}
-
-	public void setRecriot_registerday(String recriot_registerday) {
-		this.recriot_registerday = recriot_registerday;
 	}
 
 	
@@ -189,12 +179,34 @@ public class Recruit_INFO_DTO {
 		this.hiretype_name = hiretype_name;
 	}
 	
+	/////////////////////////////////////////////////////////
+	
+	public Company_DTO getCdto() {
+	      return cdto;
+	}
+	
+    public void setCdto(Company_DTO cdto) {
+      this.cdto = cdto;
+    }
+	
+	public String getRecruit_registerday() {
+		return recruit_registerday;
+	}
+
+	public void setRecruit_registerday(String recruit_registerday) {
+		this.recruit_registerday = recruit_registerday;
+	}
+    
+
+	/////////////////////////////////////////////////////////
 	
 	// ◆◆◆ === 채용공고 등록 === ◆◆◆ //
 	public Recruit_INFO_DTO recruit_register(Map<String, String> paraMap) {
 		
 		return null;
 	} // end of public Recruit_INFO_DTO recruit_register(Map<String, String> paraMap)
+
+
 
 	
 
