@@ -44,7 +44,7 @@ public class User_DTO {
 		return user_passwd;
 	}
 	public void setUser_passwd(String passwd) {
-			this.user_passwd =  passwd;
+			this.user_passwd = passwd;
 	}
 	
 	

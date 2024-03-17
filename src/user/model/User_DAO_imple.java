@@ -193,12 +193,14 @@ public class User_DAO_imple implements User_DAO {
 
 	// ◆◆◆ === 나의 정보 수정 === ◆◆◆ //
 	public void change_information(Scanner sc, User_DTO user) {
+		 
 		System.out.println("\n>>> 나의 정보 수정하기 <<<");
 		System.out.println("\n ※ 이전으로 돌아가시려면 엔터하세요.");
          
 		System.out.print("▷ [확인용] 패스워드 : ");
         String user_passwd = sc.nextLine();
-      
+        System.out.println(user.getUser_passwd());
+       
         if( !(user_passwd.equals(user.getUser_passwd()))) {	// 패스워드가 일치하지 않는 경우
             System.out.println("[경고] 패스워드가 일치하지 않습니다.");
         }
@@ -246,7 +248,6 @@ public class User_DAO_imple implements User_DAO {
               user_email = user.getUser_email();
            }
            
-           
            String yn = "";
            do {
         	   ///////////////////////////////////////////////////////////////
@@ -285,6 +286,7 @@ public class User_DAO_imple implements User_DAO {
             ///////////////////////////////////////////////////////////////
            } while(!("y".equalsIgnoreCase(yn) || "n".equalsIgnoreCase(yn)));
         } 	// end of if~else----------------------
+        
 	}	// end of private void change_information(Scanner sc, User_DTO user)------
 	
 	
@@ -325,6 +327,7 @@ public class User_DAO_imple implements User_DAO {
         		 conn.rollback(); 	// 다른 것들을 위해 
         	 }
     		 result = pstmt.executeUpdate(); 	// sql문 실행하기 
+    		 conn.setAutoCommit(true);
          } catch (SQLException e) {
             e.printStackTrace();
          } finally {
