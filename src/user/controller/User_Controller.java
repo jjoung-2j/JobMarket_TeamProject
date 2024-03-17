@@ -50,7 +50,7 @@ public class User_Controller {
 				break;
 			case "3": 	// 입사지원 제안 관리 메뉴
 				Company_DTO company = new Company_DTO();
-				Recruit_apply_menu(sc, user,company);
+				Recruit_apply_menu(sc, user, company);
 				break;
 			case "4":	// 로그아웃
 				System.out.println(">>> " + user.getUser_name() + "님 로그아웃 되었습니다. <<<\n");
@@ -195,7 +195,7 @@ public class User_Controller {
 	                        StringBuilder sb = new StringBuilder();
 	                        
 	                        for(Recruit_INFO_DTO recruit_info_li : recruit_info_list) {
-	                           sb.append(recruit_info_li.getRecruint_no() + "\t" +
+	                           sb.append(recruit_info_li.getRecruit_no() + "\t" +
 	                                   recruit_info_li.getRecruit_title() + "\t" +
 	                                   recruit_info_li.getCdto().getCompany_name() + "\t" +
 	                                   recruit_info_li.getCdto().getCompany_address() + "\t" +
@@ -251,7 +251,7 @@ public class User_Controller {
 		         System.out.println("▶ 기업명 : " + cdto.getCompany_name() + "\n"
 		                      + "▶ 설립일자 : " +cdto.getCompany_type_detail().getBegin_day() + "\n"
 		                      + "▶ 대표자명 : " + cdto.getCeo_name() + "\n"
-		                      + "▶ 기업형태 : " + cdto.getCompany_type_detail().getCompanylist_num() + "\n"
+		                      + "▶ 기업형태 : " + cdto.getCompany_type_detail().getCompany_type() + "\n"
 		                      + "▶ 주소 : " + cdto.getCompany_address() + "\n"
 		                      + "▶ 사원수 : " + cdto.getCompany_type_detail().getEmployee_num() + "\n"
 		                      + "▶ 상장여부 : " + cdto.getCompany_type_detail().getPublic_status() + "\n"

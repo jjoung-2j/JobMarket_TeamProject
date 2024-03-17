@@ -139,15 +139,14 @@ public class Recruit_DAO_imple implements Recruit_DAO {
 
 
 
-	// ◆◆◆ === 채용공고 조회 === ◆◆◆ //
-	   @Override
-	   public List<Recruit_INFO_DTO> recruit_info_list() {
-	   
-	      List<Recruit_INFO_DTO> recruit_info_list = new ArrayList<>();
+	// ◆◆◆ === 채용공고 조회(전체) === ◆◆◆ //
+	@Override
+	public List<Recruit_INFO_DTO> recruit_info_list() {
+		List<Recruit_INFO_DTO> recruit_info_list = new ArrayList<>();
 	      
 	      try {
 	            String sql = " select B.recruit_no, B.recruit_title, A.company_name, A.company_address, B.career, B.year_salary "
-	                      + "      , '~' || B.recruit_deadline AS recruit_deadline "
+	                      + "      , '~ ' || B.recruit_deadline AS recruit_deadline "
 	                      + " from TBL_COMPANY A RIGHT JOIN TBL_RECRUIT_INFO B "
 	                      + " ON A.company_id = B.fk_company_id ";
 	            
@@ -159,7 +158,7 @@ public class Recruit_DAO_imple implements Recruit_DAO {
 	               
 	               Recruit_INFO_DTO rdto = new Recruit_INFO_DTO();
 	               
-	               rdto.setRecruint_no(rs.getString("recruit_no"));
+	               rdto.setRecruit_no(rs.getString("recruit_no"));
 	               rdto.setRecruit_title(rs.getString("recruit_title"));
 	               rdto.setCareer(rs.getString("career"));
 	               rdto.setYear_salary(rs.getString("year_salary"));
@@ -181,8 +180,73 @@ public class Recruit_DAO_imple implements Recruit_DAO {
 	         }      // end of try~catch~finally------------------
 
 	      return recruit_info_list;
-	   
-	   }   // end of public List<Recruit_INFO_DTO> recruit_info_list()------
+	}	// end of public List<Recruit_INFO_DTO> recruit_info_list()------
+
+
+
+
+	// ◆◆◆ === 채용공고 조회(로그인한 기업의 공고만) === ◆◆◆ //
+	@Override
+	public List<Recruit_INFO_DTO> All_recruit(Company_DTO company, Recruit_INFO_DTO ridto_register) {
+		Recruit_INFO_DTO recruit_view = new Recruit_INFO_DTO();
+		
+		List<Recruit_INFO_DTO> recruitList = new ArrayList<>();
+		
+		try {
+			String sql = " select recruit_no AS 공고번호 "
+				         + " , recruit_field AS 채용분야 "
+				         + " , recruit_title AS 공고명 "
+				         + " , recruit_content AS 공고내용 "
+				         + " , recruit_registerday AS 등록일 "
+				         + " , recruit_deadline AS 마감일 "
+				         + " , career AS 신입경력여부 "
+				         + " , year_salary AS 연봉 "
+				         + " , recruit_people AS 채용인원 "
+				         + " , work_day AS 근무요일 "
+				         + " , work_time AS 근무시간 "
+				         + " , manager_email AS 담당자이메일 "
+				         + " , manager_name AS 담당자명 "
+				         + " from tbl_recruit_info "
+				         + " where fk_company_id = ? ";
+							
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, company.getCompany_id());  
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {	
+				recruit_view = new Recruit_INFO_DTO();
+				
+				recruit_view.setRecruit_no(rs.getString("공고번호"));
+				recruit_view.setRecruit_field(rs.getString("채용분야"));
+				recruit_view.setRecruit_title(rs.getString("공고명"));
+				recruit_view.setRecruit_content(rs.getString("공고내용"));
+				recruit_view.setRecruit_registerday(rs.getString("등록일"));
+				recruit_view.setRecruit_deadline(rs.getString("마감일"));
+				recruit_view.setCareer(rs.getString("신입경력여부"));
+				recruit_view.setYear_salary(rs.getString("연봉"));
+				recruit_view.setRecruit_people(rs.getString("채용인원"));
+				recruit_view.setWork_day(rs.getString("근무요일"));
+				recruit_view.setWork_time(rs.getString("근무시간"));
+				recruit_view.setManager_email(rs.getString("담당자이메일"));
+				recruit_view.setManager_name(rs.getString("담당자명"));
+				
+				recruitList.add(recruit_view);
+			} // end of while(rs.next())
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		} // end of finally
+		
+		return recruitList;
+
+	}	// end of public List<Recruit_INFO_DTO> All_recruit(Recruit_INFO_DTO ridto_register)--------
+
+
+
 
 	
 	

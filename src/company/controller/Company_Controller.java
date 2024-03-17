@@ -435,34 +435,42 @@ public class Company_Controller {
 	
 	// ◆◆◆ === 채용공고 조회 === ◆◆◆ //
 	public void recruit_information(Scanner sc, Company_DTO company) {
-		String r_choice = "";
 		
-		do {
-			System.out.println("\n>>> ---- 채용공고 조회 메뉴 ---- <<<\n"
-						 	 + "1. 진행중인 채용공고\n"
-						 	 + "2. 마감된 채용공고\n"
-						 	 + "3. 이전 메뉴로 돌아가기");
+		List<Recruit_INFO_DTO> recruitList = rdao.All_recruit(company, ridto_register);
+		
+		StringBuilder sb = new StringBuilder();
 			
-			System.out.print("▶ 메뉴번호 선택 : ");
-			r_choice = sc.nextLine();
-			switch (r_choice) {
-				case "1":	// 진행중인 채용공고
-					// current_recruit_info(company); 진행중~~~~~
-					break;
-					
-				case "2":	// 마감된 채용공고
-								
-					break;
-				
-				case "3":	// 이전 메뉴로 돌아가기
-					
-					break;
-	
-				default:
-					System.out.println(">>> 메뉴에 없는 번호 입니다. 다시 선택하세요!! <<<");
-					break;
-			} // end of switch (r_choice)
-		} while(!"3".equals(r_choice));	// end of do~while---------------
+		if(recruitList.size() > 0) {
+			System.out.println("\n" + "-".repeat(40) + company.getCompany_name() + "님의 [현재 진행중인 채용공고] " + "-".repeat(40));
+			System.out.println("공고번호 채용분야 공고명 공고내용 등록일 마감일 신입/경력여부 연봉 채용인원 근무요일 근무시간 담당자이메일 담당자명");
+			System.out.println("-".repeat(100));
+			
+			sb = new StringBuilder();
+			
+			for(Recruit_INFO_DTO recruit : recruitList) {
+				sb.append(recruit.getRecruit_no() + "" +
+					      recruit.getRecruit_field() + "" +
+					      recruit.getRecruit_title() + "" +
+					      recruit.getRecruit_content() + "" +
+					      recruit.getRecruit_registerday() + "" +
+					      recruit.getRecruit_deadline() + "" +
+					      recruit.getCareer() + "" +
+					      recruit.getYear_salary() + "" +
+					      recruit.getRecruit_people() + "" +
+					      recruit.getWork_day() + "" +
+					      recruit.getWork_time() + "" +
+					      recruit.getManager_email() + "" +
+					      recruit.getManager_name() + "\n");
+						  
+			} // end of for(Recruit_INFO_DTO recruit_info : recruitList)
+			
+			System.out.println(sb.toString());
+			
+		} // end of if (recruitList.size() > 0)
+		else
+			System.out.println(">> 현재 진행중인 채용공고가 존재하지 않습니다. <<\n");
+		
+		
 	}	// end of public void recruit_information(Scanner sc, Company_DTO company, Recruit_INFO_DTO recruit)------
 
 

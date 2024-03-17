@@ -16,8 +16,12 @@ public interface Recruit_DAO {
 	// ◆◆◆ === 채용공고 등록 === ◆◆◆ //
 	int recruit_write(Map<String, String> paraMap, Company_DTO company);
 
-	// ◆◆◆ === 채용공고 조회 === ◆◆◆ //
+	// ◆◆◆ === 채용공고 조회(전체) === ◆◆◆ //
 	List<Recruit_INFO_DTO> recruit_info_list();
+
+	// ◆◆◆ === 채용공고 조회(로그인한 기업의 공고만) === ◆◆◆ //
+	List<Recruit_INFO_DTO> All_recruit(Company_DTO company, Recruit_INFO_DTO ridto_register);
+
 
 	
 

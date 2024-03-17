@@ -1,30 +1,35 @@
 package company.domain;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 public class Recruit_INFO_DTO {
 
+	Date now = new Date();
+	SimpleDateFormat sdft = new SimpleDateFormat("yyyy-MM-dd");
+   
 	// ==== field ====
 	// insert 용
-	private String recruint_no;		
+	private String recruit_no;      
 	private String company_id;
 	private String hiretype_code;
 	private String manager_email;
 	private String manager_name;
 	private String recruit_title;
-	private String recruit_registerday;
+	private String recruit_registerday = sdft.format(now);
 	private String recruit_deadline;
 	private String career;
 	private String year_salary;
 	private String recruit_content;
 	private String recruit_people;
-	
+   
 
-	private String recruit_field;
-	private String work_day;
-	private String work_time;
-	
-	private String hiretype_name;
+  	private String recruit_field;
+  	private String work_day;
+  	private String work_time;
+   
+  	private String hiretype_name;
 
 	/////////////////////////////
 		
@@ -41,12 +46,12 @@ public class Recruit_INFO_DTO {
 	public void setRecruit_people(String recruit_people) {
 		this.recruit_people = recruit_people;
 	}
-	public String getRecruint_no() {
-		return recruint_no;
+	public String getRecruit_no() {
+		return recruit_no;
 	}
 
-	public void setRecruint_no(String recruint_no) {
-		this.recruint_no = recruint_no;
+	public void setRecruit_no(String recruint_no) {
+		this.recruit_no = recruint_no;
 	}
 
 	

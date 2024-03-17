@@ -1,15 +1,7 @@
     -- 조회하기
     select * from user_tables;
     select * from tab;
-    select * from tbl_priority;
-    select * from tbl_local;
-    select * from tbl_hiretype;
-    select * from tbl_recruit_info;
-    select * from tbl_license_detail;
-    select * from tbl_company_type;
-    select * from tbl_hiretype;
-    select * from tbl_jobtype;
-    
+
     -- 취업우대
     CREATE TABLE TBL_PRIORITY (
     priority_code NUMBER(1) NOT NULL -- 취업우대코드
@@ -95,6 +87,7 @@
     );
     -- Table TBL_PAPER이(가) 생성되었습니다.
 
+    
 
     -- 업종
     create table tbl_jobtype (
@@ -468,20 +461,63 @@
     ----------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------
+
     
+    delete from tbl_user_info where user_id = '3';
+    delete from tbl_user_info where user_id = '4';
+    delete from tbl_user_info where user_id = 'testtt';
+    delete from tbl_user_info where user_id = 'hemint';
+    delete from tbl_user_info where user_id = 'qw--';
+    delete from tbl_user_info where user_id = 'qwet';
+    delete from tbl_user_info where user_id = '2345';
+    delete from tbl_user_info where user_id = 'test2';
+    delete from tbl_user_info where user_id = '5';
+    delete from tbl_user_info where user_id = 'aq_2';
+    delete from tbl_user_info where user_id = 'admin1';
+    delete from tbl_user_info where user_id = 'admin';
+    delete from tbl_user_info where user_id = 'test4';
+    delete from tbl_user_info where user_id = '2';
+    delete from tbl_user_info where user_id = '1';
+    delete from tbl_user_info where user_id = 'leess';
+    delete from tbl_user_info where user_id = 'qwer';
+    delete from tbl_user_info where user_id = 'ㅈㄷㄳ';
+    delete from tbl_user_info where user_id = 'jjoung-2j';
+    -- 구직자 불필요한 회원 전부 삭제
+    select * from tbl_user_info;
+    commit;
+    -- 커밋 완료.
     
-     -- 테이블 데이터타입 조회
     select table_name  , column_name  , data_type  , 
           data_length  , nullable  , data_default 
-    from USER_TAB_COLUMNS;
-    
-    
-    select A.company_name, to_char(B.begin_day , 'yyyy-mm-dd') as begin_day
-        , A.ceo_name, B.company_type, A.company_address 
-        , B.employee_num 
-        , decode(B.public_status, 0, '비상장', 1, '상장') AS public_status 
-        , B.capital_money, B.companylist_num 
-    from tbl_company A RIGHT JOIN tbl_company_type B 
-    ON A.company_id = B.fk_company_id
-    where company_name = 'LG';
-    
+    from USER_TAB_COLUMNS
+    where table_name = 'TBL_RECRUIT_INFO';
+     
+   select * from user_sequences;
+   select * from TBL_RECRUIT_INFO;
+   
+   alter table tbl_recruit_info modify recruit_deadline date;
+   -- Table TBL_RECRUIT_INFO이(가) 변경되었습니다.
+   
+   -- 기업테이블 company_id(기업아이디 lg,hd,samsung) 제외하고 전부 삭제 by 정수(20240317 00시07분경)
+   
+ ---------------------------------------------------------------------------------------
+   -- 채용공고 테이블 마감일 미입력시 채용마감시까지로 하기위해 변경 및 삭제
+   delete from tbl_recruit_info;
+   -- 4개 행 이(가) 삭제되었습니다.
+   
+   alter table tbl_recruit_info modify recruit_deadline Nvarchar2(20);
+   -- Table TBL_RECRUIT_INFO이(가) 변경되었습니다.
+   
+   commit;
+   -- 커밋 완료.
+   
+   -- user_name , ceo_name , manager_name 현실성 첨가해서 37글자 제한으로 변경
+   alter table tbl_company modify ceo_name Nvarchar2(37);
+   alter table tbl_user_info modify user_name Nvarchar2(37);
+   alter table tbl_recruit_info modify manager_name Nvarchar2(37);
+   -- Table TBL_COMPANY이(가) 변경되었습니다.
+   -- Table TBL_USER_INFO이(가) 변경되었습니다.
+   -- Table TBL_RECRUIT_INFO이(가) 변경되었습니다. by 정수
+   
+  
+  
