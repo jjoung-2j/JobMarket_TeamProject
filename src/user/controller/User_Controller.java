@@ -28,6 +28,8 @@ public class User_Controller {
 	public void user_menu(Scanner sc, User_DTO user) {
 		
 		String u_Choice = "";
+		int u = 0;
+		
 		do {
 			System.out.println("\n >>> ---- 회원 메뉴 [ " + user.getUser_name()+ " 님 로그인 중.. ]---- <<<\n"
 					+ "1. 나의정보\n"
@@ -55,16 +57,19 @@ public class User_Controller {
 				user = null;
 				break;
 			case "5":	// 회원탈퇴
-				int u = udao.Withdrawal(sc,user);
+				u = udao.Withdrawal(sc,user);
 				if(u==1) {
 					user = null;
 					System.out.println(">>> 회원탈퇴 성공되었습니다. <<<");
 					break;
 				}
+				else {
+					break;
+				}
 			default:
 				break;
 			} 	// end of switch-----------
-		}while(!("4".equals(u_Choice) || "5".equals(u_Choice)));
+		}while(!("4".equals(u_Choice)) && !("5".equals(u_Choice) && u == 1));
 	}	// end of public void user_menu(Scanner sc, User_DTO user, Company_DTO company)---------
 
 
@@ -172,7 +177,7 @@ public class User_Controller {
 	                   if(recruit_info_list.size() > 0) {
 	                      
 	                      System.out.println("\n------------------------------ [채용공고 목록] ------------------------------");
-	                        System.out.println("채용공고번호\t채용공고명\t기업명\t주소\t신입,경력여부\t연봉\t채용마감일");
+	                        System.out.println("채용공고번호\t\t채용공고명\t\t기업명\t주소\t신입,경력여부\t연봉\t채용마감일");
 	                        System.out.println("-------------------------------------------------------------------------"); 
 	                        
 	                        StringBuilder sb = new StringBuilder();
@@ -184,7 +189,7 @@ public class User_Controller {
 	                                   recruit_info_li.getCdto().getCompany_address() + "\t" +
 	                                   recruit_info_li.getCareer() + "\t" + 
 	                                   recruit_info_li.getYear_salary() + "\t" + 
-	                                   recruit_info_li.getRecruit_deadline()); 
+	                                   recruit_info_li.getRecruit_deadline() + "\n"); 
 	                        } // end of for ----------
 	                        
 	                        System.out.println(sb.toString());
@@ -230,7 +235,7 @@ public class User_Controller {
 		      
 		      if(cdto != null) {
 		         
-		         System.out.println("-".repeat(30));
+		         System.out.println("\n" + "-".repeat(30));
 		         System.out.println("▶ 기업명 : " + cdto.getCompany_name() + "\n"
 		                      + "▶ 설립일자 : " +cdto.getCompany_type_detail().getBegin_day() + "\n"
 		                      + "▶ 대표자명 : " + cdto.getCeo_name() + "\n"

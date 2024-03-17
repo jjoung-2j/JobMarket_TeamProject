@@ -143,7 +143,7 @@ public class Controller {
 	        	break;
 	        }
 	        else {
-	        	System.out.println(">>> [경고] 올바른 비밀번호를 입력하세요. <<<");
+	        	System.out.println(">>> [경고] 8~16자의 영문 대/소문자, 숫자, 특수문자를 사용해 주세요. <<<");
 	        }
 		} while(true);	// do~while---------------------------
 		user.setUser_passwd(user_passwd);
@@ -246,7 +246,7 @@ public class Controller {
 					break;
 				}
 				else {
-					System.out.println(">>> [경고] 올바른 비밀번호를 입력하세요. <<<");
+					System.out.println(">>> [경고] 8~16자의 영문 대/소문자, 숫자, 특수문자를 사용해 주세요. <<<");
 				}
 			} while(true);
 			// end of do_while

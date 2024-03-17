@@ -105,13 +105,10 @@ public class Company_DAO_imple implements Company_DAO {
 				} finally {
 					close();	// 자원 반납
 				}
-				return result;
 			} else if("n".equalsIgnoreCase(yn)) {
 				System.out.println(">>> 회원탈퇴를 취소하셨습니다. <<<\n");
-				return result;
 			} else {
 				System.out.println(">>> Y 또는 N 만 입력하세요. <<<\n");
-				continue;
 			}	// end of if~else(회원탈퇴 유무 확인)---------------
 		}while(!("y".equalsIgnoreCase(yn) || "n".equalsIgnoreCase(yn)));
 		return result;

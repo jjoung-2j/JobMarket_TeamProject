@@ -58,6 +58,7 @@ public class Company_Controller {
    public void company_menu(Scanner sc, Company_DTO company) {
       
       String c_Choice = "";
+      int c = 0;
       
       do { 
     	 ////////////////////////////////////////////////////////////////   
@@ -87,18 +88,21 @@ public class Company_Controller {
 				company = null;
 				break;             
 			case "5": // 회원탈퇴 
-				int c = cdao.Withdrawal(sc,company);
+				c = cdao.Withdrawal(sc,company);
 				if(c==1) {
 					company = null;
 					System.out.println(">>> 회원탈퇴 성공되었습니다. <<<");
 					break; 
+				}
+				else {
+					break;
 				}
 			default:
 				System.out.println(">>> 메뉴에 없는 번호 입니다. 다시 선택하세요!! <<<");
 				break;
     	  } // end of switch (c_Choice)-------------------------
            ////////////////////////////////////////////////////////////////
-      } while (!("4".equals(c_Choice)|| "5".equals(c_Choice)));   
+      } while (!("4".equals(c_Choice)) && !("5".equals(c_Choice) && c == 1));   
    } // end of public void companyMenu_Start(Scanner sc, Company_DTO company)
 
 
