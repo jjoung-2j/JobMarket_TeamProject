@@ -119,7 +119,7 @@ public class User_DAO_imple implements User_DAO {
 	      
 	try {
 	     
-	   String sql = " select user_id, user_name, user_address, user_tel, user_security_num, user_email "
+	   String sql = " select user_id, user_passwd, user_name, user_address, user_tel, user_security_num, user_email "
 	              + " from tbl_user_info "
 	              + " where status = 1 and user_id = ? and user_passwd = ? ";
 	     
@@ -134,6 +134,7 @@ public class User_DAO_imple implements User_DAO {
 	      user = new User_DTO();	// user 에 정보를 넣을 수 있게 해준다.
 	        
 	      user.setUser_id(rs.getString("user_id"));
+	      user.setUser_passwd(rs.getString("user_passwd"));
 	      user.setUser_name(rs.getString("user_name"));
 	      user.setUser_address(rs.getString("user_address"));
 	      user.setUser_tel(rs.getString("user_tel"));
