@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import common.MYDBConnection;
-import company.domain.Company_DTO;
 import user.domain.User_DTO;
 
 public class User_DAO_imple implements User_DAO {

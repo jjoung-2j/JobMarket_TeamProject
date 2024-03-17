@@ -93,7 +93,19 @@ public class User_Controller {
 			    switch (u_Choice) {
 			        
 					case "1": // 나의 정보 보기
-						udao.view_userinfo(user);
+						User_DTO result = udao.view_userinfo(user);
+						
+						System.out.println("\n" + "-".repeat(50));
+						System.out.println("[ " + result.getUser_name()+ " 님의 정보 보기]");
+	                    System.out.println("▶ 아이디 : " + result.getUser_id() );
+	                    System.out.println("▶ 패스워드 : " + result.getUser_passwd() );
+	                    System.out.println("▶ 성명 : " + result.getUser_name() );
+	                    System.out.println("▶ 주소 : " + result.getUser_address() );
+	                    System.out.println("▶ 연락처 : " + result.getUser_tel() );
+	                    System.out.println("▶ 주민번호 : " + result.getUser_security_num() );
+	                    System.out.println("▶ 이메일 : " + result.getUser_email() );
+						System.out.println("-".repeat(50));
+						
 						break;
 					case "2": // 나의 정보 수정
 						udao.change_information(sc, user);
