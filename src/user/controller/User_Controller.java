@@ -786,7 +786,7 @@ public class User_Controller {
 	            	  search_recruit(sc, user, company);
 	                  break;
 	               case "4":   // 지원현황
-	                  recruit_apply_situation(sc, company);
+	                  recruit_apply_situation(sc, user, company);
 	                  break;
 	               case "5": // 이전 메뉴로 돌아가기
 	                  break;   
@@ -1201,10 +1201,47 @@ public class User_Controller {
 		
 
 		// ◆◆◆ === 지원현황 === ◆◆◆ //
-		private void recruit_apply_situation(Scanner sc, Company_DTO company) {
-			// TODO Auto-generated method stub
-			
-		}
+		private void recruit_apply_situation(Scanner sc, User_DTO user, Company_DTO company) {
+			do {
+				System.out.println(">>> 지원 현황 메뉴 <<<");
+				System.out.println("1. 지원한 공고 조회  2. 합격 여부 조회");
+				System.out.print("▶ 메뉴 선택 : ");
+				String apply = sc.nextLine();
+				
+				
+				switch (apply) {
+				case "1":	// 지원한 공고 조회
+					List<Recruit_Apply_DTO> applyList = radao.applylist(radao, user);
+					
+					StringBuilder sb = new StringBuilder();
+					
+					if(applyList.size() > 0) {
+						System.out.println("\n" + "-".repeat(40) + " " + user.getUser_name() + " 님이 지원한 공고 "
+								+ "-".repeat(40));
+						System.out.println("내용~~~~~");
+						System.out.println("-".repeat(40));
+						
+						sb = new StringBuilder();
+						
+						for(Recruit_Apply_DTO recruit_apply : applyList) {
+							sb.append(recruit_apply.getRecruit_no());
+							// ...~~~ 다른 것들도 쌓기
+						}	// end of for----------
+						System.out.println(sb.toString());
+					}
+					else {
+						System.out.println(">>> 지원한 공고가 없습니다. <<<");
+					}
+					break;
+				case "2":	// 합격여부 조회
+					
+					break;
+				default:
+					System.out.println(">>> [경고] 메뉴에 있는 번호만 입력해주세요. <<<");
+					break;
+				}	// end of switch-------------------------------
+			}while(true);
+		}	// end of private void recruit_apply_situation(Scanner sc, User_DTO user, Company_DTO company)-----
 
 	
 

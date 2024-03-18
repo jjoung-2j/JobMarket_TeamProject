@@ -33,6 +33,7 @@ public interface User_DAO {
 	int insert_anotherinfo(String academy_code, String priority_code, String user_id);
 
 
+
 	
 
 

@@ -257,13 +257,13 @@ public class Recruit_DAO_imple implements Recruit_DAO {
 				recruit_view.setManager_name(rs.getString("담당자명"));
 				
 				recruitList.add(recruit_view);
-			} // end of while(rs.next())
+			} // end of while(rs.next())--------
 			
 		} catch(SQLException e) {
 			e.printStackTrace();
 		} finally {
 			close();
-		} // end of finally
+		} // end of finally--------------
 		return recruitList;
 	}	// end of public List<Recruit_INFO_DTO> All_recruit(Recruit_INFO_DTO ridto_register)--------
 
