@@ -11,6 +11,9 @@ public interface User_DAO {
 	// ◆◆◆ === user 회원가입 === ◆◆◆ //
 	int userRegister(User_DTO user);
 	
+	// ◆◆◆ === 회원 가입시 입력한 아이디가 존재하는지 존재하지 않는지 알아오기 === ◆◆◆ //
+	boolean is_exist_user_id(String user_id);
+	
 	// ◆◆◆ === user 탈퇴 === ◆◆◆ //
 	int Withdrawal(Scanner sc, User_DTO user);
 	
@@ -21,19 +24,16 @@ public interface User_DAO {
 	User_DTO view_userinfo(User_DTO user);
 	
 	// ◆◆◆ === 나의 정보 수정 === ◆◆◆ //
-	void change_information(Scanner sc, User_DTO user);
+	int fix_info(User_DTO user, String infoview, String fix_info);
 
-	// ◆◆◆ ===  이력서 조회 === ◆◆◆ //
-	void paper_info(Scanner sc, User_DTO user);
+	// ◆◆◆ === 나의 정보 수정(전체) === ◆◆◆ //
+	int updateBoard(Map<String, String> paraMap);
+	
+	// ◆◆◆ === 나의 추가 정보 입력(학력, 취업우대) === ◆◆◆ //
+	int insert_anotherinfo(String academy_code, String priority_code, String user_id);
 
-	// ◆◆◆ ===  이력서 작성 === ◆◆◆ //
-	void write_paper(Scanner sc, User_DTO user);
-
-	// ◆◆◆ ===  이력서 수정 === ◆◆◆ //
-	void change_paper(Scanner sc, User_DTO user);
 
 	
-
 
 
 }

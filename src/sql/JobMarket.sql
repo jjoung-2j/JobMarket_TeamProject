@@ -519,5 +519,60 @@
    -- Table TBL_USER_INFO이(가) 변경되었습니다.
    -- Table TBL_RECRUIT_INFO이(가) 변경되었습니다. by 정수
    
+   alter table tbl_recruit_info
+   
   
-  
+    with
+   A as
+   (
+   select academy_name , academy_code , fk_academy_code ,user_id
+   from tbl_academy A join tbl_user_info U
+   on A.academy_code = U.fk_academy_code
+   -- 학력과 유저
+   )
+   ,
+   R as
+   (
+   select priority_name , priority_code , fk_priority_code , user_id
+   from tbl_priority P join tbl_user_info U
+   on P.priority_code = U.fk_priority_code
+   -- 취업우대와 유저
+   )
+   ,
+   U as
+   (
+   select user_name, user_tel, user_address, user_email , user_id , 
+   fk_user_id , career , fk_local_code, fk_license_code , paper_code ,paper_name
+   from tbl_user_info U join tbl_paper P
+   on U.user_id = P.fk_user_id
+   -- 유저정보와 이력서
+   )
+   ,
+   D as
+   (
+   select license_name , license_day, license_company , license_code , fk_license_code
+   from tbl_license_detail join tbl_paper
+   on license_code = fk_license_code
+   -- 자격증과 이력서
+   )
+   , Y as
+   (
+   select local_code, fk_local_code , local_name, city_name
+   from tbl_local join tbl_paper
+   on local_code = fk_local_code
+   ) -- 지역과 이력서
+   , Q as
+   (
+   select fk_paper_code , fk_recruit_no ,paper_code , apply_motive , apply_day
+   from tbl_recruit_apply N join tbl_paper G
+   on N.fk_paper_code = G.paper_code
+   ) -- 이력서와 채용지원
+   select Q.fk_recruit_no , Q.paper_code , U.paper_name, U.user_name , U.user_tel, U.user_address, U.user_email ,
+   A.academy_name , R.priority_name , local_name, city_name , U.career , license_name , license_day,
+   license_company , Q.apply_motive , Q.apply_day
+   from A join R
+   on A.user_id = R.user_id join U
+   on R.user_id = U.user_id left join D
+   on U.fk_license_code = D.fk_license_code join Y
+   on U.fk_local_code = Y.local_code join Q
+   on U.paper_code = Q.fk_paper_code;

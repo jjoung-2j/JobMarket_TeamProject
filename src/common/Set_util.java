@@ -1,10 +1,12 @@
 package common;
 
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 public class Set_util {
 
@@ -91,8 +93,8 @@ public class Set_util {
 		} 
 		else {
 			// 정규표현식 패턴 사용
-			Pattern p = Pattern.compile("^[A-Za-z가-힣]{2,6}$");
-			// 시작 ^, 끝 $, 가~힣 최소 2글자에서 최대 6글자로 하기
+			Pattern p = Pattern.compile("^[A-Za-z가-힣]{2,37}$");
+			// 시작 ^, 끝 $, 가~힣 최소 2글자에서 최대 37글자로 하기
 			
 			// user_name 가 정규표현식 패턴과 일치하는지 확인 정보 넣기
 			Matcher m = p.matcher(name);
@@ -102,7 +104,7 @@ public class Set_util {
 				result = true;	
 			}
 			else {
-				System.out.println(">>> [경고] 2~6자리 / 영문, 한글만 사용 가능합니다. <<<");
+				System.out.println(">>> [경고] 2~37자리 / 영문, 한글만 사용 가능합니다. <<<");
 				result = false;
 			}	// end of if~else-----------
 		}	// end of if~else------------------
@@ -122,7 +124,7 @@ public class Set_util {
 		} 
 		else {
 			// 정규표현식 패턴 사용
-			Pattern p = Pattern.compile("^[A-Za-z가-힣]{1,20}$");
+			Pattern p = Pattern.compile("^[A-Za-z가-힣0-9]{1,30}$");
 			// 시작 ^, 끝 $, 가~힣 최소 1글자에서 최대 20글자로 하기
 			
 			// company_name 가 정규표현식 패턴과 일치하는지 확인 정보 넣기
@@ -133,7 +135,7 @@ public class Set_util {
 				result = true;	
 			}
 			else {
-				System.out.println(">>> [경고] 1~20자리 / 영문, 한글만 사용 가능합니다. <<<");
+				System.out.println(">>> [경고] 1~30자리 / 영문, 한글, 숫자만 사용 가능합니다. <<<");
 				result = false;
 			}	// end of if~else-----------
 		}	// end of if~else------------------
@@ -149,7 +151,7 @@ public class Set_util {
 	public static boolean Check_tel(String tel) {
 		boolean result = false;
 		if(tel == null || tel.isBlank()) {	// 공백일 경우 
-			System.out.println(">>> [경고] 연락처는 공백이 아닌 글자로 입력하셔야 합니다. <<<");
+			System.out.println(">>> [경고] 연락처는 공백이 아닌 숫자로 입력하셔야 합니다. <<<");
 		} 
 		else {
 			String[] tel_arr = tel.split("[-]");
@@ -184,7 +186,7 @@ public class Set_util {
 		user_security_num = String.join("", user_security_num_arr);
 		
 		if(user_security_num.length() != 13) {
-        	System.out.println(">>> [경고] 13자리를 입력해주세요. <<<");
+        	System.out.println(">>> [경고] 숫자 13자리를 입력해주세요. <<<");
         	return false;
         }
         else { 
@@ -265,33 +267,33 @@ public class Set_util {
 	
 	
 	// ◆◆◆ === 사업자등록번호 유효성 검사하기 === ◆◆◆ //
-			public static boolean Check_business_number(String business_number) {
-				boolean result = false;
-				if(business_number == null || business_number.isBlank()) {	// 공백일 경우 
-					System.out.println(">>> [경고] 사업자등록번호는 필수로 입력하셔야 합니다. <<<");
-				} 
-				else {
-					// 사업자 등록번호 예시 : 123-45-67890
-					business_number = String.join("", business_number.split("-"));
-					// 정규표현식 패턴 사용
-					Pattern p = Pattern.compile("^[0-9]{1,10}$");
-					// 시작 ^, 끝 $, 0~9 까지 숫자로 하기
-					
-					// user_tel 가 정규표현식 패턴과 일치하는지 확인 정보 넣기
-					Matcher m = p.matcher(business_number);
-					
-					// 확인 정보 보기
-					if(m.matches()) {	// 확인 정보가 참이라면 
-						result = true;	
-					}
-					else {
-						System.out.println(">>> [경고] 공백 없이 10자리 숫자를 입력해주세요. <<<");
-						result =false;
-					}	// end of if~else----------
-				}	// end of if~else---------------
-				return result;
-				
-			}	// end of public static boolean Check_business_number(String business_number)
+	public static boolean Check_business_number(String business_number) {
+		boolean result = false;
+		if(business_number == null || business_number.isBlank()) {	// 공백일 경우 
+			System.out.println(">>> [경고] 사업자등록번호는 필수로 입력하셔야 합니다. <<<");
+		} 
+		else {
+			// 사업자 등록번호 예시 : 123-45-67890
+			business_number = String.join("", business_number.split("-"));
+			// 정규표현식 패턴 사용
+			Pattern p = Pattern.compile("^[0-9]{1,10}$");
+			// 시작 ^, 끝 $, 0~9 까지 숫자로 하기
+			
+			// user_tel 가 정규표현식 패턴과 일치하는지 확인 정보 넣기
+			Matcher m = p.matcher(business_number);
+			
+			// 확인 정보 보기
+			if(m.matches()) {	// 확인 정보가 참이라면 
+				result = true;	
+			}
+			else {
+				System.out.println(">>> [경고] 공백 없이 10자리 숫자를 입력해주세요. <<<");
+				result =false;
+			}	// end of if~else----------
+		}	// end of if~else---------------
+		return result;
+		
+	}	// end of public static boolean Check_business_number(String business_number)
 			
 			
 			
@@ -312,7 +314,7 @@ public class Set_util {
 		boolean result = false;
 		
 		// 정규표현식 패턴 사용
-		Pattern p = Pattern.compile("^[0-9]{1,3}$");
+		Pattern p = Pattern.compile("^[1-9][0-9]{1,2}$");
 		
 		Matcher m = p.matcher(number);	// 패턴과 일치하는지 확인
 		
@@ -361,5 +363,35 @@ public class Set_util {
         return result;
 	}	// end of public static boolean Check_date(String deadline)--------
 
-	
+
+
+
+
+	// ◆◆◆ === 월급/연봉 유효성 검사하기 === ◆◆◆ //
+	public static boolean Check_year_salary(String salary) {
+		
+		boolean result = false;
+		
+		String[] salary_arr = salary.split("[, \\ $]");
+		salary = String.join("", salary_arr);
+		
+		// 정규표현식 패턴 사용
+		Pattern p = Pattern.compile("^[0-9]{1,7}$");
+		
+		Matcher m = p.matcher(salary);	// 패턴과 일치하는지 확인
+		
+		// 확인 정보 보기
+		if(m.matches()) { 	// 확인 정보가 참이라면 
+			result = true;
+		}
+		
+		return result;
+		
+	}	// end of public static boolean Check_year_salary(String salary)---------------
+
+
+
+
+
+
 }

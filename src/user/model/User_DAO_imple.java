@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import common.MYDBConnection;
@@ -34,6 +33,7 @@ public class User_DAO_imple implements User_DAO {
 	
 	
 	
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 	
 	
 	// ◆◆◆ === user 회원가입 === ◆◆◆ //
@@ -69,6 +69,42 @@ public class User_DAO_imple implements User_DAO {
 	}	// end of public int userRegister(User_DTO user)-----------------
 		
 		
+		
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆		
+		
+		
+	// ◆◆◆ === 회원 가입시 입력한 아이디가 존재하는지 존재하지 않는지 알아오기 === ◆◆◆ //
+	@Override
+	public boolean is_exist_user_id(String user_id) {
+		boolean is_exist = false;  // 기업회원 id 가 존재하지 않으면 false 
+	      
+		try {
+	         String sql = " select user_id "
+	                + " from tbl_user_info "
+	                + " where user_id = ? ";
+	
+	         pstmt = conn.prepareStatement(sql);
+	         
+	         pstmt.setString(1, user_id);
+	         	         
+	         rs = pstmt.executeQuery();
+	         
+	         if(rs.next()) {
+	        	 is_exist = true;
+	         }
+	             
+		}catch (SQLException e) {
+            e.printStackTrace();
+	    }finally {
+            close();
+	    } // end of finally
+		
+		return is_exist;   
+	}	// end of public boolean is_exist_user_id(String user_id)---------
+
+		
+		
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 		
 		
 		
@@ -108,7 +144,7 @@ public class User_DAO_imple implements User_DAO {
 
 	
 
-	
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆	
 	
 	
 	
@@ -151,7 +187,7 @@ public class User_DAO_imple implements User_DAO {
 
 
 
-
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 	
 
 	
@@ -191,122 +227,60 @@ public class User_DAO_imple implements User_DAO {
 	
 	
 
-
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+	
+	
+	
 	// ◆◆◆ === 나의 정보 수정 === ◆◆◆ //
-	public void change_information(Scanner sc, User_DTO user) {
-		 
-		System.out.println("\n>>> 나의 정보 수정하기 <<<");
-		System.out.println("\n ※ 이전으로 돌아가시려면 엔터하세요.");
-         
-		System.out.print("▷ [확인용] 패스워드 : ");
-        String user_passwd = sc.nextLine();
-        System.out.println(user.getUser_passwd());
-       
-        if( !(user_passwd.equals(user.getUser_passwd()))) {	// 패스워드가 일치하지 않는 경우
-            System.out.println("[경고] 패스워드가 일치하지 않습니다.");
-        }
-        else {
-           System.out.println("\n ※ 변경하지 않으려면 엔터하세요.");
-           System.out.print("▷ 비밀번호 : ");
-           user_passwd = sc.nextLine();
-        
-           if((user_passwd != null && user_passwd.length() == 0) || user_passwd.isEmpty()) {
-              user_passwd = user.getUser_passwd();    
-           }
-           
-           System.out.print("▷ 성명 : ");
-           String user_name = sc.nextLine();
-       
-           if((user_name != null && user_name.length() == 0) || user_name.isEmpty()) {
-              user_name = user.getUser_name();
-           }
-           
-           System.out.print("▷ 주소 : ");
-           String user_address = sc.nextLine();
-       
-           if((user_address != null && user_address.length() == 0)|| user_address.isEmpty()) {
-              user_address = user.getUser_address();   
-           }
-           
-           System.out.print("▷ 연락처 : ");
-           String user_tel = sc.nextLine();
-       
-           if((user_tel != null && user_tel.length() == 0)|| user_tel.isEmpty()) {
-              user_tel = user.getUser_tel();
-           }
-           
-           System.out.print("▷ 주민번호 : ");
-           String user_security_num = sc.nextLine();
-       
-           if((user_security_num != null && user_security_num.length() == 0)|| user_security_num.isEmpty()) {
-              user_security_num = user.getUser_security_num();
-           }
-           
-           System.out.print("▷ 이메일 : ");
-           String user_email = sc.nextLine();
-       
-           if((user_email != null && user_email.length() == 0)|| user_email.isEmpty()) {
-              user_email = user.getUser_email();
-           }
-           
-           String yn = "";
-           do {
-        	   ///////////////////////////////////////////////////////////////
-        	   System.out.print("▷ 정말로 정보를 수정하시겠습니까?[Y/N] : ");
-        	   yn = sc.nextLine();
-             
-          
-        	   if("y".equalsIgnoreCase(yn)) {
-               
-        		   Map<String, String> paraMap = new HashMap<>();
-                   
-                   paraMap.put("user_id", user.getUser_id());
-                   paraMap.put("user_passwd", user_passwd);
-                   paraMap.put("user_name", user_name);
-                   paraMap.put("user_address", user_address);
-                   paraMap.put("user_tel", user_tel);
-                   paraMap.put("user_security_num", user_security_num);
-                   paraMap.put("user_email", user_email);
-                   
-                   
-                   int n = updateBoard(paraMap);   // 나의 정보 수정하기
-                   
-                   if(n==1) {
-                      System.out.println(">> 수정 성공!! <<\n");
-                   }
-                   else {
-                      System.out.println(">> SQL 구문 오류 발생으로 인해 글수정이 실패되었습니다. << \n");   
-                   }
-               } 
-        	   else if("n".equalsIgnoreCase(yn)) {
-        		   System.out.println(">> 수정을 취소하셨습니다. <<\n");
-        	   } 
-        	   else {
-        		   System.out.println(">> Y 또는 N만 입력하세요.!! <<\n");
-        	   }	// end of if~else------------
-            ///////////////////////////////////////////////////////////////
-           } while(!("y".equalsIgnoreCase(yn) || "n".equalsIgnoreCase(yn)));
-        } 	// end of if~else----------------------
-        
-	}	// end of private void change_information(Scanner sc, User_DTO user)------
+	@Override
+	public int fix_info(User_DTO user, String infoview, String fix_info) {
+		
+		int result = 0;
+		
+		try {
+	       	 // Transaction 처리를 위해 수동 commit 전환 하기
+	       	 conn = MYDBConnection.getConn();
+	       	 
+	       	 conn.setAutoCommit(false);
+	       	 
+	       	 String sql = " update tbl_user_info set " 
+	       			 + infoview + " = ? "
+	       			 + " where user_id = ? ";
 	
-	
-	
-	
-	
-
-	
+	       	 pstmt = conn.prepareStatement(sql);
+	           
+	       	 pstmt.setString(1, fix_info);
+	       	 pstmt.setString(2, user.getUser_id());
+	       	 
+	       	 if(pstmt.executeUpdate() == 1) { 	// 나의 정보 한줄 수정이 되면 => update 니까 1 이면
+	       		 conn.commit();		// 수정이 되면 커밋
+	       	 }
+	       	 else {
+	       		 conn.rollback(); 	// 다른 것들을 위해 
+	       	 }
+	   		 result = pstmt.executeUpdate(); 	// sql문 실행하기 
+	   		 conn.setAutoCommit(true);
+        } catch (SQLException e) {
+           e.printStackTrace();
+        } finally {
+           close(); // 자원반납하기 
+        }	// end of try~catch~finally----------------------
+        return result;
+	}	// end of public int fix_info(User_DTO user, String infoview, String fix_info)--------
 
 
-	// ◆◆◆ === 나의 정보 수정 === ◆◆◆ //
-	private int updateBoard(Map<String, String> paraMap) {
+	
+	
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+	
+	
+	
+	// ◆◆◆ === 나의 정보 수정(전체) === ◆◆◆ //
+	@Override
+	public int updateBoard(Map<String, String> paraMap) {
 		 int result = 0;
 
          try {
-        	 // Transaction 처리를 위해 수동 commit 전환 하기
-        	 conn = MYDBConnection.getConn();
-        	 
-        	 conn.setAutoCommit(false);
         	 
         	 String sql = " update tbl_user_info set user_passwd = ?, user_name = ?, user_address = ? , user_tel = ?, user_security_num = ? , user_email = ? "
         			 + " where user_id = ? ";
@@ -321,14 +295,8 @@ public class User_DAO_imple implements User_DAO {
         	 pstmt.setString(6, paraMap.get("user_email"));
         	 pstmt.setString(7, paraMap.get("user_id"));
             
-        	 if(pstmt.executeUpdate() == 1) { 	// 나의 정보 한줄 수정이 되면 => update 니까 1 이면
-        		 conn.commit();		// 수정이 되면 커밋
-        	 }
-        	 else {
-        		 conn.rollback(); 	// 다른 것들을 위해 
-        	 }
     		 result = pstmt.executeUpdate(); 	// sql문 실행하기 
-    		 conn.setAutoCommit(true);
+    		 
          } catch (SQLException e) {
             e.printStackTrace();
          } finally {
@@ -339,7 +307,9 @@ public class User_DAO_imple implements User_DAO {
 
 
 
-
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+	
+	
 
 	// ◆◆◆ === 이력서 조회 === ◆◆◆ //
 	public void paper_info(Scanner sc, User_DTO user) {
@@ -367,13 +337,35 @@ public class User_DAO_imple implements User_DAO {
 		
 	}	// end of private void change_paper(Scanner sc, User_DTO user, Paper_DTO paper, License_DTO license)----
 
-
+	
+	
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 
 	
 
-
-
-
+	// ◆◆◆ === 나의 추가 정보 입력(학력, 취업우대) === ◆◆◆ //
+	public int insert_anotherinfo(String academy_code, String priority_code, String user_id) {
+		   
+	      int result = 0; 
+	       try {
+	         String sql = " update tbl_user_info set fk_academy_code = ? , fk_priority_code = ? "
+	                + " where user_id = ? ";
+	   
+	         pstmt = conn.prepareStatement(sql);
+	          
+	         pstmt.setString(1, academy_code);
+	         pstmt.setString(2, priority_code);
+	         pstmt.setString(3, user_id);
+	            
+	       result = pstmt.executeUpdate();   
+	         
+	       } catch (SQLException e) {  
+	             e.printStackTrace();
+	       } finally {
+	          close();
+	       }   // end try~catch~finally--------------------   
+	      return result;
+	   } // end of public int insert_anotherinfo(String academy_code, String priority_code, String user_id)
 	
 	
 	
