@@ -11,6 +11,7 @@ import java.util.Scanner;
 
 import common.MYDBConnection;
 import company.domain.Company_DTO;
+import company.domain.Company_type_DTO;
 import user.domain.User_DTO;
 
 public class Company_DAO_imple implements Company_DAO {
@@ -185,7 +186,7 @@ public class Company_DAO_imple implements Company_DAO {
           
 			String sql = " select company_id , company_passwd ,company_name , businees_number , ceo_name , company_address "
                     + " from tbl_company " 
-                    + " where company_id = ? and company_passwd = ? " ;  
+                    + " where status =1 and company_id = ? and company_passwd = ? " ;  
           
             pstmt = conn.prepareStatement(sql); // 우편배달부 
                
@@ -269,8 +270,8 @@ public class Company_DAO_imple implements Company_DAO {
       
 		try {
             String sql = " insert into tbl_company_type ( fk_company_id , employee_num , public_status, begin_day, "
-                  + "   capital_money , companylist_num , company_type ) "
-                  + "  values( ? , ? , ? , to_date(?, 'yyyy-mm-dd') , ? , ? , ? ) ";      
+                  + "   capital_money , companylist_num) "
+                  + "  values( ? , ? , ? , to_date(?, 'yyyy-mm-dd') , ? , ? ) ";      
             
             pstmt = conn.prepareStatement(sql);         
             
@@ -332,6 +333,89 @@ public class Company_DAO_imple implements Company_DAO {
 	   } // end of finally
 		return memberList;
 	}	// end of public List<User_DTO> All_user()-------------------------
+
+	
+	
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+	
+
+	// ◆◆◆ === 모든 기업 조회(관리자 히든 메뉴) === ◆◆◆ //
+	@Override
+	public List<Company_DTO> All_company() {
+		Company_DTO company_list = new Company_DTO();
+		
+		List<Company_DTO> companyList = new ArrayList<>();
+			
+		try {
+			String sql = " select A.company_id, A.company_name, A.businees_number, A.ceo_name, A.company_address "
+					   + " , to_char(B.begin_day,'yyyy-mm-dd') as begin_day "
+					   + " , B.employee_num "
+					   + " , decode(B.public_status, 0, '비상장', 1, '상장') AS public_status "
+					   + " , B.capital_money, B.companylist_num "
+					   + " from tbl_company A LEFT JOIN tbl_company_type B "
+					   + " on A.company_id = B.fk_company_id "
+					   + " order by company_id ";
+		         
+		    pstmt = conn.prepareStatement(sql); 
+		    
+		    rs = pstmt.executeQuery(); // SQL문 실행  
+		         
+		    while (rs.next()) { 
+		            
+		    	company_list = new Company_DTO();
+	            
+		    	company_list.setCompany_id(rs.getString("company_id"));
+		    	company_list.setCompany_name(rs.getString("company_name"));
+		    	company_list.setBusiness_number(rs.getString("businees_number"));
+		    	company_list.setCeo_name(rs.getString("ceo_name"));
+		    	company_list.setCompany_address(rs.getString("company_address"));
+	            
+	            Company_type_DTO ctdto = new Company_type_DTO();
+	            ctdto.setBegin_day(rs.getString("begin_day"));
+	            ctdto.setEmployee_num(rs.getString("employee_num"));
+	            ctdto.setPublic_status(rs.getString("public_status"));
+	            ctdto.setCapital_money(rs.getString("capital_money"));
+	            ctdto.setCompanylist_num(rs.getString("companylist_num"));
+		            
+	            company_list.setCompany_type_detail(ctdto);
+	            
+	            companyList.add(company_list);            
+		    } // end of while(rs.next())    
+		    
+	   } catch (SQLException e) {
+		        e.printStackTrace();
+	   } finally {	 // 성공하든 안하든 무조건! 
+		   close();	// 자원반납 하기
+	   } // end of finally
+			
+		return companyList;
+
+	}	// end of public List<Company_DTO> All_company()------
+
+
+	
+	// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+	
+	
+	
+	// ◆◆◆ == 기업 탈퇴 처리 == ◆◆◆ //
+	@Override
+	public int remove() {
+		int result = 0;
+		
+		try {
+			String sql = " delete from tbl_company "
+						+" where status = 0 ";
+			
+			pstmt = conn.prepareStatement(sql);
+	        result = pstmt.executeUpdate();   
+		} catch(SQLException e) {
+			e.printStackTrace();
+	       } finally {
+	          close();
+	       }   // end try~catch~finally--------------------   
+	      return result;
+	}	// end of public int remove()-----------
 
 
 

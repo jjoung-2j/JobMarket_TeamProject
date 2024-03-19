@@ -8,10 +8,12 @@ public class Recruit_Apply_DTO {
 	private int	paper_code;
 	private String apply_motive;
 	private String apply_day;
+	private int success_status;
 
 	/////////////////////////////
 		
 	// select 용
+	
 	
 	
 	///////////////////////////////////////
@@ -47,5 +49,10 @@ public class Recruit_Apply_DTO {
 		this.apply_day = apply_day;
 	}
 	
-	
+	public int getSuccess_status() {
+		return success_status;
+	}
+	public void setSuccess_status(int success_status) {
+		this.success_status = success_status;
+	}
 }

@@ -30,6 +30,12 @@ public interface Company_DAO {
 	// ◆◆◆ === 모든 구직자 조회 === ◆◆◆ //
 	List<User_DTO> All_user();
 
+	// ◆◆◆ === 모든 기업 조회 (관리자 히든 메뉴) === ◆◆◆ //
+	List<Company_DTO> All_company();
+
+	// ◆◆◆ == 기업 탈퇴 처리 == ◆◆◆ //
+	int remove();
+
 	
 
 }

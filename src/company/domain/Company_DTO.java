@@ -15,7 +15,7 @@ public class Company_DTO {
 	private int fk_local_code;
 	private String company_address;
 	
-	// JobType
+	// JobType select 용
 	private String jobtype_name;
 	
 	/////////////////////////////

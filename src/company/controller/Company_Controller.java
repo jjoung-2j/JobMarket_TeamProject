@@ -240,29 +240,28 @@ public class Company_Controller {
   			do {
 	         ///////////////////////////////////////////////////////////
   				String begin_day = "";
-  				System.out.print("▶ 설립일자[예 : 2024-03-15] : ");
+  				System.out.print("▶ 설립일자[예 : 2024-03-15 ] : ");
   				begin_day = sc.nextLine();
-	         
+  				if(Set_util.Check_date_past(begin_day)) {
+  					paraMap.put("begin_day", begin_day);
+  					break;
+  				}
 	         
 	            if( begin_day.isBlank() ) {   // 그냥 엔터 또는 공백으로 입력한 경우
 	               System.out.println(">>[경고] 설립일자는 필수로 입력하셔야 합니다. <<\n");
 	               continue;
 	            }
-	            else {   // 정상적인 입력시  
-	               paraMap.put("begin_day", begin_day);
-	               break;
-	            }   // end of if~else--------------------
 	         ///////////////////////////////////////////////////////////
   			} while(true);   // end of do~while--------------------------------
 	        
   			System.out.println(">> 다음 추가정보입력으로 넘어갑니다. <<\n");
-  			int capital_money = 0;
+  			long capital_money = 0;
   			do {
 	          ///////////////////////////////////////////////////////////
   				System.out.print("▶ 자본금[숫자만 입력] : ");
   				String c_capital_money = sc.nextLine();
   				try {
-  					capital_money = Integer.parseInt(c_capital_money);
+  					capital_money = Long.parseLong(c_capital_money);
 	      
   					if(capital_money <= 0) {
   						System.out.println(">>[경고] 자본금은 0이 아닌 정수로만 입력하셔야 합니다. <<\n");
@@ -286,7 +285,7 @@ public class Company_Controller {
 	           ///////////////////////////////////////////////////////////
 	        	System.out.print("▶ 계열회사수[숫자만 입력] : ");
 	        	String c_companylist_num = sc.nextLine();
-	         
+	        	
 	        	try {
 	        		companylist_num = Integer.parseInt(c_companylist_num);
 	              
@@ -479,7 +478,7 @@ public class Company_Controller {
 			}
 			else {
 				if(Set_util.Check_recruit_num(recruit_people)) {
-					paraMap.put("recruit_people", recruit_people);
+					 
 					break;
 				}
 				else {
@@ -488,18 +487,22 @@ public class Company_Controller {
 			}
 		}while(true);
 		
-		// 마감일
-		System.out.println("\n[ 제한이 없으실 경우 엔터를 입력해주세요. ]");
-		System.out.print("▶ 마감일 : ");
-		String deadline = sc.nextLine();
-        if(!(deadline == null || deadline.isBlank())) {
-          if(Set_util.Check_date(deadline)) {
-             paraMap.put("recruit_deadline", deadline);
-          }
-		}
-		else {
-			paraMap.put("recruit_deadline", "채용마감시까지");
-		}
+		do {
+			// 마감일
+			System.out.println("\n[ 제한이 없으실 경우 엔터를 입력해주세요. ]");
+			System.out.print("▶ 마감일 : ");
+			String deadline = sc.nextLine();
+	        if(!(deadline == null || deadline.isBlank())) {
+	          if(Set_util.Check_date(deadline)) {
+	             paraMap.put("recruit_deadline", deadline);
+	             break;
+	          }
+			}
+			else {
+				paraMap.put("recruit_deadline", "채용마감시까지");
+				break;
+			}
+		}while(true);
 		
         // 신입/경력 여부
 		do {
@@ -517,11 +520,11 @@ public class Company_Controller {
 		// 연봉/월급
 		do {
 			System.out.println("\n[ 협의일 경우 엔터를 입력해주세요. ]");
-			System.out.print("▶ 연봉/월급을 선택해주세요.");
+			System.out.print("▶ 연봉/월급을 선택해주세요 : ");
 			String choice = sc.nextLine();
 			if(!(choice == null || choice.isBlank())) {
 				if("연봉".equals(choice)) {
-					System.out.println("\n▶ 연봉을 만원단위로 입력해주세요. (이전화면 : 엔터)");
+					System.out.println("\n▶ 연봉을 만원단위로 입력해주세요.[예 : 2000] (이전화면 : 엔터)");
 					String year_salary = sc.nextLine();
 					if(year_salary != null) {
 						if(Set_util.Check_year_salary(year_salary)) {
@@ -531,7 +534,7 @@ public class Company_Controller {
 					}	// end of if(연봉값을 넣은 경우)----------
 				}	// 연봉을 선택한 경우
 				else if("월급".equals(choice)) {
-					System.out.println("\n▶ 월급을 만원단위로 입력해주세요. (이전화면 : 엔터)");
+					System.out.println("\n▶ 월급을 만원단위로 입력해주세요.[예 : 50] (이전화면 : 엔터)");
 					String month_salary = sc.nextLine();
 					if(month_salary != null) {
 						if(Set_util.Check_year_salary(month_salary)) {
@@ -653,26 +656,27 @@ public class Company_Controller {
 		StringBuilder sb = new StringBuilder();
 			
 		if(recruitList.size() > 0) {
-			System.out.println("\n" + "-".repeat(40) + company.getCompany_name() + " 님의 [현재 진행중인 채용공고] " + "-".repeat(40));
-			System.out.println("공고번호 채용분야 공고명 공고내용 등록일 마감일 신입/경력여부 연봉 채용인원 근무요일 근무시간 담당자이메일 담당자명");
-			System.out.println("-".repeat(100));
-			
-			sb = new StringBuilder();
-			
-			for(Recruit_INFO_DTO recruit : recruitList) {
-				sb.append(recruit.getRecruit_no() + " " +
-					      recruit.getRecruit_field() + " " +
-					      recruit.getRecruit_title() + " " +
-					      recruit.getRecruit_content() + " " +
-					      recruit.getRecruit_registerday() + " " +
-					      recruit.getRecruit_deadline() + " " +
-					      recruit.getCareer() + " " +
-					      recruit.getYear_salary() + " " +
-					      recruit.getRecruit_people() + " " +
-					      recruit.getWork_day() + " " +
-					      recruit.getWork_time() + " " +
-					      recruit.getManager_email() + " " +
-					      recruit.getManager_name() + "\n");
+	         System.out.println("\n" + "-".repeat(80) + company.getCompany_name() + " 님의 [현재 진행중인 채용공고] " + "-".repeat(150));
+	         System.out.println("공고번호\t\t채용분야\t공고명\t\t공고내용\t\t\t등록일\t마감일\t신입/경력여부\t연봉\t채용인원\t근무요일\t근무시간\t\t담당자이메일\t담당자명");
+	         System.out.println("-".repeat(250));
+	         
+	         sb = new StringBuilder();
+	        
+	         for(Recruit_INFO_DTO recruit : recruitList) {
+	        	 
+	            sb.append(recruit.getRecruit_no() + "\t" +
+	                     recruit.getRecruit_field() + "\t" +
+	                     recruit.getRecruit_title() + "\t" +
+	                     recruit.getRecruit_content() + "\t" +
+	                     recruit.getRecruit_registerday() + "\t" +
+	                     recruit.getRecruit_deadline() + "\t" +
+	                     recruit.getCareer() + "\t" +
+	                     recruit.getYear_salary() + "\t" +
+	                     recruit.getRecruit_people() + "\t" +
+	                     recruit.getWork_day() + "\t" +
+	                     recruit.getWork_time() + "\t" +
+	                     recruit.getManager_email() + "\t" +
+	                     recruit.getManager_name() + "\n");
 						  
 			} // end of for(Recruit_INFO_DTO recruit_info : recruitList)
 			System.out.println(sb.toString());

@@ -63,7 +63,7 @@ public class Recruit_DAO_imple implements Recruit_DAO {
 	         if(rs.next()) {
 	            hiretype_name = rs.getString("hiretype_name");
 	         }
-	         
+	            
 	         String insertsql = " insert into tbl_recruit_info (recruit_no, fk_company_id , manager_name , manager_email , "            
                   + "  recruit_title, recruit_people , recruit_deadline, year_salary, recruit_content , "
                   + "  work_day , work_time, career , fk_hiretype_code, recruit_field ) "
@@ -113,7 +113,8 @@ public class Recruit_DAO_imple implements Recruit_DAO {
 	                  + "      , A.company_name, A.company_address, B.career, B.year_salary "
 	                  + "      , '~' || B.recruit_deadline AS recruit_deadline "
 	                  + " from TBL_COMPANY A RIGHT JOIN TBL_RECRUIT_INFO B "
-	                  + " ON A.company_id = B.fk_company_id ";
+	                  + " ON A.company_id = B.fk_company_id "
+	                  + " order by recruit_no desc ";
 	            
 	            pstmt = conn.prepareStatement(sql);
 	            

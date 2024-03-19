@@ -366,6 +366,72 @@ public class User_DAO_imple implements User_DAO {
 	       }   // end try~catch~finally--------------------   
 	      return result;
 	   } // end of public int insert_anotherinfo(String academy_code, String priority_code, String user_id)
+
+
+	// ◆◆◆ === 이력서가 존재하는지 확인하기  === ◆◆◆ //
+	@Override
+	public boolean check_paper(int paper_code, User_DTO user) {
+		boolean is_exist = false; 
+	      
+		try {
+	         String sql = " with "
+	         		+ "    P as "
+	         		+ "    ( "
+	         		+ "        select * "
+	         		+ "        from tbl_paper "
+	         		+ "    ) "
+	         		+ "    , "
+	         		+ "    U as "
+	         		+ "    ( "
+	         		+ "        select * "
+	         		+ "        from tbl_user_info "
+	         		+ "    ) "
+	         		+ "    select U.user_id, P.paper_code "
+	         		+ "    from P JOIN U "
+	         		+ "    ON P.fk_user_id = U.user_id "
+	         		+ "    where U.user_id = ? and paper_code = ? ";
+	
+	         pstmt = conn.prepareStatement(sql);
+	         
+	         pstmt.setString(1, user.getUser_id());
+	         pstmt.setInt(2, paper_code);
+	         	         
+	         rs = pstmt.executeQuery();
+	         
+	         if(rs.next()) {
+	        	 is_exist = true;
+	         }
+	         
+		}catch (SQLException e) {
+            e.printStackTrace();
+	    }finally {
+            close();
+	    } // end of finally--------------------
+		
+		return is_exist;   
+	}	// end of public boolean check_paper(String paper_code, User_DTO user)---------------
+
+
+
+	// ◆◆◆ ===  관리자 탈퇴 처리 === ◆◆◆ //
+	@Override
+	public int remove() {
+		int result = 0;
+		
+		try {
+			String sql = " delete from tbl_user_info "
+						+" where status = 0 ";
+			
+			pstmt = conn.prepareStatement(sql);
+	          
+	        result = pstmt.executeUpdate();   
+		} catch(SQLException e) {
+			e.printStackTrace();
+	       } finally {
+	          close();
+	       }   // end try~catch~finally--------------------   
+	      return result;
+	}	// end of public int remove()------------
 	
 	
 	

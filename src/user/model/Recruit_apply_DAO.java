@@ -13,11 +13,14 @@ public interface Recruit_apply_DAO {
 	// ◆◆◆ === 구인회사 조회 === ◆◆◆ //
 	Company_DTO company_search(Map<String, String> paraMap);
 
-	// ◆◆◆ === 채용공고에 채용지원서 넣기 === ◆◆◆ //
-	int my_recruit_apply(Recruit_Apply_DTO radto);
-
 	// ◆◆◆ === 지원한 공고 조회 === ◆◆◆ //
-	List<Recruit_Apply_DTO> applylist(Recruit_apply_DAO radao, User_DTO user);
+	List<User_DTO> applylist(Recruit_apply_DAO radao, User_DTO user);
+
+	// ◆◆◆ === 합격여부 조회 === ◆◆◆ //
+	int check_success(Scanner sc, User_DTO user, String num);
+
+	// ◆◆◆ === 채용공고에 채용지원서 넣기 === ◆◆◆ //
+	int my_recruit_apply(Map<String, String> paraMap, int paper_code);
 
 
 }

@@ -32,6 +32,16 @@ public interface User_DAO {
 	// ◆◆◆ === 나의 추가 정보 입력(학력, 취업우대) === ◆◆◆ //
 	int insert_anotherinfo(String academy_code, String priority_code, String user_id);
 
+	
+	
+	
+	
+	// ◆◆◆ === 이력서가 존재하는지 확인하기  === ◆◆◆ //
+	boolean check_paper(int paper_code, User_DTO user);
+
+	// ◆◆◆ ===  관리자 탈퇴 처리 === ◆◆◆ //
+	int remove();
+
 
 
 	

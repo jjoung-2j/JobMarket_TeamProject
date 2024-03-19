@@ -1,6 +1,7 @@
 package controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -63,6 +64,11 @@ public class Controller {
 				case "4":	// 프로그램 종료
 					MYDBConnection.closeConnection(); 	// Connection 객체 자원 반납
 					return;
+				case "ssang":	// 관리자 히든 메뉴
+					User_DTO udto = new User_DTO();
+					Company_DTO cdto = new Company_DTO();
+					admin(sc, udto, cdto);
+					break;
 				default:
 					System.out.println(">>> 메뉴에 없는 번호입니다. 다시 선택해 주세요. <<<");
 					break;
@@ -71,6 +77,10 @@ public class Controller {
 		} while(!("4".equals(s_Choice)));
 			
 	}	// end of public void menu_Start(Scanner sc)---------------
+
+
+
+
 
 
 
@@ -793,15 +803,22 @@ public class Controller {
 					+ "6. 건설업  7. 의료, 제약업  8. 미디어, 광고업  9. 문화, 예술, 디자인업  10. 기관, 협회");
 			System.out.println("-".repeat(100));
 			System.out.print("▶ 업종 : ");
-			String jobtype = sc.nextLine();
-			if(!(jobtype.isBlank())) {
-				if(Integer.valueOf(jobtype) >= 1 && Integer.valueOf(jobtype) <= 10) {
-					company.setJobtype_name(jobtype);
-					break;
+			try {
+				String jobtype = sc.nextLine();
+				if(!(jobtype.isBlank())) {
+					if(Integer.valueOf(jobtype) >= 1 && Integer.valueOf(jobtype) <= 10) {
+						company.setFk_jobtype_code(Integer.valueOf(jobtype));
+						break;
+					}
+					else {
+						System.out.println(">>> [경고] 보기에 있는 숫자만 입력해주세요. <<<");
+					}
 				}
-			}
-			else {
-				System.out.println(">>> [경고] 업종을 반드시 입력해주세요. <<<");
+				else {
+					System.out.println(">>> [경고] 업종을 반드시 입력해주세요. <<<");
+				}
+			}catch(NumberFormatException e) {
+				System.out.println(">>> [경고] 반드시 숫자를 입력하셔야 합니다.");
 			}
 		}while(true);
 		
@@ -902,10 +919,145 @@ public class Controller {
 
 	
 	
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆	
 	
+	
+	
+	
+	// ◆◆◆ == 관리자 히든 메뉴 == ◆◆◆ //
+	private void admin(Scanner sc, User_DTO udto, Company_DTO cdto) {
+
+		String a_choice = "";
+		System.out.print(">> 암호를 입력해주세요 : ");
+		String passwd = sc.nextLine();
+		if("1004".equals(passwd)) {
+		
+			do {
+				System.out.println("\n >>> ---- 관리자히든메뉴 ---- <<<\n"
+						+ "1. 모든 구직자 조회\n"
+						+ "2. 모든 기업 조회\n"
+						+ "3. 구직자 탈퇴 처리\n"
+						+ "4. 기업 탈퇴 처리\n"
+						+ "5. 시작메뉴로 돌아가기\n"
+						+ "-------------------------------------------\n");
+				
+				System.out.print("▶ 메뉴번호 선택 : ");
+				a_choice = sc.nextLine();
+				
+				switch (a_choice) {
+				case "1":	// 모든 구직자 조회
+					List<User_DTO> memberList = cdao.All_user();
+		               
+	                StringBuilder sb = new StringBuilder();
+	               
+	                if(memberList.size() > 0) {
+	                  
+	                	System.out.println("-".repeat(70));
+	                	System.out.println("성명\t주소\t\t연락처\t\t이메일\t\t생년월일");
+	                	System.out.println("-".repeat(70));
+	                  
+	                	sb = new StringBuilder();
+	                  
+	                	for(User_DTO member : memberList) {
+	                		sb.append(member.getUser_name() + "\t" 
+	                				+ member.getUser_address() + "\t"
+	                				+ member.getUser_tel() + "\t"
+	                				+ member.getUser_email() + "\t"
+	                				+ member.getUser_security_num().substring(0, 6) + "\n");
+	                	} // end of for
+	                	System.out.println(sb.toString() );  
+		            } else 
+		                System.out.println(">> 가입된 회원이 존재하지 않습니다. <<");  
+					break;
+					
+					
+				case "2":	// 모든 기업 조회
+					List<Company_DTO> companyList = cdao.All_company();
+					
+	                if(companyList.size() > 0) {
+	                  
+	                	System.out.println("-".repeat(100));
+	                	System.out.println("회사아이디\t회사명\t사업자등록번호\t대표자명\t기업주소\t\t설립일자\t사원수\t상장여부\t자본금\t계열회사수");
+	                	System.out.println("-".repeat(100));
+	                  
+	                	sb = new StringBuilder();
+	                  
+	                	for(Company_DTO company_list : companyList) {
+	                		sb.append(company_list.getCompany_id()+ "\t"
+	                				+ company_list.getCompany_name() + "\t" 
+	                				+ company_list.getBusiness_number() + "\t"
+	                				+ company_list.getCeo_name() + "\t"
+	                				+ company_list.getCompany_address() + "\t\t"
+	                				+ company_list.getCompany_type_detail().getBegin_day() + "\t\t"
+	                				+ company_list.getCompany_type_detail().getEmployee_num() + "\t"
+	                				+ company_list.getCompany_type_detail().getPublic_status() + "\t"
+	                				+ company_list.getCompany_type_detail().getCapital_money() + "\t"
+	                				+ company_list.getCompany_type_detail().getCompanylist_num() + "\n");
+	                				
+	                	} // end of for(Company_DTO company_list : companyList)
+	                	System.out.println(sb.toString() );  
+		            } else 
+		                System.out.println(">> 가입된 기업이 존재하지 않습니다. <<");  
+					
+					break;
+					
+				case "3":	// 구직자 탈퇴처리
+					remove_user(sc, udto);
+					
+					break;
+					
+				case "4":	// 기업 탈퇴처리
+					remove_company(sc, cdto);
+					break;
+					
+				case "5":	// 시작메뉴로 돌아가기
+					
+					break;
+					
+				default:
+					System.out.println(">> 올바른 번호를 선택해주세요. <<");
+					break;
+				} // end of switch (a_choice)
+				
+			} while(!("5".equalsIgnoreCase(a_choice)));
+		}
+		else {
+			System.out.println(">> 올바른 관리자 암호를 입력해주세요. <<");
+			return;
+		}
+		
+	} // end of private void admin(Scanner sc, User_DTO user, Company_DTO company)
+
+
+
+
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 
 	
+
+	// ◆◆◆ == 구직자 탈퇴 처리 == ◆◆◆ //
+	private void remove_user(Scanner sc, User_DTO udto) {
+		int n = udao.remove();
+		
+		if(n==1) {
+			System.out.println(">> status가 0인 구직자 회원탈퇴가 처리되었습니다.<<");
+		}
+	}	// end of private void remove_user(Scanner sc, User_DTO udto)---------
+		
 	
+
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+	
+	// ◆◆◆ == 기업 탈퇴 처리 == ◆◆◆ //
+	private void remove_company(Scanner sc, Company_DTO cdto) {
+		int n = cdao.remove();
+		
+		if(n==1) {
+			System.out.println(">> status가 0인 기업 회원탈퇴가 처리되었습니다.<<");
+		}
+
+	}	// end of private void remove_company(Scanner sc, Company_DTO cdto)-----
+
 	
 }
 

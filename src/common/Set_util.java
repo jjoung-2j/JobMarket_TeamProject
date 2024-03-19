@@ -300,13 +300,7 @@ public class Set_util {
 			
 			
 			
-	
 
-	
-	
-	
-	
-	
 	
 	// ◆◆◆ === 채용인원수 === ◆◆◆ //
 	public static boolean Check_recruit_num(String number) {
@@ -314,7 +308,7 @@ public class Set_util {
 		boolean result = false;
 		
 		// 정규표현식 패턴 사용
-		Pattern p = Pattern.compile("^[1-9][0-9]{1,2}$");
+		Pattern p = Pattern.compile("^[0-9]{1,3}$");
 		
 		Matcher m = p.matcher(number);	// 패턴과 일치하는지 확인
 		
@@ -327,6 +321,38 @@ public class Set_util {
 	}	// end of public static void Check_num(String recruit_people)-----
 
 
+	// ◆◆◆ === 설립일자 유효성 검사하기 === ◆◆◆ //
+	public static boolean Check_date_past(String begin_day) {
+		
+		boolean result = false;
+		
+		String[] begin_day_arr = begin_day.split("[-]");
+		begin_day = String.join("", begin_day_arr);
+		
+        SimpleDateFormat sdformat = new SimpleDateFormat("yyyyMMdd");
+        
+        sdformat.setLenient(false);      // 존재하지 않는 날짜는 false로 출력
+        
+        try {
+           Date date_begin_day = sdformat.parse(begin_day);   // try~catch(ParseException) 선언
+           Date now = new Date();   // 현재 날짜시각
+           String str_now = sdformat.format(now);      // 현재 날짜시각 string 타입(보고싶은 타입 변환)
+           now = sdformat.parse(str_now);            // 문자열 -> date 타입
+        
+           if(date_begin_day.compareTo(now) == 0 
+        		   || date_begin_day.compareTo(now) < 0) {  	// 설립일자가 오늘이거나 과거인 경우
+              result = true;
+           }
+           else {                    // 설립일자가 미래인 경우
+        	   System.out.println(">>> [경고] 설립일자가 미래입니다. <<<");
+        	   result = false;
+           }		// end of if~else------------
+        } catch (ParseException e) {
+        	System.out.println(">>> [경고] 유효하지 않는 날짜입니다. <<<");
+        	result = false;
+        }   // end of try~catch------------------
+        return result;
+	}	// end of public static boolean Check_date(String deadline)--------
 
 
 
@@ -384,9 +410,7 @@ public class Set_util {
 		if(m.matches()) { 	// 확인 정보가 참이라면 
 			result = true;
 		}
-		
 		return result;
-		
 	}	// end of public static boolean Check_year_salary(String salary)---------------
 
 

@@ -10,7 +10,6 @@ import company.domain.Company_DTO;
 import company.domain.Recruit_INFO_DTO;
 import company.model.Company_DAO;
 import company.model.Company_DAO_imple;
-import user.domain.Recruit_Apply_DTO;
 import user.domain.User_DTO;
 import company.model.Recruit_DAO;
 import company.model.Recruit_DAO_imple;
@@ -609,34 +608,40 @@ public class User_Controller {
 			                   + "1. 이력서 조회\n"
 			                   + "2. 이력서 작성\n"
 			                   + "3. 이력서 수정\n"
-			                   + "4. 이전 메뉴로 돌아가기" );
+			                   + "4. 이력서 삭제\n"
+			                   + "5. 이전 메뉴로 돌아가기" );
 			      
 			    System.out.print("▶ 메뉴번호 선택 : ");
 			    u_Choice = sc.nextLine();
 			      
 			    switch (u_Choice) {
 			        
-					case "1": // 이력서 조회
+					case "1": 	// 이력서 조회
 						paper_info(sc, user);
 					   	break;
-					case "2": // 이력서 작성
+					case "2": 	// 이력서 작성
 						write_paper(sc, user);
 					   	break;
 					case "3":	// 이력서 수정
 						change_paper(sc, user);
 						break;
-					case "4": // 이전 메뉴로 돌아가기
-					   break;   
+					case "4": 	// 이력서 삭제
+						delete_paper(sc, user);
+						break;   
+					case "5":	// 돌아가기
+						break;
 					default:
 					   System.out.println(">>> 메뉴에 없는 번호 입니다. 다시 선택하세요!! <<<");
 					   break;
 			    } // end of switch (u_Choice)-----------------
-			} while (!"4".equalsIgnoreCase(u_Choice));	// end of do~while------------------	
+			} while (!"5".equalsIgnoreCase(u_Choice));	// end of do~while------------------	
 		}	// end of public void Paper_menu(Scanner sc, User_DTO user, Paper_DTO paper, License_DTO license)---------
 
 		
 		
-		
+
+
+
 		// ◆◆◆ === 이력서 조회 === ◆◆◆ //
 		private void paper_info(Scanner sc, User_DTO user) {
 			// TODO Auto-generated method stub
@@ -666,6 +671,13 @@ public class User_Controller {
 		
 
 
+		// ◆◆◆ === 이력서 삭제 === ◆◆◆ //
+		private void delete_paper(Scanner sc, User_DTO user) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		
 
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 
@@ -711,17 +723,18 @@ public class User_Controller {
 	                      } // end of for ----------
 	                      System.out.println(sb.toString());
 	                      
+	                      Map<String, String> paraMap = new HashMap<>();
 	                      System.out.println(">>> 채용공고 지원하기(지원하지 않으실 경우 엔터를 입력해주세요. <<<");
 	                      System.out.print("▶ 채용공고번호 : ");
 	                      String search_recruit_no = sc.nextLine();
 
-	                      if(search_recruit_no.isBlank()) {
-	                    	  break;
-	                      }
-	                      Map<String, String> paraMap = new HashMap<>();
+		                      if(search_recruit_no.isBlank()) {
+		                    	  break;
+		                      }
+	                      
 	                      paraMap.put("recruit_no", search_recruit_no);
                            
-	                      Recruit_INFO_DTO rdto = rdao.recruit_info(paraMap);
+	                      Recruit_INFO_DTO rdto = rdao.recruit_info(paraMap);	// 채용공고 존재여부 조회
 	                        
 	                      if(rdto != null) {
 	                            
@@ -741,7 +754,7 @@ public class User_Controller {
 	                                             + "▶ 채용등록일 : " + rdto.getRecruit_registerday() + "\n" 
 	                                             + "▶ 채용마감일 : " + rdto.getRecruit_deadline());
 	                    	  System.out.println("-".repeat(50));
-                               
+ // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆                              
 	                    	  String yn = "";
 	                               
 	                    	  do { // 채용지원
@@ -753,7 +766,6 @@ public class User_Controller {
                                   if("y".equalsIgnoreCase(yn)) {
                                       int n = recruit_apply(sc, search_recruit_no, user, rdto); 
 
-	                                     
                                       if(n == 1) { 
                                     	  System.out.println(">> 입사지원에 성공하셨습니다. <<");
                                       }
@@ -780,12 +792,12 @@ public class User_Controller {
 	                   }
 	                   else {
 	                      System.out.println("\n>> 채용공고 목록이 존재하지 않습니다. <<");
-	                   }
+	                   }	// end of if~else(채용공고 존재)----------------------------
 	                   break;
 	               case "3":   // 공고분야별 검색
 	            	  search_recruit(sc, user, company);
 	                  break;
-	               case "4":   // 지원현황
+	               case "4":   // 지원한 공고 조회
 	                  recruit_apply_situation(sc, user, company);
 	                  break;
 	               case "5": // 이전 메뉴로 돌아가기
@@ -853,50 +865,63 @@ public class User_Controller {
 		private int recruit_apply(Scanner sc, String search_recruint_no, User_DTO user, Recruit_INFO_DTO rdto) {
 			int result = 0;
 		      
-		      System.out.println("\n>>> 입사지원하기 <<<");
-		      System.out.println("1. 채용공고일련번호 : " + search_recruint_no);
+			Map<String, String> paraMap = new HashMap<>();
+			
+			System.out.println("\n>>> 입사지원하기 <<<");
+			System.out.println("1. 채용공고일련번호 : " + search_recruint_no);
+			paraMap.put("recruit_no", search_recruint_no);
 		      
-		      System.out.println("-".repeat(20) + " [" + user.getUser_name() + " 님의 이력서 목록] " + "-".repeat(20));
-		        System.out.print("번호\t제목\t\t작성일\n");
-		    /*  
-		        StringBuilder sb = new StringBuilder();
-		        List<Paper_DTO> paperlist = udao.paper_info(user);
+			System.out.println("-".repeat(20) + " [" + user.getUser_name() + " 님의 이력서 목록] " + "-".repeat(20));
+        	System.out.print("번호\t제목\t\t작성일\n");
+        	System.out.println("-".repeat(50));
 		      
-		        for(Paper_DTO paper1 : paperlist) {
-		           sb.append(paper1.getPaper_no());
-		           sb.append(paper1.getPaper_name());
-		           sb.append(paper1.getPaper_registerday()+"\n");
-		        }
-		        
-		        System.out.println(sb.toString());
-		    */   
-		      System.out.println("-".repeat(60));
-		      
-		      System.out.print("2. 이력서번호 : ");
-		      String paper_code = sc.nextLine();
-		      
-		      System.out.print("3. 지원동기[최대 300글자] : ");
-		      String apply_motive = sc.nextLine();
-		      
-		      Recruit_Apply_DTO radto = new Recruit_Apply_DTO();
-		      radto.setRecruit_no(rdto.getRecruit_no());
-		      radto.setPaper_code(Integer.valueOf(paper_code));
-		      radto.setApply_motive(apply_motive);
-		      
-		      do {
+        	String paper_code_str = "";
+        	int paper_code = 0;
+        	do {
+        		System.out.println(">> 돌아가시려면 엔터를 입력하세요. <<");
+        		System.out.print("2. 이력서번호 : ");
+        		paper_code_str = sc.nextLine();
+        		
+        		if(paper_code_str.isBlank()) {
+        			return 0;
+        		}
+        		try {
+	        		paper_code = Integer.parseInt(paper_code_str);
+	        		
+	        		User_DAO udao = new User_DAO_imple();
+	        		if(udao.check_paper(paper_code, user)) {	// 이력서가 존재한다면
+	        			break;
+	        		}
+	        		else {
+	        			System.out.println(">>>[경고] 선택하신 이력서는 존재하지 않습니다. <<<");
+	        		}
+        		}catch(NumberFormatException e) {
+        			System.out.println(">>> [경고] 반드시 숫자를 입력해주세요.");
+        		}
+        	}while(true);
+        		
+        	do {
+        		System.out.print("3. 지원동기[최대 300글자] : ");
+        		String apply_motive = sc.nextLine();
+        		
+        		if(1 <= apply_motive.length() && apply_motive.length() <= 300) {  
+        			paraMap.put("apply_motive", apply_motive);
+					break;
+				}	
+        		else {
+        			System.out.println(">>> 입력한 데이터가 너무 크므로 입력이 불가합니다.!! <<<");	
+        		}
+        	} while(true); 
+        		
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+        	
+    		do {
 		         ////////////////////////////////////////////////////////////
-		         System.out.print(">> 정말로 입사지원을 하시겠습니까? [Y/N] => ");
-		         String yn = sc.nextLine();
+        			System.out.print(">> 정말로 입사지원을 하시겠습니까? [Y/N] => ");
+        			String yn = sc.nextLine();
 		         
-		         if("y".equalsIgnoreCase(yn)) {
-		            int apply_motive_length = apply_motive.length();
-		         
-		            if(1 <= apply_motive_length && apply_motive_length <= 300) {  
-		               result = radao.my_recruit_apply(radto);
-		            }
-		            else {
-		               System.out.println(">>> 입력한 데이터가 너무 크므로 입력이 불가합니다.!! <<<"); 
-		            }
+        			if("y".equalsIgnoreCase(yn)) {
+        				result = radao.my_recruit_apply(paraMap, paper_code);
 		            break;
 		         }
 		         else if("n".equalsIgnoreCase(yn)) {
@@ -907,7 +932,9 @@ public class User_Controller {
 		         }
 		         ////////////////////////////////////////////////////////////
 		      } while(true);
+        	
 		      return result;
+        	
 		}	// end of private int recruit_apply(Scanner sc, String search_recruint_no, User_DTO user, Recruit_INFO_DTO rdto)-----
 		
 		
@@ -1200,47 +1227,57 @@ public class User_Controller {
 		
 		
 
-		// ◆◆◆ === 지원현황 === ◆◆◆ //
+		// ◆◆◆ === 지원한 공고 조회 === ◆◆◆ //
 		private void recruit_apply_situation(Scanner sc, User_DTO user, Company_DTO company) {
-			do {
-				System.out.println(">>> 지원 현황 메뉴 <<<");
-				System.out.println("1. 지원한 공고 조회  2. 합격 여부 조회");
-				System.out.print("▶ 메뉴 선택 : ");
-				String apply = sc.nextLine();
+			
+			// 지원한 공고 조회
+			List<User_DTO> applyList = radao.applylist(radao, user);
+			
+			StringBuilder sb = new StringBuilder();
+			
+			if(applyList.size() > 0) {
+				System.out.println("\n" + "-".repeat(10) + " " + user.getUser_name() + " 님이 지원한 공고 "
+						+ "-".repeat(10));
+				System.out.println("공고번호\t\t경력\t지원동기\t이력서번호\t이력서명\t학력\t취업우대");
+				System.out.println("-".repeat(40));
 				
+				sb = new StringBuilder();
 				
-				switch (apply) {
-				case "1":	// 지원한 공고 조회
-					List<Recruit_Apply_DTO> applyList = radao.applylist(radao, user);
-					
-					StringBuilder sb = new StringBuilder();
-					
-					if(applyList.size() > 0) {
-						System.out.println("\n" + "-".repeat(40) + " " + user.getUser_name() + " 님이 지원한 공고 "
-								+ "-".repeat(40));
-						System.out.println("내용~~~~~");
-						System.out.println("-".repeat(40));
-						
-						sb = new StringBuilder();
-						
-						for(Recruit_Apply_DTO recruit_apply : applyList) {
-							sb.append(recruit_apply.getRecruit_no());
-							// ...~~~ 다른 것들도 쌓기
-						}	// end of for----------
-						System.out.println(sb.toString());
-					}
-					else {
-						System.out.println(">>> 지원한 공고가 없습니다. <<<");
-					}
-					break;
-				case "2":	// 합격여부 조회
-					
-					break;
-				default:
-					System.out.println(">>> [경고] 메뉴에 있는 번호만 입력해주세요. <<<");
-					break;
-				}	// end of switch-------------------------------
-			}while(true);
+				for(User_DTO recruit_apply : applyList) {
+					sb.append(recruit_apply.getRcapply().getRecruit_no() + " ");
+					sb.append(recruit_apply.getPaper().getCareer() + "\t");
+					sb.append(recruit_apply.getRcapply().getApply_motive() + "\t");
+					sb.append(recruit_apply.getPaper().getPaper_code() + "\t");
+					sb.append(recruit_apply.getPaper().getPaper_name() + "\t");
+					sb.append(recruit_apply.getAcademy_name() + "\t");
+					sb.append(recruit_apply.getPriority_name() + "\t");
+				}	// end of for----------
+				System.out.println(sb.toString());
+			}
+			else {
+				System.out.println(">>> 지원한 공고가 없습니다. <<<");
+				return;
+			}	// end of if~else---------------------------
+			
+			System.out.println("\n------- <<< 합격여부 조회 >>> ---------");
+			System.out.print("공고번호 : ");
+			String num = sc.nextLine();		// 합격여부 확인
+			
+			if(!num.isBlank()) {
+				Recruit_apply_DAO radao = new Recruit_apply_DAO_imple();
+				
+				if( radao.check_success(sc, user, num) == 0)	{ // 미입력
+					System.out.println(">>> 기업에서 확인하지 않았습니다. <<<");
+				}
+				else if(radao.check_success(sc, user, num) == 1) {
+					System.out.println(">>> 서류심사 합격되었습니다. <<<");
+				}
+				else if(radao.check_success(sc, user, num) == 2) {
+					System.out.println(">>> 서류심사 불합격되었습니다. <<<");
+				}
+			}
+			return;
+				
 		}	// end of private void recruit_apply_situation(Scanner sc, User_DTO user, Company_DTO company)-----
 
 	
