@@ -27,6 +27,9 @@ public interface Company_DAO {
 	// ◆◆◆ === 기업 추가정보 입력 === ◆◆◆ //
 	int company_detail_input(Map<String, String> paraMap, String company_id);
 	
+	// ◆◆◆ === 기업상세정보 이미 있다면 입력 불가능하게 막기 === ◆◆◆ //
+	boolean check_info(Company_DTO company);
+	   
 	// ◆◆◆ === 모든 구직자 조회 === ◆◆◆ //
 	List<User_DTO> All_user();
 

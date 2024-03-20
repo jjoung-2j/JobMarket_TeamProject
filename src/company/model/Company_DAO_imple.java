@@ -336,6 +336,44 @@ public class Company_DAO_imple implements Company_DAO {
 
 	
 	
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+	
+	
+	@Override
+	// ◆◆◆ === 기업상세정보 이미 있다면 입력 불가능하게 막기 === ◆◆◆ //
+	public boolean check_info(Company_DTO company) {
+      
+		boolean result = true;
+		String chk = "";
+
+		try {
+			String sql = " select fk_company_id " 
+               + " from tbl_company_type "
+               + " where fk_company_id = ? ";
+
+			pstmt = conn.prepareStatement(sql); // 우편배달부 = 서버.prepareStatement(전달할sql문)
+
+			pstmt.setString(1, company.getCompany_id());
+         
+			rs = pstmt.executeQuery(); // SQL문 실행  
+         
+			if(rs.next()) {
+            chk =  rs.getString(1);
+			}
+			if(company.getCompany_id().equalsIgnoreCase(chk)) {
+            result = false;
+			}
+		} catch (SQLException e) {
+            	e.printStackTrace();
+		} finally { // 성공하든 안하든 무조건! 
+			close();
+		} // end of finally
+		return result;
+   } // end of public boolean check_info(Company_DTO company)
+	
+	
+	
+	
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 	
 

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -47,28 +48,14 @@ public class Recruit_DAO_imple implements Recruit_DAO {
 	@Override
 	public int recruit_write(Map<String, String> paraMap, Company_DTO company) {
 		int result = 0;
-		String hiretype_name = "";
 	      
 		try {
-	         String selectsql = " select hiretype_name "
-	                      + " from tbl_hiretype "
-	                      + " where hiretype_code = ? ";
-	         
-	         pstmt = conn.prepareStatement(selectsql);
-	         
-	         pstmt.setString(1, paraMap.get("fk_hiretype_code"));
-	         
-	         rs = pstmt.executeQuery();
-	         
-	         if(rs.next()) {
-	            hiretype_name = rs.getString("hiretype_name");
-	         }
 	            
 	         String insertsql = " insert into tbl_recruit_info (recruit_no, fk_company_id , manager_name , manager_email , "            
                   + "  recruit_title, recruit_people , recruit_deadline, year_salary, recruit_content , "
                   + "  work_day , work_time, career , fk_hiretype_code, recruit_field ) "
                   + "  values(to_char(sysdate, 'yyyymmdd') || '-' || SEQ_RECRUIT_NO.nextval , ? , ? , ? , "
-                  + "   ?, ? , ?  ,? , ? , ? , ? , ? , ? , ?)  ";      
+                  + "   ?, ? , ? , ? , ? , ? , ? , ? , ? , ?)  ";      
             
 	         pstmt = conn.prepareStatement(insertsql);         
             
@@ -84,7 +71,7 @@ public class Recruit_DAO_imple implements Recruit_DAO {
 	         pstmt.setString(10, paraMap.get("work_time") );
 	         pstmt.setString(11, paraMap.get("career") );
 	         pstmt.setString(12, paraMap.get("fk_hiretype_code") );
-	         pstmt.setString(13, hiretype_name );
+	         pstmt.setString(13, paraMap.get("recruit_field") );
             
 	         result = pstmt.executeUpdate();      // SQL문 실행
 	            
@@ -208,68 +195,58 @@ public class Recruit_DAO_imple implements Recruit_DAO {
 	 
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 		
-		
-	
-	// ◆◆◆ === 채용공고 조회(로그인한 기업의 공고만) === ◆◆◆ //
-	@Override
-	public List<Recruit_INFO_DTO> All_recruit(Company_DTO company, Recruit_INFO_DTO ridto_register) {
-		Recruit_INFO_DTO recruit_view = new Recruit_INFO_DTO();
-		
-		List<Recruit_INFO_DTO> recruitList = new ArrayList<>();
-		
-		try {
-			String sql = " select recruit_no AS 공고번호 "
-				         + " , recruit_field AS 채용분야 "
-				         + " , recruit_title AS 공고명 "
-				         + " , recruit_content AS 공고내용 "
-				         + " , recruit_registerday AS 등록일 "
-				         + " , recruit_deadline AS 마감일 "
-				         + " , career AS 신입경력여부 "
-				         + " , year_salary AS 연봉 "
-				         + " , recruit_people AS 채용인원 "
-				         + " , work_day AS 근무요일 "
-				         + " , work_time AS 근무시간 "
-				         + " , manager_email AS 담당자이메일 "
-				         + " , manager_name AS 담당자명 "
-				         + " from tbl_recruit_info "
-				         + " where fk_company_id = ? ";
-							
-			pstmt = conn.prepareStatement(sql);
-			
-			pstmt.setString(1, company.getCompany_id());  
-			
-			rs = pstmt.executeQuery();
-			
-			while(rs.next()) {	
-				recruit_view = new Recruit_INFO_DTO();
-				
-				recruit_view.setRecruit_no(rs.getString("공고번호"));
-				recruit_view.setRecruit_field(rs.getString("채용분야"));
-				recruit_view.setRecruit_title(rs.getString("공고명"));
-				recruit_view.setRecruit_content(rs.getString("공고내용"));
-				recruit_view.setRecruit_registerday(rs.getString("등록일"));
-				recruit_view.setRecruit_deadline(rs.getString("마감일"));
-				recruit_view.setCareer(rs.getString("신입경력여부"));
-				recruit_view.setYear_salary(rs.getString("연봉"));
-				recruit_view.setRecruit_people(rs.getString("채용인원"));
-				recruit_view.setWork_day(rs.getString("근무요일"));
-				recruit_view.setWork_time(rs.getString("근무시간"));
-				recruit_view.setManager_email(rs.getString("담당자이메일"));
-				recruit_view.setManager_name(rs.getString("담당자명"));
-				
-				recruitList.add(recruit_view);
-			} // end of while(rs.next())--------
-			
-		} catch(SQLException e) {
-			e.printStackTrace();
-		} finally {
-			close();
-		} // end of finally--------------
-		return recruitList;
-	}	// end of public List<Recruit_INFO_DTO> All_recruit(Recruit_INFO_DTO ridto_register)--------
+	 // ◆◆◆ === 해당 채용공고 지원 횟수 결과 표출하기 === ◆◆◆
+	 @Override
+	   public List<Recruit_INFO_DTO> apply_count(Company_DTO company) {
+
+	      List<Recruit_INFO_DTO> recruit = null;
+	      Recruit_INFO_DTO rdto = null;
+	   
+	      try {
+	         
+	         String sql = " with "
+	                  + " v as "
+	                  + " ( "
+	                  + " select fk_recruit_no , count(*) as count "
+	                  + " from tbl_recruit_apply "
+	                  + " group by fk_recruit_no "
+	                  + " )"
+	                  + " select recruit_no , CASE WHEN length(R.recruit_title) > 10 THEN substr(R.recruit_title, 1, 7) || '...' ELSE R.recruit_title END AS recruit_title"
+	                  + " , to_char(recruit_registerday, 'yyyy-mm-dd') as recruit_registerday "
+	                  + " , recruit_deadline, count "
+	                  + " from v right join tbl_recruit_info R "
+	                  + " on v.fk_recruit_no = R.recruit_no "
+	                  + " where R.fk_company_id = ? ";
+	               
+	         pstmt = conn.prepareStatement(sql); // 우편배달부 = 서버.prepareStatement(전달할sql문)
+
+	         pstmt.setString(1, company.getCompany_id());
+	         
+	         rs = pstmt.executeQuery(); // SQL문 실행  
+	         
+	         recruit = new ArrayList<Recruit_INFO_DTO>();
+	         
+	         while(rs.next()) {
+	            
+	        	 rdto = new Recruit_INFO_DTO();
+	            
+	        	 rdto.setRecruit_no(rs.getString("recruit_no"));
+	        	 rdto.setRecruit_title(rs.getString("recruit_title") + (rs.getInt("count")==0 ? "" : "["+rs.getInt("count")+"]") );
+	        	 rdto.setRecruit_deadline(rs.getString("recruit_registerday"));
+	        	 rdto.setRecruit_deadline(rs.getString("recruit_deadline"));
+	            
+	            recruit.add(rdto);
+	         }	// end of while(rs.next())---------   
+	      } catch (SQLException e) {
+	            e.printStackTrace();
+	      } finally { // 성공하든 안하든 무조건! 
+	         close();
+	      } // end of finally
+	      return recruit;
+	   } // end of public List<Recruit_INFO_DTO> apply_count(Company_DTO company)
 
 
-
+	   
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 
 
@@ -310,7 +287,340 @@ public class Recruit_DAO_imple implements Recruit_DAO {
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 			
 	
+	// ◆◆◆ === 채용공고 조회(로그인한 기업의 입력받은 단일 공고상세내역보기) === ◆◆◆ //
+   @Override
+   public List<Recruit_INFO_DTO> one_recruit(String input_rcno, Company_DTO company) {
+      Recruit_INFO_DTO recruit_view = null;
+      
+      List<Recruit_INFO_DTO> recruitList = new ArrayList<>();
+      
+      try {
+         String sql = " select recruit_no AS 공고번호 "
+                     + " , recruit_field AS 채용분야 "
+                     + " , recruit_title AS 공고명 "
+                     + " , recruit_content AS 공고내용 "
+                     + " , recruit_registerday AS 등록일 "
+                     + " , recruit_deadline AS 마감일 "
+                     + " , career AS 신입경력여부 "
+                     + " , year_salary AS 연봉 "
+                     + " , recruit_people AS 채용인원 "
+                     + " , work_day AS 근무요일 "
+                     + " , work_time AS 근무시간 "
+                     + " , manager_email AS 담당자이메일 "
+                     + " , manager_name AS 담당자명 "
+                     + " from tbl_recruit_info "
+                     + " where fk_company_id = ? and recruit_no = ?";
+                     
+         pstmt = conn.prepareStatement(sql);
+         
+         pstmt.setString(1, company.getCompany_id());  
+         pstmt.setString(2, input_rcno);
+         
+         rs = pstmt.executeQuery();
+         
+         if(rs.next()) {   
+            recruit_view = new Recruit_INFO_DTO();
+            
+            recruit_view.setRecruit_no(rs.getString("공고번호"));
+            recruit_view.setRecruit_field(rs.getString("채용분야"));
+            recruit_view.setRecruit_title(rs.getString("공고명"));
+            recruit_view.setRecruit_content(rs.getString("공고내용"));
+            recruit_view.setRecruit_registerday(rs.getString("등록일"));
+            recruit_view.setRecruit_deadline(rs.getString("마감일"));
+            recruit_view.setCareer(rs.getString("신입경력여부"));
+            recruit_view.setYear_salary(rs.getString("연봉"));
+            recruit_view.setRecruit_people(rs.getString("채용인원"));
+            recruit_view.setWork_day(rs.getString("근무요일"));
+            recruit_view.setWork_time(rs.getString("근무시간"));
+            recruit_view.setManager_email(rs.getString("담당자이메일"));
+            recruit_view.setManager_name(rs.getString("담당자명"));
+            
+            recruitList.add(recruit_view);
+         } // end of while(rs.next())--------
+         
+      } catch(SQLException e) {
+         e.printStackTrace();
+      } finally {
+         close();
+      } // end of finally--------------
+      return recruitList;
+   }   // end of public List<Recruit_INFO_DTO> All_recruit(Recruit_INFO_DTO ridto_register)--------
+	   
+
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+
+   
+   // ◆◆◆ === 지원한 구직자 조회 === ◆◆◆ //
+   @Override
+   public List<String> apply_user_search(String input_rcno, Company_DTO company) {
+      
+      List<String> resultlist = null;
+      
+      try {
+         String selectsql = 
+                  " with "
+                  + " v as "
+                  + " (select user_name, paper_code " 
+                  + " from tbl_user_info U join tbl_paper P " 
+                  + " on U.user_id = P.fk_user_id "
+                  + " ) "
+                  + " select paper_code, user_name , apply_day "
+                  + " from tbl_recruit_apply A join v "
+                  + " on A.fk_paper_code = v.paper_code "
+                  + " where A.fk_recruit_no = ? ";
+         
+         pstmt = conn.prepareStatement(selectsql);
+         
+         pstmt.setString(1, input_rcno);
+         
+         rs = pstmt.executeQuery();
+         
+         resultlist = new ArrayList<String>();
+         
+          while(rs.next()) {
+            resultlist.add(rs.getString("paper_code") + "\t" + 
+            rs.getString("user_name") + "\t" + 
+            rs.getString("apply_day")+"\n");
+         } // end of while
+          
+         } catch (SQLException e) {
+        	 if(e.getErrorCode() == 1) {   // 유니크 제약(userid)에 중복되어지면,
+        		 System.out.println(">>  <<");
+        	 }
+        	 else {
+        		 e.printStackTrace();
+        	 }   // end of if~else------------
+         } finally {
+            close();
+         }   // end try~catch~finally--------------------
+      return  resultlist;
+   }   // end of public void apply_user_search(Scanner sc, User_DTO user, Company_DTO company, Recruit_INFO_DTO recruit)------
+   
+   
 	
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+	
+
+   // ◆◆◆ === 해당기업의 지원한 이력서 코드 확인 === ◆◆◆ //
+   @Override
+   public Map<String, String> chk_papercode(int input_rcno) {
+      
+      Map<String,String> result = null;
+      
+         try {
+               String sql = " select to_char(fk_paper_code) as fk_paper_code "
+                        + " from tbl_recruit_apply "
+                        + " where fk_paper_code = ? ";
+                         
+               pstmt = conn.prepareStatement(sql);   
+               
+               pstmt.setInt(1, input_rcno);
+             
+             rs = pstmt.executeQuery(); // SQL문 실행  
+                  
+             if(rs.next()) {
+                result = new HashMap<String, String>();
+                
+                result.put("fk_paper_code", rs.getString("fk_paper_code"));
+             }
+         } catch (SQLException e) {
+               e.printStackTrace(); 
+               if(e.getErrorCode() == 1722) {
+            	   System.out.println("[경고] 이력서 번호는 숫자로만 입력해야 합니다.!");
+               } 
+         } finally {
+            close();
+         }   // end try~catch~finally--------------------
+         return result;
+      
+   } // end of public Map<String, String> chk_papercode(int input_rcno)
+   
+   
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+   
+   
+   // ◆◆◆ === 해당기업의 지원한 이력서 보기 === ◆◆◆ //
+   @Override
+   public Map<String, String> paper_one(String input_rcno, Company_DTO company) {
+      
+      Map<String,String> papermap = null;
+      
+      try {
+         // SQL 문 작성
+         String sql =  " select e.recruit_no, to_char(s.paper_code) as paper_code , s.paper_name, u.user_name, "
+                  + " to_char(q.apply_day, 'yyyy-mm-dd') as apply_day , "
+                  + " u.user_tel, u.user_address, u.user_email, "
+                  + " nvl(a.academy_name , '미등록') as academy_name , nvl(r.priority_name, '미등록') as priority_name , "
+                  + " y.local_name || y.city_name as hope_city , "
+                  + " s.career, nvl(d.license_name , '미등록') as license_name , "
+                  + " case when d.license_day is not null then to_char(d.license_day , 'yyyy-mm-dd' ) "
+                  + "      else '미등록' end as license_day , "
+                  + " nvl(d.license_company, '미등록') as license_company , q.apply_motive "
+                  + " from tbl_academy a "
+                  + " right join tbl_user_info u on a.academy_code = u.fk_academy_code "
+                  + " left join tbl_priority r on u.fk_priority_code = r.priority_code "
+                  + " join tbl_paper s on u.user_id = s.fk_user_id "
+                  + " left join tbl_license_detail d on s.fk_license_code = d.license_code "
+                  + " join tbl_local y on s.fk_local_code = y.local_code "
+                  + " join tbl_recruit_apply q on s.paper_code = q.fk_paper_code "
+                  + " join tbl_recruit_info e on q.fk_recruit_no = e.recruit_no "
+                  + " where paper_code = ? ";
+               
+          pstmt = conn.prepareStatement(sql); // 우편배달부 = 서버.prepareStatement(전달할sql문)
+   
+          pstmt.setString(1, input_rcno);
+          
+          rs = pstmt.executeQuery(); // SQL문 실행  
+               
+          if(rs.next()) { // select 결과가 있다면~
+                  
+             papermap = new HashMap<String, String>();
+             
+             papermap.put("recruit_no", rs.getString("recruit_no"));
+             papermap.put("paper_code", rs.getString("paper_code"));
+             papermap.put("paper_name", rs.getString("paper_name"));
+             papermap.put("user_name", rs.getString("user_name"));
+             papermap.put("user_tel", rs.getString("user_tel"));
+             papermap.put("user_address", rs.getString("user_address"));
+             papermap.put("user_email", rs.getString("user_email"));
+             papermap.put("academy_name", rs.getString("academy_name"));
+             papermap.put("priority_name", rs.getString("priority_name"));
+             papermap.put("hope_city", rs.getString("hope_city"));
+             papermap.put("career", rs.getString("career"));
+             papermap.put("license_name", rs.getString("license_name"));
+             papermap.put("license_day", rs.getString("license_day"));
+             papermap.put("license_company", rs.getString("license_company"));
+             papermap.put("apply_motive", rs.getString("apply_motive"));
+          } // end of while        
+      } catch (SQLException e) {
+              e.printStackTrace();
+      } finally {    // 성공하든 안하든 무조건! 
+         close();   // 자원반납 하기
+      } // end of finally
+      return papermap;
+   } // end of public Map<String, String> paper_one(String input_rcno, Company_DTO company)
+   
+   
+   
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+   
+   
+   // ◆◆◆ === 기업에게 결과를 받았다면 재통보 불가능 === ◆◆◆ //
+   @Override
+   public boolean apply_close(Map<String, String> paper) {
+      
+      boolean result = true;
+      int paper_code = Integer.parseInt(paper.get("paper_code"));
+      try {
+         String sql = " select fk_paper_code , fk_recruit_no, success_status "
+               + " from tbl_recruit_apply "
+               + " where fk_paper_code = ? and fk_recruit_no = ? and success_status in( 1 , 2) ";
+         pstmt = conn.prepareStatement(sql); // 우편배달부 = 서버.prepareStatement(전달할sql문)
+
+         pstmt.setInt(1, paper_code);
+         pstmt.setString(2, paper.get("recruit_no"));
+         
+         rs = pstmt.executeQuery(); // SQL문 실행  
+         
+         if(rs.next()) {
+            result = false; 
+         }   
+      } catch (SQLException e) {
+            e.printStackTrace();
+      } finally { // 성공하든 안하든 무조건! 
+         close();
+      } // end of finally
+      return result;
+      
+   } // end of public boolean apply_close(Map<String, String> paper)
+   
+   
+
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+   
+   
+   @Override
+   // ◆◆◆ === 해당 지원자의 결과 표출하기 === ◆◆◆
+   public String apply_chk(Map<String, String> paper) {
+
+      String result = "";
+      
+      int paper_code = Integer.parseInt(paper.get("paper_code"));
+      
+      int after = 0;
+      try {
+         String sql = " select success_status "
+               + " from tbl_recruit_apply "
+               + " where fk_paper_code = ? and fk_recruit_no = ? ";
+         pstmt = conn.prepareStatement(sql); // 우편배달부 = 서버.prepareStatement(전달할sql문)
+
+         pstmt.setInt(1, paper_code);
+         pstmt.setString(2, paper.get("recruit_no"));
+         
+         rs = pstmt.executeQuery(); // SQL문 실행  
+         
+         if(rs.next()) {
+            after = rs.getInt("success_status");
+         }
+         
+         if(after==1) {
+            result = "합격";
+         }
+         else if(after==2) {
+            result = "불합격";
+         }    
+      } catch (SQLException e) {
+            e.printStackTrace();
+      } finally { // 성공하든 안하든 무조건! 
+         close();
+      } // end of finally
+      return result;
+      
+   } // end of public String apply_chk(Map<String, String> paper)
+
+   
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+   
+   
+   // ◆◆◆ === 채용 or 불합격 처리 === ◆◆◆ //
+   @Override
+   public int apply_yesorno(String yn, Map<String, String> paper) {
+      
+	   int result = 0;
+	   int putdb = 0;
+      
+       if("y".equalsIgnoreCase(yn)) {
+          putdb = 1;
+       }
+       else if ("n".equalsIgnoreCase(yn)) {
+          putdb = 2;
+       }
+       try {
+            String sql = " update tbl_recruit_apply set success_status = ? "
+                  + " where fk_recruit_no = ? and fk_paper_code = ? ";
+            
+            pstmt = conn.prepareStatement(sql); // 우편배달부 = 서버.prepareStatement(전달할sql문)
+
+            pstmt.setInt(1, putdb);
+            pstmt.setString(2, paper.get("recruit_no"));
+            pstmt.setString(3, paper.get("paper_code"));
+            
+            result = pstmt.executeUpdate(); // SQL문 실행  
+                 
+       } catch (SQLException e) {
+           	e.printStackTrace();
+       } finally { // 성공하든 안하든 무조건! 
+            close();
+       } // end of finally
+      return result;
+   }// end of public int apply_yesorno(String yn)
+   
+   
+   
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+   
+   
+   
 	// ◆◆◆ === 분야별공고검색 - 1. 업종별 검색 === ◆◆◆ //
 	@Override
 	public List<Recruit_INFO_DTO> search_job_type(String job_type_select, Company_DTO company) {
@@ -687,30 +997,31 @@ public class Recruit_DAO_imple implements Recruit_DAO {
 	            
 	      try {
 	         // SQL 문 작성
-	         String sql = " select recruit_no , recruit_title, recruit_field , to_char(recruit_registerday, 'yyyy-mm-dd') as recruit_registerday , "
-	               + " recruit_deadline , career,  manager_name , manager_email "
-	               + " from tbl_recruit_info "
-	               + " where fk_company_id = ? ";
-	         
-	          pstmt = conn.prepareStatement(sql); // 우편배달부 = 서버.prepareStatement(전달할sql문)
-	          pstmt.setString(1, company.getCompany_id());
-	          rs = pstmt.executeQuery(); // SQL문 실행  
-	               
-	          while (rs.next()) { // select 결과가 있다면~
+	    	  String sql = " select recruit_no ,CASE WHEN length(recruit_title) > 10 THEN substr(recruit_title, 1, 7) || '...' ELSE recruit_title END AS recruit_title "
+	                  + ", recruit_field , to_char(recruit_registerday, 'yyyy-mm-dd') as recruit_registerday , "
+	                  + " recruit_deadline , career,  manager_name , manager_email "
+	                  + " from tbl_recruit_info "
+	                  + " where fk_company_id = ? ";
+	            
+	    	  pstmt = conn.prepareStatement(sql); // 우편배달부 = 서버.prepareStatement(전달할sql문)
+	    	  pstmt.setString(1, company.getCompany_id());
+	    	  rs = pstmt.executeQuery(); // SQL문 실행  
 	                  
-	             rcinfo = new Recruit_INFO_DTO();
-	                  
-	             rcinfo.setRecruit_no(rs.getString("recruit_no")); 
-	             rcinfo.setRecruit_title(rs.getString("recruit_title"));
-	             rcinfo.setRecruit_field(rs.getString("recruit_field"));
-	             rcinfo.setRecruit_registerday(rs.getString("recruit_registerday"));
-	               rcinfo.setRecruit_deadline(rs.getString("recruit_deadline"));
-	               rcinfo.setCareer(rs.getString("career"));
-	               rcinfo.setManager_name(rs.getString("manager_name"));
-	               rcinfo.setManager_email(rs.getString("manager_email"));
-	                  
-	               rclist.add(rcinfo);           
-	          } // end of while        
+	    	  while (rs.next()) { // select 결과가 있다면~
+	                     
+	    		  rcinfo = new Recruit_INFO_DTO();
+	                     
+	    		  rcinfo.setRecruit_no(rs.getString("recruit_no")); 
+	    		  rcinfo.setRecruit_title(rs.getString("recruit_title"));
+	    		  rcinfo.setRecruit_field(rs.getString("recruit_field"));
+	    		  rcinfo.setRecruit_registerday(rs.getString("recruit_registerday"));
+	    		  rcinfo.setRecruit_deadline(rs.getString("recruit_deadline"));
+	    		  rcinfo.setCareer(rs.getString("career"));
+	    		  rcinfo.setManager_name(rs.getString("manager_name"));
+	    		  rcinfo.setManager_email(rs.getString("manager_email"));
+	                     
+                  rclist.add(rcinfo);           
+             } // end of while        
 	      } catch (SQLException e) {
 	              e.printStackTrace();
 	      } finally {    // 성공하든 안하든 무조건! 

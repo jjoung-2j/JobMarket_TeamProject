@@ -199,7 +199,7 @@ public class Recruit_apply_DAO_imple implements Recruit_apply_DAO {
 				
 				udto.setPaper(pdto);
 				
-				System.out.println(udto);
+				// 확인용 System.out.println(udto);
 				applyList.add(udto);	
 			}	// end of while(rs.next())-------
 		} catch(SQLException e) {

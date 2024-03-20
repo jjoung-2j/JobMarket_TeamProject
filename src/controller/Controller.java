@@ -454,7 +454,7 @@ public class Controller {
 				paraMap.put("local", local);
 				do {
 					System.out.println("\n" + "-".repeat(50));
-					System.out.println("대덕구 | 서구 | 유성구");
+					System.out.println("광산구 | 동구 | 북구");
 					System.out.println("-".repeat(50));
 					
 					System.out.println("▶ 도시명 : ");
@@ -482,7 +482,7 @@ public class Controller {
 				paraMap.put("local", local);
 				do {
 					System.out.println("\n" + "-".repeat(50));
-					System.out.println("광서구 | 동구 | 북구");
+					System.out.println("대덕구 | 서구 | 유성구");
 					System.out.println("-".repeat(50));
 					
 					System.out.println("▶ 도시명 : ");
@@ -1011,9 +1011,7 @@ public class Controller {
 					break;
 					
 				case "5":	// 시작메뉴로 돌아가기
-					
 					break;
-					
 				default:
 					System.out.println(">> 올바른 번호를 선택해주세요. <<");
 					break;

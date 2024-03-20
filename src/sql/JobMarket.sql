@@ -698,3 +698,60 @@ order by recruit_no desc;
     on U.paper_code = Q.paper_code
     where user_id = 'ttest';
    
+   alter table TBL_COMPANY
+    modify CEO_NAME NVARCHAR2(40);
+    
+    alter table TBL_RECRUIT_INFO
+    modify MANAGER_NAME NVARCHAR2(40);
+    
+    drop table tbl_user_login purge;
+    
+    commit;
+    
+    
+    with
+	A as
+	( 
+	select academy_name, user_id 
+	from tbl_academy A join tbl_user_info U 
+	on A.academy_code = U.fk_academy_code 
+	) 
+	, R as
+    ( 
+	select priority_name, user_id 
+	from tbl_priority P join tbl_user_info U 
+	on P.priority_code = U.fk_priority_code 
+	) 
+	, 
+	 U as 
+	( 
+	select career, paper_name, user_id, fk_license_code, paper_code 
+	from tbl_user_info U join tbl_paper P 
+	on U.user_id = P.fk_user_id 
+	) 
+	, 
+	D as 
+	( 
+	select license_name, fk_license_code 
+	from tbl_license_detail join tbl_paper 
+	on license_code = fk_license_code 
+	) 
+	, Q as 
+	( 
+    select paper_code , fk_recruit_no, apply_motive , apply_day 
+	from tbl_recruit_apply N join tbl_paper G 
+	on N.fk_paper_code = G.paper_code 
+	)
+	select  Q.fk_recruit_no , U.career ,Q.apply_motive, Q.paper_code , U.paper_name 
+	, A.academy_name , R.priority_name , nvl(license_name, ' ') as 취업우대 
+    , Q.apply_day 
+    from A join R 
+	on A.user_id = R.user_id join U 
+	on R.user_id = U.user_id left join D 
+	on U.fk_license_code = D.fk_license_code join Q 
+	on U.paper_code = Q.paper_code;
+    
+    
+	where U.user_id = ? ;
+    
+    
