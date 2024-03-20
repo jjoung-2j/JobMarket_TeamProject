@@ -1125,7 +1125,9 @@ public class User_Controller {
 		         
 		         }
 		      }while(!(n==1));
-		      System.out.println(">>> 이력서 작성이 완료되었습니다. <<<");
+		      if(n==1) {
+		    	  System.out.println(">>> 이력서 작성이 완료되었습니다. <<<");
+		      }
 		}	// end of private void write_paper(Scanner sc, User_DTO user)
 
 
@@ -1469,94 +1471,82 @@ public class User_Controller {
 	            	   List<Recruit_INFO_DTO> recruit_info_list = rdao.recruit_info_list();
 	                   
 	                   if(recruit_info_list.size() > 0) {
-	                      
-	                      System.out.println("\n------------------------------ [채용공고 목록] ------------------------------");
-	                      System.out.println("채용공고번호\t\t채용공고명\t\t기업명\t주소\t신입,경력여부\t연봉\t채용마감일");
-	                      System.out.println("-------------------------------------------------------------------------"); 
-	                        
+	                       
+	                      System.out.println("\n----------------------------------------- [채용공고 목록] -----------------------------------------");
+	                      System.out.println("채용공고번호\t채용공고명\t\t기업명\t주소\t\t신입,경력여부\t연봉\t\t채용마감일");
+	                      System.out.println("-----------------------------------------------------------------------------------------------"); 
+	                         
 	                      sb = new StringBuilder();
-	                        
+	                         
 	                      for(Recruit_INFO_DTO recruit_info_li : recruit_info_list) {
-	                           sb.append(recruit_info_li.getRecruit_no() + "\t" +
-	                                   recruit_info_li.getRecruit_title() + "\t" +
-	                                   recruit_info_li.getCdto().getCompany_name() + "\t" +
-	                                   recruit_info_li.getCdto().getCompany_address() + "\t" +
-	                                   recruit_info_li.getCareer() + "\t" + 
-	                                   recruit_info_li.getYear_salary() + "\t" + 
-	                                   recruit_info_li.getRecruit_deadline() + "\n"); 
+	                         
+	                         sb.append(recruit_info_li.getRecruit_no() + "\t" +
+	                                       recruit_info_li.getRecruit_title() + "\t" +
+	                                       recruit_info_li.getCdto().getCompany_name() + "\t" +
+	                                       recruit_info_li.getCdto().getCompany_address() + "\t\t" +
+	                                       recruit_info_li.getCareer() + "\t\t" + 
+	                                       recruit_info_li.getYear_salary() + "\t" + 
+	                                       recruit_info_li.getRecruit_deadline() + "\n"); 
+	                         
 	                      } // end of for ----------
+	                         
 	                      System.out.println(sb.toString());
-	                      
-	                      Map<String, String> paraMap = new HashMap<>();
-	                      System.out.println(">>> 채용공고 지원하기(지원하지 않으실 경우 엔터를 입력해주세요. <<<");
+	                         
 	                      System.out.print("▶ 채용공고번호 : ");
-	                      String search_recruit_no = sc.nextLine();
-
-		                      if(search_recruit_no.isBlank()) {
-		                    	  break;
-		                      }
-	                      
-	                      paraMap.put("recruit_no", search_recruit_no);
-                           
-	                      Recruit_INFO_DTO rdto = rdao.recruit_info(paraMap);	// 채용공고 존재여부 조회
-	                        
-	                      if(rdto != null) {
-	                            
-	                    	  System.out.println("\n" + "-".repeat(50));
-	                    	  System.out.println("▶ 채용공고번호 : " + rdto.getRecruit_no() + "\n"
+	                      String search_recruint_no = sc.nextLine();
+	                         
+	                      Map<String, String> paraMap = new HashMap<>();
+	                           paraMap.put("recruit_no", search_recruint_no);
+	                         
+	                           Recruit_INFO_DTO rdto = rdao.recruit_info(paraMap);
+	                          
+	                           if(rdto != null) {
+	                          
+	                              System.out.println("\n" + "-".repeat(50));
+	                              System.out.println("▶ 채용공고번호 : " + rdto.getRecruit_no() + "\n"
 	                                             + "▶ 기업명 : " + rdto.getCdto().getCompany_name() + "\n"
-	                                             + "▶ 채용공고명 : " + rdto.getRecruit_title() + "\n" 
-	                                             + "▶ 신입/경력 여부 : " + rdto.getCareer() + "\n" 
-	                                             + "▶ 채용분야 : " + rdto.getRecruit_field() + "\n"
-	                                             + "▶ 연봉 : " + rdto.getYear_salary() + "\n" 
-	                                             + "▶ 근무요일 : " + rdto.getWork_day() + "\n"
-	                                             + "▶ 근무시간 : " + rdto.getWork_time() + "\n"
-	                                             + "▶ 채용공고내용 : " + rdto.getRecruit_content() + "\n"
-	                                             + "▶ 채용인원 : " + rdto.getRecruit_people() + "\n"
-	                                             + "▶ 채용담당자명 : " + rdto.getManager_name() + "\n" 
-	                                             + "▶ 채용담당자이메일 : " + rdto.getManager_email() + "\n" 
-	                                             + "▶ 채용등록일 : " + rdto.getRecruit_registerday() + "\n" 
-	                                             + "▶ 채용마감일 : " + rdto.getRecruit_deadline());
-	                    	  System.out.println("-".repeat(50));
- // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆                              
-	                    	  String yn = "";
-	                               
-	                    	  do { // 채용지원
-                                  ////////////////////////////////////////////////////////////
-                                  System.out.print("\n>>> 채용공고명 < " + rdto.getRecruit_title() + " > 에 지원하시겠습니까? [Y/N] => ");
-	                                  
-                                  yn = sc.nextLine();
-	                                  
-                                  if("y".equalsIgnoreCase(yn)) {
-                                      int n = recruit_apply(sc, search_recruit_no, user, rdto); 
-
-                                      if(n == 1) { 
-                                    	  System.out.println(">> 입사지원에 성공하셨습니다. <<");
-                                      }
-                                      else if(n == 0) {
-                                    	  System.out.println(">> 입사지원을 취소하셨습니다. <<");
-                                      }
-                                      else if(n == -1) { 
-                                    	  System.out.println(">> 입사지원에 실패하셨습니다. <<");
-                                      }
-                                      break;
-                                  }
-                                  else if("n".equalsIgnoreCase(yn)) {
-                                	  break;
-                                  }
-                                  else {
-                                	  System.out.println(">> Y 또는 N 만 입력하세요!! <<\n");
-                                  }
-                                  ////////////////////////////////////////////////////////////
-	                    	  } while(!"n".equalsIgnoreCase(yn));
-                            }
-	                        else {
-	                        	System.out.println("\n>> 채용공고번호가 존재하지 않습니다. <<");
-	                        }
+	                                            + "▶ 채용공고명 : " + rdto.getRecruit_title() + "\n" 
+	                                            + "▶ 신입/경력 여부 : " + rdto.getCareer() + "\n" 
+	                                            + "▶ 채용분야 : " + rdto.getRecruit_field() + "\n"
+	                                            + "▶ 연봉 : " + rdto.getYear_salary() + "\n" 
+	                                            + "▶ 근무요일 : " + rdto.getWork_day() + "\n"
+	                                   + "▶ 근무시간 : " + rdto.getWork_time() + "\n"
+	                                   + "▶ 채용공고내용 : " + rdto.getRecruit_content() + "\n"
+	                                   + "▶ 채용인원 : " + rdto.getRecruit_people() + "\n"
+	                                   + "▶ 채용담당자명 : " + rdto.getManager_name() + "\n" 
+	                                   + "▶ 채용담당자이메일 : " + rdto.getManager_email() + "\n" 
+	                                   + "▶ 채용등록일 : " + rdto.getRecruit_registerday() + "\n" 
+	                                   + "▶ 채용마감일 : " + rdto.getRecruit_deadline());
+	                             System.out.println("-".repeat(50));
+	                             
+	                             String yn = "";
+	                             
+	                             do { // 채용지원
+	                                ////////////////////////////////////////////////////////////
+	                                System.out.print("\n>>> 채용공고명 < " + rdto.getRecruit_title() + " > 에 지원하시겠습니까? [Y/N] => ");
+	                                
+	                                yn = sc.nextLine();
+	                                
+	                                if("y".equalsIgnoreCase(yn)) {
+	                                   radao.recruit_apply(search_recruint_no, sc, user); 
+	                                   break;
+	                                }
+	                             else if("n".equalsIgnoreCase(yn)) {
+	                                break;
+	                             }
+	                             else {
+	                                System.out.println(">> Y 또는 N 만 입력하세요!! <<\n");
+	                             }
+	                                ////////////////////////////////////////////////////////////
+	                             } while(!"n".equalsIgnoreCase(yn));
+	                          }
+	                          else {
+	                             System.out.println(">> 채용공고번호가 존재하지 않습니다. <<\n");
+	                          }
 	                   }
 	                   else {
-	                      System.out.println("\n>> 채용공고 목록이 존재하지 않습니다. <<");
-	                   }	// end of if~else(채용공고 존재)----------------------------
+	                       System.out.println(">> 채용공고 목록이 존재하지 않습니다. <<\n");
+	                       }
 	                   break;
 	               case "4":   // 공고분야별 검색
 	            	  search_recruit(sc, user, company);
@@ -1580,6 +1570,8 @@ public class User_Controller {
 		
 		
 
+
+		
 
 		// ◆◆◆ === 구인회사 조회 === ◆◆◆ //
 		public void company_search(Scanner sc, User_DTO user, Company_DTO company) {
@@ -1623,10 +1615,83 @@ public class User_Controller {
 		
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆		
 		
+	/*	
 		
-		
+		 // ◆◆◆ === 채용지원 === ◆◆◆ //
+		private void recruit_apply(String search_recruint_no, Scanner sc, User_DTO user) {
+			Map<String, String> paraMap = new HashMap<>();
+			
+			System.out.println("\n>>> 입사지원하기 <<<");
+			System.out.println("1. 채용공고일련번호 : " + search_recruint_no);
+			paraMap.put("recruit_no", search_recruint_no);
+		      
+			System.out.println("-".repeat(20) + " [" + user.getUser_name() + " 님의 이력서 목록] " + "-".repeat(20));
+        	System.out.print("번호\t제목\t\t작성일\n");
+        	System.out.println("-".repeat(50));
+		      
+        	String paper_code_str = "";
+        	int paper_code = 0;
+        	do {
+        		System.out.println(">> 돌아가시려면 엔터를 입력하세요. <<");
+        		System.out.print("2. 이력서번호 : ");
+        		paper_code_str = sc.nextLine();
+        		
+        		if(paper_code_str.isBlank()) {
+        			return;
+        		}
+        		try {
+	        		paper_code = Integer.parseInt(paper_code_str);
+	        		
+	        		User_DAO udao = new User_DAO_imple();
+	        		if(udao.check_paper(paper_code, user)) {	// 이력서가 존재한다면
+	        			break;
+	        		}
+	        		else {
+	        			System.out.println(">>>[경고] 선택하신 이력서는 존재하지 않습니다. <<<");
+	        		}
+        		}catch(NumberFormatException e) {
+        			System.out.println(">>> [경고] 반드시 숫자를 입력해주세요.");
+        		}
+        	}while(true);
+        		
+        	do {
+        		System.out.print("3. 지원동기[최대 300글자] : ");
+        		String apply_motive = sc.nextLine();
+        		
+        		if(1 <= apply_motive.length() && apply_motive.length() <= 300) {  
+        			paraMap.put("apply_motive", apply_motive);
+					break;
+				}	
+        		else {
+        			System.out.println(">>> 입력한 데이터가 너무 크므로 입력이 불가합니다.!! <<<");	
+        		}
+        	} while(true); 
+        		
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+        	
+    		do {
+		         ////////////////////////////////////////////////////////////
+        			System.out.print(">> 정말로 입사지원을 하시겠습니까? [Y/N] => ");
+        			String yn = sc.nextLine();
+		         
+        			if("y".equalsIgnoreCase(yn)) {
+        				radao.my_recruit_apply(paraMap, paper_code);
+		            break;
+		         }
+		         else if("n".equalsIgnoreCase(yn)) {
+		            break;
+		         }
+		         else {
+		            System.out.println(">>> Y 또는 N 만 입력하세요!! <<<\n");
+		         }
+		         ////////////////////////////////////////////////////////////
+		      } while(true);
+		}
+*/
+
+		/*
 		// ◆◆◆ === 채용지원 === ◆◆◆ //
-		private int recruit_apply(Scanner sc, String search_recruint_no, User_DTO user, Recruit_INFO_DTO rdto) {
+		private int recruit_apply(String search_recruint_no, Scanner sc, User_DTO user, Recruit_INFO_DTO rdto) {
 			int result = 0;
 		      
 			Map<String, String> paraMap = new HashMap<>();
@@ -1700,7 +1765,7 @@ public class User_Controller {
 		      return result;
         	
 		}	// end of private int recruit_apply(Scanner sc, String search_recruint_no, User_DTO user, Recruit_INFO_DTO rdto)-----
-		
+		*/
 		
 		
 		

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -265,7 +266,209 @@ public class Recruit_apply_DAO_imple implements Recruit_apply_DAO {
 
 
 	
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+	
+	
 
+	
+	// ◆◆◆ === 채용지원 === ◆◆◆ //
+	   @Override
+	   public int recruit_apply(String search_recruint_no, Scanner sc, User_DTO user) {
+	      
+	      int result = 0;
+	      
+	      Map<String, String> paraMap = new HashMap<>();
+	      User_DAO udao = new User_DAO_imple();
+	      
+	      System.out.println("\n>>> 입사지원하기 <<<");
+	      
+	      System.out.println("1. 채용공고일련번호 : " + search_recruint_no);
+	      paraMap.put("fk_recruit_no", search_recruint_no); 
+	      
+	      System.out.println("-".repeat(20) + " [" + user.getUser_name() + " 님의 이력서 목록] " + "-".repeat(20));
+	        System.out.print("번호\t제목\t작성일\n");
+	     
+	        StringBuilder sb = new StringBuilder();
+	        List<Paper_DTO> paperlist = udao.paper_info(user);
+	      
+	        if(paperlist.size() > 0) {
+	     
+	           for(Paper_DTO paper : paperlist) {
+	                sb.append(paper.getPaper_code() + "\t");
+	                sb.append(paper.getPaper_name() + "\t");
+	                sb.append(paper.getPaper_registerday() + "\n");
+	            }
+	           
+	           System.out.print(sb.toString());
+	        }
+	        else {
+	           System.out.println(">> 작성하신 이력서가 존재하지 않습니다.");
+	        }
+	                
+	      System.out.println("-".repeat(60));
+	      
+	      String input_paper_code = "";
+	      do {
+	         ////////////////////////////////////////////////////////////
+	         System.out.print("2. 이력서번호 : ");
+	         input_paper_code = sc.nextLine();
+	         
+	         boolean chk = chk_papercode(user, input_paper_code);
+	         
+	         if(chk) {
+	            paraMap.put("fk_paper_code", input_paper_code);
+	            break;
+	         }
+	         else {
+	            System.out.println(">> 입력하신 이력서번호 " + input_paper_code + "번은 존재하지 않습니다.");
+	            return 0;
+	         }
+	         ////////////////////////////////////////////////////////////
+	      } while(true);
+	      
+	      String input_apply_motive = "";
+	      do {
+	         ////////////////////////////////////////////////////////////
+	         System.out.print("3. 지원동기[최대 300글자] : ");
+	         input_apply_motive = sc.nextLine();
+	         
+	         int apply_motive_length = input_apply_motive.length();
+	         
+	         if(1 <= apply_motive_length && apply_motive_length <= 300) {  
+	            paraMap.put("apply_motive", input_apply_motive);
+	            break;
+	         }
+	         else {
+	            System.out.println(">> 입력한 데이터가 너무 크므로 입력이 불가합니다.!! <<"); 
+	         }
+	         ////////////////////////////////////////////////////////////
+	      } while(true);
+	   
+	      do {
+	         ////////////////////////////////////////////////////////////
+	         System.out.print(">> 정말로 입사지원을 하시겠습니까? [Y/N] => ");
+	         String yn = sc.nextLine();
+	         
+	         if("y".equalsIgnoreCase(yn)) {
+	         
+	            Recruit_apply_DAO radao = new Recruit_apply_DAO_imple();
+	            int n = radao.my_recruit_apply(paraMap);
+	            
+	            if(n == 1) { 
+	               System.out.println(">> 입사지원에 성공하셨습니다. <<");
+	            }
+	            else if(n == 0) {
+	               System.out.println(">> 입사지원을 취소하셨습니다. <<");
+	            }
+	            else if(n == -1) { 
+	               System.out.println(">> 입사지원에 실패하셨습니다. <<");
+	            }
+	            
+	            break;
+	         }
+	         else if("n".equalsIgnoreCase(yn)) {
+	            break;
+	         }
+	         else {
+	            System.out.println(">> Y 또는 N 만 입력하세요!! <<\n");
+	         }
+	         ////////////////////////////////////////////////////////////
+	      } while(true);
+	      
+	      return result;
+	      
+	   }   // end of public int recruit_apply(String search_recruint_no, Scanner sc, User_DTO user)-----
+
+
+	   // ◆◆◆ === 작성한 이력서 조회 === ◆◆◆ //
+	   private boolean chk_papercode(User_DTO user, String input_paper_code) {
+	      
+	      boolean result = true;
+	      int ss = 0;
+	      
+	      try {
+	         String sql = " with "
+	                  + " P as "
+	                  + " ( "
+	                  + "    select * "
+	                  + "    from tbl_paper "
+	                  + " ) "
+	                  + " , "
+	                  + " U as "
+	                  + " ( "
+	                  + "    select * "
+	                  + "    from tbl_user_info "
+	                  + " ) "
+	                  + " SELECT U.user_id, P.paper_code "
+	                  + " FROM P JOIN U "
+	                  + " ON P.fk_user_id = U.user_id "
+	                  + " WHERE U.user_id = ? and paper_code = ? ";
+	           
+	         pstmt = conn.prepareStatement(sql);
+	      
+	         pstmt.setString(1, user.getUser_id());
+	         pstmt.setString(2, input_paper_code);
+	           
+	           rs = pstmt.executeQuery(); // SQL문 실행
+	           
+	           if(rs.next()) {   
+	              ss = rs.getInt("paper_code");
+	           }
+	          if(ss != Integer.parseInt(input_paper_code)) {
+	             result = false;
+	          }
+	          
+	      } catch (SQLException e) {
+	         e.printStackTrace();
+	      } finally {
+	         close(); 
+	      }
+	      
+	      return result;
+	      
+	   }   // end of private boolean chk_papercode(User_DTO user, String input_paper_code)-----
+
+
+	   // ◆◆◆ === 나의 채용지원 === ◆◆◆ //
+	   @Override
+	   public int my_recruit_apply(Map<String, String> paraMap) {
+	      
+	      int n = 0;
+	   
+	      try {
+	         String sql = " select paper_code "
+	                  + " from TBL_PAPER  "
+	                  + " where paper_code = ? ";
+	           
+	         pstmt = conn.prepareStatement(sql);
+	      
+	         pstmt.setString(1, paraMap.get("paper_code"));
+	           
+	           rs = pstmt.executeQuery(); // SQL문 실행
+	           
+	           if(rs.next()) {   
+	              rs.getInt("paper_code");
+	           }
+	        
+	           String sql_2 = " insert into tbl_recruit_apply(fk_recruit_no, fk_paper_code, apply_motive) "
+	                    + " values(?, ?, ?) ";
+	         
+	         pstmt = conn.prepareStatement(sql_2);
+	         pstmt.setString(1, paraMap.get("fk_recruit_no"));
+	         pstmt.setString(2, paraMap.get("fk_paper_code"));
+	         pstmt.setString(3, paraMap.get("apply_motive"));
+	           
+	          n = pstmt.executeUpdate();
+	           
+	      } catch (SQLException e) {
+	         e.printStackTrace();
+	      } finally {
+	         close(); 
+	      }
+
+	      return n;
+	      
+	   }   // end of public int my_recruit_apply(Map<String, String> paraMap)-----
 
    
    

@@ -22,5 +22,10 @@ public interface Recruit_apply_DAO {
 	// ◆◆◆ === 채용공고에 채용지원서 넣기 === ◆◆◆ //
 	int my_recruit_apply(Map<String, String> paraMap, int paper_code);
 
+	// ◆◆◆ === 채용지원 === ◆◆◆ //
+	int recruit_apply(String search_recruint_no, Scanner sc, User_DTO user);
 
+	// ◆◆◆ === 나의 채용지원 === ◆◆◆ //
+	int my_recruit_apply(Map<String, String> paraMap);
+	
 }
