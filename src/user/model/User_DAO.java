@@ -70,6 +70,8 @@ public interface User_DAO {
 	// ◆◆◆ === 이력서 삭제 === ◆◆◆ //
 	int delete_paper(String input_rcno);
 	
+	// ◆◆◆ === 이력서 상세조회 === ◆◆◆ //
+	Map<String, String> paper_info_detail(int u_Choice1, User_DTO user);
 	
 	
 	
@@ -83,8 +85,7 @@ public interface User_DAO {
 	// ◆◆◆ === 비밀번호 찾기  === ◆◆◆ //
 	String findpasswd(User_DTO user);
 	
-	// ◆◆◆ === 이력서 상세조회 === ◆◆◆ //
-	Map<String, String> paper_info_detail(int u_Choice1, User_DTO user);
+	
 
 	
 

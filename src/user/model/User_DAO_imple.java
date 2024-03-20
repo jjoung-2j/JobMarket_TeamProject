@@ -542,7 +542,7 @@ public class User_DAO_imple implements User_DAO {
                  user.getPaper().setFk_local_code(rs.getString("local_code")); 
             }
             else {
-                 System.out.println("값이 없습니다.");
+                 System.out.println(">>>[경고] 올바른 값이 없습니다. <<");
             }
 		} catch (SQLException e) {
              e.printStackTrace();
@@ -935,38 +935,46 @@ public class User_DAO_imple implements User_DAO {
 	
 	
 	// ◆◆◆ ===  아이디 찾기 === ◆◆◆ //
-	@Override
-	public String findid(User_DTO user) {
-		User_DTO userdto = null;
-     
-		try {
-			String sql = " select user_id  "
-					+ " from tbl_user_info "
-					+ " where user_name = ? and user_email = ? and user_security_num = ? ";
-        
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, user.getUser_name()); 
-			pstmt.setString(2, user.getUser_email());
-			pstmt.setString(3, user.getUser_security_num());
-        
-			rs = pstmt.executeQuery(); // sql문 실행
-          
-			if(rs.next()) {
-				userdto = new User_DTO();
-				userdto.setUser_id(rs.getString("user_id"));
-			}
-			else if (user.getUser_id() == null) {
-				return "값이 없습니다.";
-			}
-			else {
-				System.out.println("값이 없습니다."); 
-			}    
-		} catch (SQLException e) {
-     		e.printStackTrace();
-		} finally {
-			close();   
-		}    // end of try~catch~fianlly------------------  
-		return "야이디 : " + userdto.getUser_id();
+	   @Override
+	   public String findid(User_DTO user) {
+	      User_DTO userdto = null;
+	      
+	      try {
+	         String sql = " select user_id  "
+	               + " from tbl_user_info "
+	               + " where user_name = ? and user_email = ? and user_security_num = ? ";
+	         
+	         pstmt = conn.prepareStatement(sql);
+	         pstmt.setString(1, user.getUser_name()); 
+	         pstmt.setString(2, user.getUser_email());
+	         pstmt.setString(3, user.getUser_security_num());
+	         
+	           rs = pstmt.executeQuery(); // sql문 실행
+	           
+	           if(rs.next()) {
+	              userdto = new User_DTO();
+	              userdto.setUser_id(rs.getString("user_id"));
+	              
+	              }
+	           else if (user.getUser_id() == null) {
+	              return "값이 없습니다.";
+	           }
+	           else {
+	              
+	              System.out.println("값이 없습니다.");
+	              
+	           }
+	           
+	      } catch (SQLException e) {
+	              e.printStackTrace();
+	      
+	                  
+	        
+	           } finally {
+	              close();   
+	           }    // end of try~catch~fianlly------------------  
+	      return "아이디 : " + userdto.getUser_id();
+	   
   }		// end of public String findid(User_DTO user)-----------
 	
 
@@ -976,37 +984,45 @@ public class User_DAO_imple implements User_DAO {
 	// ◆◆◆ ===  비밀번호 찾기 === ◆◆◆ //
    @Override
    public String findpasswd(User_DTO user) {
-      User_DTO userdto = null;
-      
-      try {
-         String sql = " select user_passwd "
-               + " from tbl_user_info "
-               + " where user_name = ? and user_email = ? and user_security_num = ? and user_id = ? ";
-         
-         pstmt = conn.prepareStatement(sql);
-         pstmt.setString(1, user.getUser_name()); 
-         pstmt.setString(2, user.getUser_email());
-         pstmt.setString(3, user.getUser_security_num());
-         pstmt.setString(4, user.getUser_id());
-         
-         rs = pstmt.executeQuery(); // sql문 실행
-           
-         if(rs.next()) {
-        	 userdto = new User_DTO();
-        	 userdto.setUser_passwd(rs.getString("user_passwd"));
-         }
-         else if (user.getUser_passwd() == null) {
-        	 return "값이 없습니다.";
-         }
-         else {
-        	 System.out.println("값이 없습니다."); 
-         }  
-      } catch (SQLException e) {
-              e.printStackTrace();
-      } finally {
-          close();   
-      }    // end of try~catch~fianlly------------------  
-      return "비밀번호 : " + userdto.getUser_passwd();
+	   User_DTO userdto = null;
+	      
+	      try {
+	         String sql = " select user_passwd "
+	               + " from tbl_user_info "
+	               + " where user_name = ? and user_email = ? and user_security_num = ? and user_id = ? ";
+	         
+	         pstmt = conn.prepareStatement(sql);
+	         pstmt.setString(1, user.getUser_name()); 
+	         pstmt.setString(2, user.getUser_email());
+	         pstmt.setString(3, user.getUser_security_num());
+	         pstmt.setString(4, user.getUser_id());
+	         
+	           rs = pstmt.executeQuery(); // sql문 실행
+	           
+	           if(rs.next()) {
+	              userdto = new User_DTO();
+	              userdto.setUser_passwd(rs.getString("user_passwd"));
+	              
+	              }
+	           else if (user.getUser_passwd() == null) {
+	              return "값이 없습니다.";
+	           }
+	           else {
+	              
+	              System.out.println("값이 없습니다.");
+	              
+	           }
+	           
+	      } catch (SQLException e) {
+	              e.printStackTrace();
+	      
+	                  
+	        
+	           } finally {
+	              close();   
+	           }    // end of try~catch~fianlly------------------  
+	      return "비밀번호 : " + userdto.getUser_passwd();
+
    }	// end of public String findpasswd(User_DTO user)--------------
 
 

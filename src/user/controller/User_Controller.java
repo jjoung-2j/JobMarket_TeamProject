@@ -1319,98 +1319,114 @@ public class User_Controller {
 		 
 
 
-	// ◆◆◆ === 이력서 삭제 === ◆◆◆ //
-	private void delete_paper(Scanner sc, User_DTO user) {
+		// ◆◆◆ === 이력서 삭제 === ◆◆◆ //
+	      private void delete_paper(Scanner sc, User_DTO user) {
+	         
+	         List<Paper_DTO> palist = udao.get_paperlist(user);
+	         
+	         
+	         StringBuilder sb = new StringBuilder();
+	           
+	           if(palist.size() > 0) {
+	             
+	              System.out.println("-".repeat(30));
+	              System.out.println("이력서번호  이력서제목  신입/경력  희망연봉 ");
+	              System.out.println("-".repeat(30));
+	             
+	              sb = new StringBuilder();
+	           
+	              for(Paper_DTO rcinfo : palist) {
+	                 sb.append(rcinfo.getPaper_code() + " " +
+	                       rcinfo.getPaper_name() + " " +
+	                       rcinfo.getCareer() + " " +
+	                       rcinfo.getHope_money() + "\n");
+	              } // end of for
+	              System.out.println(sb.toString() );  
+	           }
+	           else {
+	              
+	              System.out.println(">> 존재하는 이력서가 없습니다!! <<");
+	              return;
+	           }
+	           
+	         String input_rcno = "";
+	         String yn = "";
+	         do {
+	            System.out.print(">> 삭제할 이력서번호를 입력하세요 [삭제를 취소하려면 Q키를 누르세오] : ");
+	              input_rcno = sc.nextLine();
 
-		List<Paper_DTO> palist = udao.get_paperlist(user);
-        
-        
-        StringBuilder sb = new StringBuilder();
-          
-          if(palist.size() > 0) {
-            
-             System.out.println("-".repeat(30));
-             System.out.println("이력서번호  이력서제목  신입/경력  희망연봉 ");
-             System.out.println("-".repeat(30));
-            
-             sb = new StringBuilder();
-          
-             for(Paper_DTO rcinfo : palist) {
-                sb.append(rcinfo.getPaper_code() + " " +
-                      rcinfo.getPaper_name() + " " +
-                      rcinfo.getCareer() + " " +
-                      rcinfo.getHope_money() + "\n");
-             } // end of for
-             System.out.println(sb.toString() );  
-          }
-          else {
-             
-             System.out.println(">> 존재하는 이력서가 없습니다!! <<");
-             return;
-          }
-          
-        String input_rcno = "";
-        String yn = "";
-        do {
-           System.out.print(">> 삭제할 이력서번호를 입력하세요 [삭제를 취소하려면 Q키를 누르세오] : ");
-             input_rcno = sc.nextLine();
-
-             if("q".equalsIgnoreCase(input_rcno)) {
-                 System.out.println(">> 삭제를 취소하고 이전메뉴로 돌아갑니다!"); 
-                 
-                 return;
-             } else if (input_rcno.isBlank()) {
-                 System.out.println(">> 삭제하려면 이력서 번호는 반드시 입력해야 합니다!");
-                 continue;
-             } else {
-                 boolean found = false;
-                 for(Paper_DTO rcinfo : palist) {
-                     if(input_rcno == rcinfo.getPaper_code() ) {
-                      
-                         found = true;
-                        
-                         break; 
-                     }
-                 }
-                 if(!found) {
-                     System.out.println(">> 존재하지 않는 이력서 번호입니다.");
-                     
-                     continue;
-                 }
-                 
-                 break;
-             }
-           
-              
-        } while (true);   
-                          
-              do {
-                 
-                 ////////////////////////////////////////////////////////////////////////////////////////
-                 System.out.print(">> 정말로 해당 이력서를 삭제 하시겠습니까?[Y/N] : ");
-                 yn = sc.nextLine();
-                    
-                 if("y".equalsIgnoreCase(yn) ) {
-
-                       int n =  udao.delete_paper(input_rcno);
-                       if( n == 1 ) { 
-                          System.out.println(">> 이력서 삭제 성공!! << \n");
-                          return;
-                       }
-                       else {
-                          System.out.println(">> SQL 구문 오류 발생으로 인해 이력서 삭제가 실패되었습니다. << \n");
-                          break;
-                       }	// end of if~else---------
-                 } // end yn if
-                 else if ("n".equalsIgnoreCase(yn) ) {
-                       System.out.println(">> 이력서 삭제를 취소하셨습니다. << \n");
-                       break;
-                 } // else if
-                 else {
-                	 System.out.println(">> [경고] Y 또는 N 만 입력하세요.!!");  
-                 } 
-             } while (true);
-	}	// end of private void delete_paper(Scanner sc, User_DTO user)------
+	              if("q".equalsIgnoreCase(input_rcno)) {
+	                  System.out.println(">> 삭제를 취소하고 이전메뉴로 돌아갑니다!"); 
+	                  
+	                  return;
+	              } else if (input_rcno.isBlank()) {
+	                  System.out.println(">> 삭제하려면 이력서 번호는 반드시 입력해야 합니다!");
+	                  continue;
+	              } else {
+	                  boolean found = false;
+	                  for(Paper_DTO rcinfo : palist) {
+	                      if(input_rcno.equals(rcinfo.getPaper_code() ) ) {
+	                       
+	                          found = true;
+	                         
+	                          break; 
+	                      }
+	                  }
+	                  if(!found) {
+	                      System.out.println(">> 존재하지 않는 이력서 번호입니다.");
+	                      
+	                      continue;
+	                  }
+	                  
+	                  break;
+	              }
+	            
+	               
+	         } while (true);   
+	                           
+	               do {
+	                  
+	                  ////////////////////////////////////////////////////////////////////////////////////////
+	                  System.out.print(">> 정말로 해당 이력서를 삭제 하시겠습니까?[Y/N] : ");
+	                  yn = sc.nextLine();
+	                     
+	                  if("y".equalsIgnoreCase(yn) ) {
+	                        
+	                        
+	                        int n =  udao.delete_paper(input_rcno);
+	                        
+	                        if( n == 1 ) {
+	                           
+	                           System.out.println(">> 이력서 삭제 성공!! << \n");
+	                           
+	                           return;
+	                        }
+	                        else {
+	                           
+	                           System.out.println(">> SQL 구문 오류 발생으로 인해 이력서 삭제가 실패되었습니다. << \n");
+	                           
+	                           break;
+	                           
+	                        }
+	                        
+	                     } // end yn if
+	                     else if ("n".equalsIgnoreCase(yn) ) {
+	                        
+	                        System.out.println(">> 이력서 삭제를 취소하셨습니다. << \n");
+	                        break;
+	                        
+	                     } // else if
+	                     else {
+	                        
+	                        System.out.println(">> [경고] Y 또는 N 만 입력하세요.!!");
+	                        
+	                     }
+	                     
+	                  } while (true);
+	                  ////////////////////////////////////////////////////////////////////////////////////////
+	   
+	   
+	      } // end of private void delete_paper(Scanner sc, User_DTO user)
 		
 		
 
@@ -1610,163 +1626,6 @@ public class User_Controller {
               
 		}	// end of public void company_search(Scanner sc, User_DTO user, Company_DTO company)-------
 
-		
-		
-		
-// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆		
-		
-	/*	
-		
-		 // ◆◆◆ === 채용지원 === ◆◆◆ //
-		private void recruit_apply(String search_recruint_no, Scanner sc, User_DTO user) {
-			Map<String, String> paraMap = new HashMap<>();
-			
-			System.out.println("\n>>> 입사지원하기 <<<");
-			System.out.println("1. 채용공고일련번호 : " + search_recruint_no);
-			paraMap.put("recruit_no", search_recruint_no);
-		      
-			System.out.println("-".repeat(20) + " [" + user.getUser_name() + " 님의 이력서 목록] " + "-".repeat(20));
-        	System.out.print("번호\t제목\t\t작성일\n");
-        	System.out.println("-".repeat(50));
-		      
-        	String paper_code_str = "";
-        	int paper_code = 0;
-        	do {
-        		System.out.println(">> 돌아가시려면 엔터를 입력하세요. <<");
-        		System.out.print("2. 이력서번호 : ");
-        		paper_code_str = sc.nextLine();
-        		
-        		if(paper_code_str.isBlank()) {
-        			return;
-        		}
-        		try {
-	        		paper_code = Integer.parseInt(paper_code_str);
-	        		
-	        		User_DAO udao = new User_DAO_imple();
-	        		if(udao.check_paper(paper_code, user)) {	// 이력서가 존재한다면
-	        			break;
-	        		}
-	        		else {
-	        			System.out.println(">>>[경고] 선택하신 이력서는 존재하지 않습니다. <<<");
-	        		}
-        		}catch(NumberFormatException e) {
-        			System.out.println(">>> [경고] 반드시 숫자를 입력해주세요.");
-        		}
-        	}while(true);
-        		
-        	do {
-        		System.out.print("3. 지원동기[최대 300글자] : ");
-        		String apply_motive = sc.nextLine();
-        		
-        		if(1 <= apply_motive.length() && apply_motive.length() <= 300) {  
-        			paraMap.put("apply_motive", apply_motive);
-					break;
-				}	
-        		else {
-        			System.out.println(">>> 입력한 데이터가 너무 크므로 입력이 불가합니다.!! <<<");	
-        		}
-        	} while(true); 
-        		
-// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
-        	
-    		do {
-		         ////////////////////////////////////////////////////////////
-        			System.out.print(">> 정말로 입사지원을 하시겠습니까? [Y/N] => ");
-        			String yn = sc.nextLine();
-		         
-        			if("y".equalsIgnoreCase(yn)) {
-        				radao.my_recruit_apply(paraMap, paper_code);
-		            break;
-		         }
-		         else if("n".equalsIgnoreCase(yn)) {
-		            break;
-		         }
-		         else {
-		            System.out.println(">>> Y 또는 N 만 입력하세요!! <<<\n");
-		         }
-		         ////////////////////////////////////////////////////////////
-		      } while(true);
-		}
-*/
-
-		/*
-		// ◆◆◆ === 채용지원 === ◆◆◆ //
-		private int recruit_apply(String search_recruint_no, Scanner sc, User_DTO user, Recruit_INFO_DTO rdto) {
-			int result = 0;
-		      
-			Map<String, String> paraMap = new HashMap<>();
-			
-			System.out.println("\n>>> 입사지원하기 <<<");
-			System.out.println("1. 채용공고일련번호 : " + search_recruint_no);
-			paraMap.put("recruit_no", search_recruint_no);
-		      
-			System.out.println("-".repeat(20) + " [" + user.getUser_name() + " 님의 이력서 목록] " + "-".repeat(20));
-        	System.out.print("번호\t제목\t\t작성일\n");
-        	System.out.println("-".repeat(50));
-		      
-        	String paper_code_str = "";
-        	int paper_code = 0;
-        	do {
-        		System.out.println(">> 돌아가시려면 엔터를 입력하세요. <<");
-        		System.out.print("2. 이력서번호 : ");
-        		paper_code_str = sc.nextLine();
-        		
-        		if(paper_code_str.isBlank()) {
-        			return 0;
-        		}
-        		try {
-	        		paper_code = Integer.parseInt(paper_code_str);
-	        		
-	        		User_DAO udao = new User_DAO_imple();
-	        		if(udao.check_paper(paper_code, user)) {	// 이력서가 존재한다면
-	        			break;
-	        		}
-	        		else {
-	        			System.out.println(">>>[경고] 선택하신 이력서는 존재하지 않습니다. <<<");
-	        		}
-        		}catch(NumberFormatException e) {
-        			System.out.println(">>> [경고] 반드시 숫자를 입력해주세요.");
-        		}
-        	}while(true);
-        		
-        	do {
-        		System.out.print("3. 지원동기[최대 300글자] : ");
-        		String apply_motive = sc.nextLine();
-        		
-        		if(1 <= apply_motive.length() && apply_motive.length() <= 300) {  
-        			paraMap.put("apply_motive", apply_motive);
-					break;
-				}	
-        		else {
-        			System.out.println(">>> 입력한 데이터가 너무 크므로 입력이 불가합니다.!! <<<");	
-        		}
-        	} while(true); 
-        		
-// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
-        	
-    		do {
-		         ////////////////////////////////////////////////////////////
-        			System.out.print(">> 정말로 입사지원을 하시겠습니까? [Y/N] => ");
-        			String yn = sc.nextLine();
-		         
-        			if("y".equalsIgnoreCase(yn)) {
-        				result = radao.my_recruit_apply(paraMap, paper_code);
-		            break;
-		         }
-		         else if("n".equalsIgnoreCase(yn)) {
-		            break;
-		         }
-		         else {
-		            System.out.println(">>> Y 또는 N 만 입력하세요!! <<<\n");
-		         }
-		         ////////////////////////////////////////////////////////////
-		      } while(true);
-        	
-		      return result;
-        	
-		}	// end of private int recruit_apply(Scanner sc, String search_recruint_no, User_DTO user, Recruit_INFO_DTO rdto)-----
-		*/
-		
 		
 		
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
