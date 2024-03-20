@@ -31,6 +31,8 @@ public class Controller {
 	// == 시작메뉴 == //
 	public void menu_Start(Scanner sc) {
 		
+		User_DTO user = new User_DTO();
+		Company_DTO company = new Company_DTO();
 		String s_Choice = "";
 		
 		do {
@@ -40,6 +42,7 @@ public class Controller {
 					+ "2. 구직자 로그인\n"
 					+ "3. 기업 로그인\n"
 					+ "4. 프로그램종료\n"
+					+ "계정을 분실하셨다면 'Y'를 입력해주세요.\n"
 					+ "-------------------------------------------\n");
 			
 			System.out.print("▶ 메뉴번호 선택 : ");
@@ -50,13 +53,13 @@ public class Controller {
 					Regiser(sc);
 					break;
 				case "2": 	// 구직자 로그인
-					User_DTO user = user_login(sc);	
+					user = user_login(sc);	
 					if(user != null) {	// 로그인 성공
 						user_menu.user_menu(sc, user);
 					}
 					break;
 				case "3":	// 기업 로그인
-					Company_DTO company = company_login(sc);
+					company = company_login(sc);
 					if(company != null)	{ // 로그인 성공
 						company_menu.company_menu(sc, company);
 					}
@@ -65,10 +68,33 @@ public class Controller {
 					MYDBConnection.closeConnection(); 	// Connection 객체 자원 반납
 					return;
 				case "ssang":	// 관리자 히든 메뉴
-					User_DTO udto = new User_DTO();
-					Company_DTO cdto = new Company_DTO();
-					admin(sc, udto, cdto);
+					admin(sc, user, company);
 					break;
+				case "y" : case "Y" :   
+		               do {
+		                  System.out.println("\n---------계정 찾기 메뉴--------\n");
+		                  System.out.println("1. 아이디 찾기 : " );
+		                  System.out.println("2. 비밀번호 찾기 : " );
+		                  System.out.println("3. 이전 메뉴로 돌아가기");
+		                  
+		                  System.out.print("▶ 메뉴번호 선택 : ");
+		                  s_Choice = sc.nextLine();
+		                  
+		                  switch (s_Choice) {
+		                  case "1":		// 아이디 찾기
+		                	  find_id(sc, user);
+		                	  break;
+		                  case "2":		// 비밀번호 찾기
+		                	  find_passwd(sc, user);
+		                	  break;
+		                  case "3":
+		                	  break;
+		                  default:
+		                	  System.out.println(">> 메뉴에 없는 번호입니다. 다시 선택해주세요. <<");
+		                	  break;
+		                  }      
+		               } while(!("3".equals(s_Choice)));
+		               break;
 				default:
 					System.out.println(">>> 메뉴에 없는 번호입니다. 다시 선택해 주세요. <<<");
 					break;
@@ -85,6 +111,11 @@ public class Controller {
 
 
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+
+
+	
+
+
 
 
 
@@ -1040,6 +1071,9 @@ public class Controller {
 		if(n==1) {
 			System.out.println(">> status가 0인 구직자 회원탈퇴가 처리되었습니다.<<");
 		}
+		else {
+			System.out.println(">> 탈퇴처리할 회원이 존재하지 않습니다. <<");
+		}
 	}	// end of private void remove_user(Scanner sc, User_DTO udto)---------
 		
 	
@@ -1053,9 +1087,171 @@ public class Controller {
 		if(n==1) {
 			System.out.println(">> status가 0인 기업 회원탈퇴가 처리되었습니다.<<");
 		}
-
+		else {
+			System.out.println(">> 탈퇴처리할 회원이 존재하지 않습니다. <<");
+		}
 	}	// end of private void remove_company(Scanner sc, Company_DTO cdto)-----
 
 	
+	
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+	
+	
+	// ◆◆◆ ==  아이디 찾기  == ◆◆◆ //
+	private void find_id(Scanner sc, User_DTO user) {
+		
+		String user_email = "";
+		String user_security_num = "";
+		int n = 0;
+	      
+		System.out.println("[정보 입력]");
+		System.out.println("이전 메뉴로 돌아가시려면 'Q'를 입력하세요.");
+	      
+		outer:
+		do {
+			System.out.print("> 이름 : ");
+			String user_name = "";
+			user_name = sc.nextLine();
+	         
+			if(user_name.isEmpty() || user_name == null) {
+	            System.out.println("정확히 입력하세요.");
+			}
+			else if ("q".equalsIgnoreCase(user_name)) {
+	            break;
+			}
+			else {
+	            user.setUser_name(user_name);
+	            
+	            do {
+	            	System.out.print("> 이메일 : ");
+	            	user_email = sc.nextLine();
+	               
+	            	if(user_email.isEmpty() || user_email == null) {
+	            		System.out.println("정확히 입력하세요.");
+	            	}
+	            	else if ("q".equalsIgnoreCase(user_email)) {
+	            		break outer;
+	            	}
+	            	else {
+	            		user.setUser_email(user_email);
+	                  
+	            		do {
+	            			System.out.print("> 주민번호 : ");
+	            			user_security_num = sc.nextLine().replace("-", "");
+	                  
+	            			if(user_security_num.isEmpty() || user_security_num == null) {
+	            				System.out.println("정확히 입력하세요.");
+	            			}
+	            			else if ("q".equalsIgnoreCase(user_security_num)) {
+	            				break outer;
+	            			}
+	            			else {
+	            				user.setUser_security_num(user_security_num);
+	            				break;
+	            			}   
+	            		} while(true);
+	               }
+	            	break;
+	            } while(true);
+	         
+			} 
+			n = 1;
+			break;
+		}while(true);
+	      
+		if (n == 1) {
+	         String result = udao.findid(user); 
+	         System.out.println(result);
+	      }
+	}	// end of private void find_id(Scanner sc, User_DTO user)-------
+
+
+	
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+	
+
+	// ◆◆◆ ==  비밀번호 찾기  == ◆◆◆ //
+	private void find_passwd(Scanner sc, User_DTO user) {
+		
+		  String user_email = "";
+	      String user_security_num = "";
+	      int n = 0;
+	      
+	      System.out.println("[정보 입력]");
+	      System.out.println("이전 메뉴로 돌아가시려면 'Q'를 입력하세요.");
+	      
+	      outer:
+	      do {
+	         System.out.print("> 아이디 : ");
+	         String user_id = "";
+	         user_id = sc.nextLine();
+	         
+	         if(user_id.isEmpty() || user_id == null) {
+	            System.out.println("정확히 입력하세요.");
+	         }
+	         else if ("q".equalsIgnoreCase(user_id)) 
+	            break;
+	         else {
+	            user.setUser_id(user_id);
+	            
+	            do {
+	            
+	            	System.out.print("> 이름 : ");
+	            	String user_name = "";
+	            	user_name = sc.nextLine();
+	            
+	            	if(user_name.isEmpty() || user_name == null) {
+	            		System.out.println("정확히 입력하세요.");
+	            	}
+	            	else if ("q".equalsIgnoreCase(user_name)) 
+	            		break;
+	            	else {
+	            		user.setUser_name(user_name);
+	               
+	            		do {
+	            			System.out.print("> 이메일 : ");
+	            			user_email = sc.nextLine();
+	                  
+	            			if(user_email.isEmpty() || user_email == null) {
+	            				System.out.println("정확히 입력하세요.");
+	            			}
+	            			else if ("q".equalsIgnoreCase(user_email))
+	            				break outer;
+	            			else {
+	            				user.setUser_email(user_email);
+	                     
+	            				do {
+	            					System.out.print("> 주민번호 : ");
+	            					user_security_num = sc.nextLine().replace("-", "");
+	                     
+	            					if(user_security_num.isEmpty() || user_security_num == null) {
+	            						System.out.println("정확히 입력하세요.");
+	            					}
+	            					else if ("q".equalsIgnoreCase(user_security_num)) {
+	            						break outer;
+	            					}
+	            					else {
+	            						user.setUser_security_num(user_security_num);
+	            						break;
+	            					}
+	            				} while(true);	// end of do~while----------------
+	            			}		// end of if~else(이메일 입력)
+	            			break;
+	            		} while(true);
+	            	}
+	            	break;
+            	} while(true);
+	      } 
+	      n=1;
+	      break;
+	   }while(true);
+
+      if (n == 1) {
+         User_DTO result = udao.findpasswd(user);
+         System.out.println("패스워드 : " + result.getUser_passwd());
+      }
+	}	// end of private void find_passwd(Scanner sc, User_DTO user)------
+
+
 }
 

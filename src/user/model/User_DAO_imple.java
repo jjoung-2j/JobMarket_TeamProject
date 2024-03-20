@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.Scanner;
 import common.MYDBConnection;
+import user.domain.Paper_DTO;
 import user.domain.User_DTO;
 
 public class User_DAO_imple implements User_DAO {
@@ -319,16 +320,154 @@ public class User_DAO_imple implements User_DAO {
 	
 	
 	
-	
-	
-	// ◆◆◆ === 이력서 작성 === ◆◆◆ //
-	public void write_paper(Scanner sc, User_DTO user) {
-		// TODO Auto-generated method stub
+	// ◆◆◆ === 희망지역 검색 === ◆◆◆ //
+	public Paper_DTO hope_local(Scanner sc, User_DTO user) {
+	      
+		Paper_DTO paperdto = null;
 		
-	}	// end of private void write_paper(Scanner sc, User_DTO user, Paper_DTO paper, License_DTO license)----
+		try {
+            String sql = " select local_code, local_name || ' ' || city_name "
+	                  + " from tbl_local "
+	                  + " where local_name like '%'||?||'%'  and city_name like '%'||?||'%' " ;
+	            
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, user.getPaper().getHope_local_name()); 
+            pstmt.setString(2, user.getPaper().getHope_city_name());
+	            
+            rs = pstmt.executeQuery(); // sql문 실행
+
+            if(rs.next()) {
+                 paperdto = new Paper_DTO();
+	                 
+                 user.getPaper().setLocal_code(rs.getString("local_code")); 
+            }
+            else {
+                 System.out.println("값이 없습니다.");
+            }
+		} catch (SQLException e) {
+             e.printStackTrace();
+		} finally {
+             close();   
+		}    // end of try~catch~fianlly------------------  
+		return paperdto; 
+   }	// end of public Paper_DTO hope_local(Scanner sc, User_DTO user)--------------
+
+	
+
+	// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 	
 	
 	
+	
+	// ◆◆◆ === 신입 === ◆◆◆ //
+   @Override
+   public int career_detail_new(User_DTO user) {
+      int result = 0;
+      
+         try {
+            String sql = " update tbl_paper set career = ? "
+                  + " where fk_user_id = ? ";
+            
+            pstmt = conn.prepareStatement(sql);
+             
+            pstmt.setString(1, user.getPaper().getCareer());
+            pstmt.setString(2, user.getUser_id());
+            result = pstmt.executeUpdate();      // SQL문 실행
+            
+            
+         } catch (SQLException e) {
+            
+               e.printStackTrace();
+               // end of if~else------------
+         } finally {
+            close();
+         }   // end of try~catch~finally-------------------
+         return result;
+   }	// end of public int career_detail_new(User_DTO user)-------
+   
+   
+
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+   
+   
+   
+   
+	// ◆◆◆ === 경력 === ◆◆◆ //
+   @Override
+   public int career_detail(User_DTO user) {
+      int result = 0;
+      
+         try {
+            String sql = " update tbl_paper set career = ? "
+                  + " where fk_user_id = ? ";
+            
+            pstmt = conn.prepareStatement(sql);
+             
+            pstmt.setString(1, user.getPaper().getCareer());
+            pstmt.setString(2, user.getUser_id());
+            result = pstmt.executeUpdate();      // SQL문 실행
+            
+            if(result != 0) {
+               sql = " insert into tbl_career_detail(career_company_name, career_startday, career_endday) "
+                     + "values(?, ?, ?) ";      
+               
+               pstmt = conn.prepareStatement(sql);         
+               pstmt.setString(1, user.getPaper().getCareer_company_name());   
+               pstmt.setString(2, user.getPaper().getCareer_startday());   
+               pstmt.setString(3, user.getPaper().getCareer_endday());   
+               
+               result = pstmt.executeUpdate();      // SQL문 실행
+            }
+         } catch (SQLException e) {
+            
+               e.printStackTrace();
+               // end of if~else------------
+         } finally {
+            close();
+         }   // end of try~catch~finally-------------------
+         return result;
+   }	// end of public int career_detail(User_DTO user)------------
+   
+   
+ 
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+   
+   
+   
+   
+   // ◆◆◆ === 이력서 작성 === ◆◆◆ //
+   public int write_paper_sql(User_DTO user) {
+	      int result = 0;
+	        // career_detail(sc, user);
+	        
+	        try {
+	           String sql = " insert into tbl_paper(fk_user_id , fk_license_code, fk_local_code, user_security_num, career, hope_money, paper_name, paper_code) "
+	                 + " values(?, ?, ?, ?, ?,?, ?, paper_code.nextval ) ";      
+	              
+	           pstmt = conn.prepareStatement(sql);         
+	           pstmt.setString(1, user.getUser_id());
+	           pstmt.setString(2, user.getPaper().getLicense_code());
+	           pstmt.setString(3, user.getPaper().getLocal_code());
+	           pstmt.setString(4, user.getUser_security_num());
+	           pstmt.setString(5, user.getPaper().getCareer());
+	           pstmt.setString(6, user.getPaper().getHope_money());
+	           pstmt.setString(7, user.getPaper().getPaper_name());
+	           
+	           
+	           result = pstmt.executeUpdate();      // SQL문 실행
+	        } catch (SQLException e) { 
+	              e.printStackTrace();
+	        
+	        } finally {
+	           close();
+	        }   // end of try~catch~finally-------------------
+	        return result;
+	      
+	   }
+   
+   
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+   
 	
 	
 	// ◆◆◆ === 이력서 수정 === ◆◆◆ //
@@ -337,6 +476,8 @@ public class User_DAO_imple implements User_DAO {
 		
 	}	// end of private void change_paper(Scanner sc, User_DTO user, Paper_DTO paper, License_DTO license)----
 
+	
+	
 	
 	
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
@@ -368,6 +509,10 @@ public class User_DAO_imple implements User_DAO {
 	   } // end of public int insert_anotherinfo(String academy_code, String priority_code, String user_id)
 
 
+	
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+	
+	
 	// ◆◆◆ === 이력서가 존재하는지 확인하기  === ◆◆◆ //
 	@Override
 	public boolean check_paper(int paper_code, User_DTO user) {
@@ -412,6 +557,9 @@ public class User_DAO_imple implements User_DAO {
 	}	// end of public boolean check_paper(String paper_code, User_DTO user)---------------
 
 
+	
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+	
 
 	// ◆◆◆ ===  관리자 탈퇴 처리 === ◆◆◆ //
 	@Override
@@ -434,8 +582,81 @@ public class User_DAO_imple implements User_DAO {
 	}	// end of public int remove()------------
 	
 	
+
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+
+	//  아이디찾기
+	@Override
+	public String findid(User_DTO user) {
+		User_DTO userdto = null;
+     
+		try {
+			String sql = " select user_id  "
+					+ " from tbl_user_info "
+					+ " where user_name = ? and user_email = ? and user_security_num = ? ";
+        
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, user.getUser_name()); 
+			pstmt.setString(2, user.getUser_email());
+			pstmt.setString(3, user.getUser_security_num());
+        
+			rs = pstmt.executeQuery(); // sql문 실행
+          
+			if(rs.next()) {
+				userdto = new User_DTO();
+				userdto.setUser_id(rs.getString("user_id"));
+			}
+			else if (user.getUser_id() == null) {
+				return "값이 없습니다.";
+			}
+			else {
+				System.out.println("값이 없습니다."); 
+			}    
+		} catch (SQLException e) {
+     		e.printStackTrace();
+		} finally {
+			close();   
+		}    // end of try~catch~fianlly------------------  
+		return "야이디 : " + userdto.getUser_id();
+  }		// end of public String findid(User_DTO user)-----------
 	
-	
+
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+   
+   
+   //   비밀번호 찾기
+   @Override
+   public User_DTO findpasswd(User_DTO user) {
+      User_DTO userdto = null;
+      
+      try {
+         String sql = " select user_passwd "
+               + " from tbl_user_info "
+               + " where user_name = ? and user_email = ? and user_security_num = ? and user_id = ? ";
+         
+         pstmt = conn.prepareStatement(sql);
+         pstmt.setString(1, user.getUser_name()); 
+         pstmt.setString(2, user.getUser_email());
+         pstmt.setString(3, user.getUser_security_num());
+         pstmt.setString(4, user.getUser_id());
+         
+           rs = pstmt.executeQuery(); // sql문 실행
+           
+           if(rs.next()) {
+              userdto = new User_DTO();
+              userdto.setUser_passwd(rs.getString("user_passwd"));
+              
+              }
+           else {
+              System.out.println("값이 없습니다.");
+           }
+      } catch (SQLException e) {
+              e.printStackTrace();
+           } finally {
+              close();   
+           }    // end of try~catch~fianlly------------------  
+      return userdto;
+   }	// end of public User_DTO findpasswd(User_DTO user)--------------
 	
 
 }

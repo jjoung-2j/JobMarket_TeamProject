@@ -3,7 +3,7 @@ package user.model;
 import java.util.Map;
 import java.util.Scanner;
 
-import company.domain.Company_DTO;
+import user.domain.Paper_DTO;
 import user.domain.User_DTO;
 
 public interface User_DAO {
@@ -34,6 +34,20 @@ public interface User_DAO {
 
 	
 	
+	// ◆◆◆ === 희망지역 검색 === ◆◆◆ //
+	Paper_DTO hope_local(Scanner sc, User_DTO user);
+	
+	// ◆◆◆ === 이력서 신입 === ◆◆◆ //
+	int career_detail_new(User_DTO user);
+
+	// ◆◆◆ === 이력서 경력 === ◆◆◆ //
+	int career_detail(User_DTO user);
+	
+	// ◆◆◆ === 이력서 작성 === ◆◆◆ //
+	int write_paper_sql(User_DTO user);
+	
+	
+	
 	
 	
 	// ◆◆◆ === 이력서가 존재하는지 확인하기  === ◆◆◆ //
@@ -42,6 +56,19 @@ public interface User_DAO {
 	// ◆◆◆ ===  관리자 탈퇴 처리 === ◆◆◆ //
 	int remove();
 
+	// ◆◆◆ === 아이디 찾기  === ◆◆◆ //
+	String findid(User_DTO user);
+
+	// ◆◆◆ === 비밀번호 찾기  === ◆◆◆ //
+	User_DTO findpasswd(User_DTO user);
+
+	
+
+	
+
+	
+
+	
 
 
 	

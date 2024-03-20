@@ -9,7 +9,7 @@ public class Paper_DTO {
 		private int paper_code;		
 		private String user_id;
 		private String license_code;
-		private int local_code;
+		private String local_code;
 		private String user_security_num;
 		private String career;
 		private String hope_money;
@@ -65,10 +65,10 @@ public class Paper_DTO {
 		}
 		
 		
-		public int getLocal_code() {
+		public String getLocal_code() {
 			return local_code;
 		}
-		public void setLocal_code(int local_code) {
+		public void setLocal_code(String local_code) {
 			this.local_code = local_code;
 		}
 		

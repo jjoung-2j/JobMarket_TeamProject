@@ -1,15 +1,26 @@
 package user.controller;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
 
+import common.MYDBConnection;
 import common.Set_util;
 import company.domain.Company_DTO;
 import company.domain.Recruit_INFO_DTO;
 import company.model.Company_DAO;
 import company.model.Company_DAO_imple;
+import user.domain.Paper_DTO;
 import user.domain.User_DTO;
 import company.model.Recruit_DAO;
 import company.model.Recruit_DAO_imple;
@@ -25,6 +36,32 @@ public class User_Controller {
 	Company_DAO cdao = new Company_DAO_imple();
 	Recruit_DAO rdao = new Recruit_DAO_imple();
 	Recruit_apply_DAO radao = new Recruit_apply_DAO_imple();
+	
+	
+	private Connection conn = MYDBConnection.getConn();		// 데이터베이스 서버 연결
+	private PreparedStatement pstmt;	// 우편배달부
+	private ResultSet rs;
+	
+	// ◆◆◆ === 자원반납을 해주는 메소드 === ◆◆◆ //
+	private void close() {
+		try {
+			if(rs != null) {
+				rs.close();
+				rs = null;
+			}
+			if(pstmt != null) {
+				pstmt.close();
+				pstmt = null;
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}	// end of try~catch----------
+	}	// end of private void close()---------------
+	
+	
+	
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+	
 	
 	public void user_menu(Scanner sc, User_DTO user) {
 		
@@ -656,9 +693,323 @@ public class User_Controller {
 
 		// ◆◆◆ === 이력서 작성 === ◆◆◆ //
 		private void write_paper(Scanner sc, User_DTO user) {
-			// TODO Auto-generated method stub
-			
-		}
+			System.out.println("\n 이력서 작성");
+		      System.out.println("작성을 취소하시려면 'Q'를 입력하세요.");
+		      
+		      String paper_name = "";
+		      String u_Choice = "";
+		      
+		      SimpleDateFormat formatter = new SimpleDateFormat ( "yyyy.MM", Locale.KOREA );
+		      
+		      
+		      int n =0;
+		      
+		      outer:
+		      do {
+		    	  do {
+		    		  System.out.print("> 지원서 제목 : ");
+		    		  paper_name = sc.nextLine();
+		         
+		    		  if(paper_name.isEmpty() || paper_name == null) {
+		    			  System.out.println("정확히 입력하세요."); 
+		    		  }
+		    		  else if ("q".equalsIgnoreCase(paper_name)) {
+		    			  break outer;
+		    		  }
+		    		  else {	// 제목을 입력한 경우
+		    			  n = 1;
+		    			  user.getPaper().setPaper_name(paper_name);
+		    		  }
+		    	  }while(!(n==1) || "q".equalsIgnoreCase(paper_name));
+		      
+		    	  System.out.println("> 성명 : " + user.getUser_id());
+		    	  System.out.println("> 전화번호 : " + user.getUser_tel());
+		    	  System.out.println("> 주소 : " + user.getUser_address());
+		    	  System.out.println("> 이메일 : " + user.getUser_email());
+		    	  System.out.print("> 학력 : ");
+		    	  if(user.getAcademy_name() == null){
+		    		  System.out.println("입력없음");
+		    	  }
+		    	  else {
+		    		  System.out.println(user.getAcademy_name());
+		    	  }
+		         
+		    	  do {
+		    		  n = 0;
+		    		  try {
+		    			  System.out.println("\n> [희망연봉 (단위: 만원)]");
+		    			  System.out.println("해당사항 없을 시 엔터");
+		    			  System.out.println("-".repeat(50));
+		    			  System.out.println("1. 면접 후 결정");
+		    			  System.out.println("2. 2500 미만");
+		    			  System.out.println("3. 2500 이상 ~ 3000 미만");
+		    			  System.out.println("4. 3000 이상 ~ 3500 미만");
+		    			  System.out.println("5. 3500 이상 ~ 4000 미만");
+		    			  System.out.println("6. 4000 이상 ~ 4500 미만");
+		    			  System.out.println("7. 4500 이상 ~ 5000 미만");
+		    			  System.out.println("8. 5000 이상");
+		    			  System.out.println("-".repeat(50));
+		            
+		    			  System.out.print("> 희망연봉 선택 : ");
+		    			  u_Choice = sc.nextLine();
+		            
+		    			  if("q".equalsIgnoreCase(u_Choice)) {
+		    				  break outer;
+		    			  }
+		            
+		    			  else if(Integer.parseInt(u_Choice) < 1 || Integer.parseInt(u_Choice) > 8) {
+		    				  System.out.println("목록에 있는 사항만 선택 가능합니다.");
+		    				  continue;
+		    			  }
+		    			  else if (u_Choice.isEmpty() || u_Choice == null){
+		    				  n = 1;
+		    			  }
+		    			  else
+		    				  n = 1;
+		    			  if("1".equals(u_Choice)) {
+		    				  user.getPaper().setHope_money("면접 후 결정");
+		    			  }
+		    			  else if("2".equals(u_Choice)) {
+		    				  user.getPaper().setHope_money("2500만원 미만");   
+		    			  }
+			               else if("3".equals(u_Choice)) {
+			                  user.getPaper().setHope_money("2500 이상 ~ 3000 미만");
+			               }
+			               else if("4".equals(u_Choice)) {
+			                  user.getPaper().setHope_money("3000 이상 ~ 3500 미만");
+			               }
+			               else if("5".equals(u_Choice)) {
+			                  user.getPaper().setHope_money("3500 이상 ~ 4000 미만");
+			               }
+			               else if("6".equals(u_Choice)) {
+			                  user.getPaper().setHope_money("4000 이상 ~ 4500 미만");
+			               }
+			               else if("7".equals(u_Choice)) {
+			                  user.getPaper().setHope_money("4500 이상 ~ 5000 미만");
+			               }
+			               else if("8".equals(u_Choice)) {
+			                  user.getPaper().setHope_money("5000 이상");
+			               }
+			               else {
+			                  System.out.println("정확히 입력하세요.");
+			               }
+		               
+		    			  System.out.println(user.getPaper().getHope_money());
+		    		  }catch(NumberFormatException e) {
+		    			  System.out.println("정확히 입력하세요."); 
+		    		  }
+		    	  }while (!(n==1) || "q".equalsIgnoreCase(u_Choice));
+		         
+		    	  if(n==1) {
+		    		  do {
+		    			  n = 0;
+		    			  System.out.println("\n[희망지역]\n");
+		    			  String hope_local_name = "";
+		    			  String hope_city_name = "";
+		            
+		    			  System.out.print("희망하는 지역을 입력하세요[예 : 서울] : ");
+		    			  hope_local_name = sc.nextLine();
+		               
+		    			  if(hope_local_name != null && hope_local_name.length() == 0 ||hope_local_name.isEmpty()) {
+		    				  System.out.println("정확히 입력하세요.");
+		    			  }
+		    			  else if("q".equalsIgnoreCase(hope_local_name)) {
+		    				  break outer;
+		    			  }
+		    			  else {
+		                    user.getPaper().setHope_local_name(hope_local_name);
+		                 
+		                    System.out.print("희망하는 도시명을 입력하세요[예 : 마포구] : ");
+		                    hope_city_name = sc.nextLine();
+		                    
+		                    if(hope_city_name != null && hope_city_name.length() == 0 ||hope_city_name.isEmpty()) {
+		                       System.out.println("정확히 입력하세요.");
+		                    }
+		                    else if ("q".equalsIgnoreCase(hope_city_name)) {
+		                       break outer;
+		                    }
+		                    else {
+		                       user.getPaper().setHope_city_name(hope_city_name);
+		                    }
+		                 }
+		                 udao.hope_local(sc, user);	// 희망지역 메소드
+		            }while(!(user.getPaper().getLocal_code() != null));
+		            
+	    		  	n = 1;
+		         }	// end of if----------------
+		         
+		         if(n == 1) {
+		            String career_choice = "";
+		            n = 0;	// 다시 초기화
+		            
+		            do {
+		               System.out.println("\n> [경력사항]");
+		               System.out.println("-".repeat(50));
+		               System.out.println("1. 신입");
+		               System.out.println("2. 경력");
+		               System.out.println("-".repeat(50));
+		               System.out.print("> 경력사항 선택 : ");
+		               career_choice = sc.nextLine();
+		               
+		               if("q".equalsIgnoreCase(career_choice)) {
+		                  break outer;
+		               }
+		               else if("1".equals(career_choice)) {
+		                  n = 1;
+		                  user.getPaper().setCareer("신입");
+		                  udao.career_detail_new(user);	
+		                  break;
+		               }
+		               else if("2".equals(career_choice)) {
+		                  user.getPaper().setCareer("경력");
+		                  n = 0;
+		                  formatter = new SimpleDateFormat("yyyyMM");
+		                  Date currentTime = new Date();
+		                  String dTime = formatter.format ( currentTime );
+		                  String user_answer = "";
+		                  
+		                  try {
+		                     currentTime = formatter.parse(dTime);
+		                  
+		                     System.out.println("이전메뉴로 돌아가시려면 'Q'를 입력하세요.");
+		                     
+		                     outer1:
+	                    	 do {
+	                    		 do {
+	                    			 System.out.print("회사명 : ");
+	                    			 user_answer = sc.nextLine();
+	                    			 if(user_answer.isEmpty() || user_answer == null) {
+	                    				 System.out.println("정확히 입력하세요.");
+	                    			 }
+	                    			 else if("q".equalsIgnoreCase(user_answer)) {
+	                    				 break outer1;
+	                    			 }
+	                    			 else {
+	                    				 n = 1;
+	                    				 user.getPaper().setCareer_company_name(user_answer);
+	                    			 }
+	                    		 }while(!(n==1) );
+		                        
+	                    		 do {
+	                    			 n = 0;
+		                     
+	                    			 try{
+	                    				 System.out.print("입사년월 [" + dTime + "] : ");
+	                    				 user_answer = sc.nextLine();
+	                    				 user_answer = user_answer.replace(".", "").replace(" ", "");
+		                           
+	                    				 if(user_answer.isEmpty() || user_answer == null) {
+	                    					 System.out.println("정확히 입력하세요.");
+	                    				 }
+	                    				 else if("q".equalsIgnoreCase(user_answer)) {
+	                    					 break outer1;
+	                    				 }
+	                    				 else {
+	                    					 if(user_answer.length() != 6) {
+	                    						 System.out.println("[" + dTime + "] 처럼 입력해주세요");
+	                    					 }
+	                    					 else {
+	                    						 Date career_startday = formatter.parse(user_answer);
+	                    						 formatter.setLenient(false); //false일경우 처리시 입력한 값이 잘못된 형식일 시 오류가 발생
+	                    						 formatter.parse(user_answer); //대상 값 포맷에 적용되는지 확인
+		                                    
+	                    						 if(currentTime.before(career_startday)) { 
+	                    							 System.out.println(">>> [경고] 입사년월은 오늘보다 과거여야 합니다. <<<");
+	                    						 }
+		                                    
+	                    						 else {
+	                    							 user.getPaper().setCareer_startday(user_answer);
+	                    							 do {
+	                    								 if("q".equalsIgnoreCase(user_answer)){
+	                    									 break;
+	                    								 }
+	                    								 else if(!(currentTime.before(career_startday))) {
+	                    									 n = 1;
+	                    									 user.getPaper().setCareer_startday(user_answer);
+	                    								 }
+	                    								 else { 
+	                    									 System.out.println("정확히 입력하세요.");   
+	                    									 break;
+	                    								 } 
+	                    							 } while(!(n==1) || "q".equalsIgnoreCase(user_answer));
+		                                  
+	                    							 do {
+	                    								 try {
+	                    									 n = 0;
+	                    									 System.out.print("퇴사년월 [" + dTime + "] : ");
+	                    									 user_answer = sc.nextLine().replace(".", "");
+		                                     
+	                    									 if(user_answer.isEmpty() || user_answer == null) {
+	                    										 System.out.println("정확히 입력하세요.");
+		                                         
+	                    									 }
+	                    									 else if("q".equalsIgnoreCase(user_answer)) {
+	                    										 break outer1;
+	                    									 }
+	                    									 else {
+	                    										 if(user_answer.length() != 6) {
+	                    											 System.out.println("[" + dTime + "] 처럼 입력해주세요");
+	                    										 }
+	                    										 else {
+	                    											 Date career_endday = formatter.parse(user_answer);
+	                    											 formatter.setLenient(false); //false일경우 처리시 입력한 값이 잘못된 형식일 시 오류가 발생
+	                    											 formatter.parse(user_answer); //대상 값 포맷에 적용되는지 확인
+		                                             
+	                    											 if(career_endday.before(career_startday)) {
+	                    												 System.out.println("퇴사년월이 입사년월보다 미래여야 합니다.");
+	                    											 }
+	                    											 else {
+	                    												 user.getPaper().setCareer_endday(user_answer);
+		                                                  
+	                    												 do {
+	                    													 if("q".equalsIgnoreCase(user_answer)){
+	                    														 break;
+	                    													 }
+	                    													 else if(!(currentTime.before(career_endday))) {
+	                    														 n = 1;
+	                    														 user.getPaper().setCareer_startday(user_answer);
+	                    													 }
+	                    													 else { 
+	                    														 System.out.println("정확히 입력하세요.");   
+	                    														 break;
+	                    													 }
+	                    												 } while(!(n==1) || "q".equalsIgnoreCase(user_answer));
+	                    											 }	
+	                    										 }	
+	                    									 }
+	                    								 } catch (ParseException e) {
+	                    									 System.out.println(">>> [경고] 존재하지 않은 날짜입니다. <<<");
+	                    								 }	// end of try~catch--------------
+	                    							 	} while(!(n==1) || "q".equalsIgnoreCase(user_answer));
+	                    						 }		
+	                    					 }
+	                    				 } 
+	                    			 }catch (ParseException e) {
+                                      		System.out.println(">>> [경고] 존재하지 않은 날짜입니다. <<<");
+	                    			 } // end of try~catch------------------                      
+	                    		 }while(!(n==1));
+	                    		 udao.career_detail(user);   
+	                    	 } while("q".equalsIgnoreCase(user_answer));
+		                  } catch (ParseException e) {
+		                	  e.printStackTrace();
+		                  }		// end of try~catch-------------- 
+		               }	// end of (경력을 입력한 경우)
+		               else {
+		                  System.out.println("목록에 있는 사항만 선택 가능합니다.");
+		                  continue;
+		               }
+		            }while(!(n==1) || "q".equalsIgnoreCase(career_choice));
+		            
+		            udao.write_paper_sql(user); 
+		         
+		         }
+		      }while(!(n==1));
+		}	// end of private void write_paper(Scanner sc, User_DTO user)
+
+
+		
+
+
 
 
 

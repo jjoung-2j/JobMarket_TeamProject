@@ -1600,66 +1600,88 @@ public class Company_Controller {
 	      
 		List<Recruit_INFO_DTO> rclist = rdao.get_recruitlist(company);
 	      
-	      StringBuilder sb = new StringBuilder();
+	    StringBuilder sb = new StringBuilder();
 	        
-	      if(rclist.size() > 0) {
+	    if(rclist.size() > 0) {
 	          
-	           System.out.println("-".repeat(50));
-	           System.out.println("채용공고번호  채용공고명  채용분야 채용등록일 채용마감일 신입/경력여부 채용담당자이름 채용담당자이메일 ");
-	           System.out.println("-".repeat(50));
+	       System.out.println("-".repeat(50));
+	       System.out.println("채용공고번호  채용공고명  채용분야 채용등록일 채용마감일 신입/경력여부 채용담당자이름 채용담당자이메일 ");
+	       System.out.println("-".repeat(50));
 	          
-	           sb = new StringBuilder();
+	       sb = new StringBuilder();
 	        
-	           for(Recruit_INFO_DTO rcinfo : rclist) {
-	              sb.append(rcinfo.getRecruit_no() + " " +
-	                    rcinfo.getRecruit_title() + " " +
-	                    rcinfo.getRecruit_field() + " " +
-	                    rcinfo.getRecruit_registerday() + " " +
+	       for(Recruit_INFO_DTO rcinfo : rclist) {
+	           sb.append(rcinfo.getRecruit_no() + " " +
+	                     rcinfo.getRecruit_title() + " " +
+	                     rcinfo.getRecruit_field() + " " +
+	                     rcinfo.getRecruit_registerday() + " " +
 	                     rcinfo.getRecruit_deadline() + " " +
 	                     rcinfo.getCareer() + " " +
-	                    rcinfo.getManager_name() + " " +
+	                     rcinfo.getManager_name() + " " +
 	                     rcinfo.getManager_email() + "\n");
-	           } // end of for
+	       } // end of for
 	           System.out.println(sb.toString() );  
-	      }
-	      else {
-	           System.out.println(">> 존재하는 채용공고가 없습니다!! <<");
-	           return;
-	      }
+	   }
+	   else {  
+	       System.out.println(">> 존재하는 채용공고가 없습니다!! <<");   
+	   }
 	        
-	      int cnt = rdao.get_recruitlist_count(company.getCompany_id());
+	   int cnt = rdao.get_recruitlist_count(company.getCompany_id());
 	      
-	      System.out.println(">> 현재 " + company.getCompany_name() + "기업의 채용공고 건수 : " + cnt + "건 입니다.");
+	   System.out.println(">> 현재 " + company.getCompany_name() + "기업의 채용공고 건수 : " + cnt + "건 입니다.");
 	      
-	      String input_rcno = "";
-	      String yn = "";
-	      do {
-	    	   System.out.print(">> 삭제할 채용공고번호를 입력하세요 [삭제를 취소하려면 Q키를 누르세오] : ");
-	           input_rcno = sc.nextLine();
+	   String input_rcno = "";
+	   String yn = "";
+	   do {
+	       System.out.print(">> 삭제할 채용공고번호를 입력하세요 [삭제를 취소하려면 Q키를 누르세오] : ");
+	       input_rcno = sc.nextLine();
 
-	           if("q".equalsIgnoreCase(input_rcno)) {
-	               System.out.println(">> 삭제를 취소하고 이전메뉴로 돌아갑니다!"); 
-	               return;
-	           } else if (input_rcno.isBlank()) {
-	               System.out.println(">> 채용공고번호를 입력해야 합니다!");
-	               continue;
-	           } else {
-	               boolean found = false;
-	               for(Recruit_INFO_DTO rcinfo : rclist) {
-	                   if(input_rcno.equals(rcinfo.getRecruit_no())) {
-	                       found = true;
-	                       break; 
-	                   }
-	               }	// end of for------------
-	               if(!found) {
-	                   System.out.println(">> 존재하지 않는 채용공고 번호입니다.");
-	                   continue;
-	               }
-	               break;
+	       if("q".equalsIgnoreCase(input_rcno)) {
+	    	   System.out.println(">> 삭제를 취소하고 이전메뉴로 돌아갑니다!"); 
+	           return;
+	       } else if (input_rcno.isBlank()) {
+	           System.out.println(">> 채용공고번호를 입력해야 합니다!");
+	           continue;
+	       } else {
+	           boolean found = false;
+	           for(Recruit_INFO_DTO rcinfo : rclist) {
+	               	if(input_rcno.equals(rcinfo.getRecruit_no())) {
+	               		found = true;
+	                    break; 
+	                }
+	           }	// end of for--------------------
+	           if(!found) {
+	                System.out.println(">> 존재하지 않는 채용공고 번호입니다.");
+	                continue;
 	           }
-	      } while (true);   
-
-
+	           break;
+	       }   
+	   } while (true);   
+	                        
+	   do {
+           ////////////////////////////////////////////////////////////////////////////////////////
+           System.out.print(">> 정말로 해당 채용공고를 삭제 하시겠습니까?[Y/N] : ");
+           yn = sc.nextLine();
+              
+           if("y".equalsIgnoreCase(yn) ) {
+                 int n =  rdao.delete_recruitlist(input_rcno);
+                 if( n == 1 ) {
+                	 System.out.println(">> 채용공고 삭제 성공!! << \n");
+                	 return;
+                 }
+                 else {
+                    System.out.println(">> SQL 구문 오류 발생으로 인해 채용공고 삭제가 실패되었습니다. << \n");
+                    break; 
+                 }
+           } // end yn if
+           else if ("n".equalsIgnoreCase(yn) ) {
+               	System.out.println(">> 채용공고 삭제을 취소하셨습니다. << \n");
+                break;
+           } // else if
+           else {
+                System.out.println(">> [경고] Y 또는 N 만 입력하세요.!!");
+           }
+       } while (true);
 	}   // end of public void recruit_delete(Scanner sc, Company_DTO company, Recruit_INFO_DTO recruit)------
 
 
