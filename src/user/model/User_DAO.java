@@ -26,7 +26,7 @@ public interface User_DAO {
 	
 	// ◆◆◆ === 나의 정보 수정 === ◆◆◆ //
 	int fix_info(User_DTO user, String infoview, String fix_info);
-
+	
 	// ◆◆◆ === 나의 정보 수정(기존 정보 불러오기) === ◆◆◆ //
 	int updateBoard(Map<String, String> paraMap);
 	
@@ -37,10 +37,11 @@ public interface User_DAO {
 	int insert_anotherinfo(String academy_code, String priority_code, String user_id);
 
 	
-	
-	
 	// ◆◆◆ ===  이력서 조회 === ◆◆◆ //
 	List<Paper_DTO> paper_info(User_DTO user);
+	
+	// ◆◆◆ ===  이력서 조회(이력서 없는 경우) === ◆◆◆ //
+	int update_paper_no(Map<String, String> paraMap);
 	
 	// ◆◆◆ === 희망지역 검색 === ◆◆◆ //
 	Paper_DTO hope_local(Scanner sc, User_DTO user);
@@ -60,12 +61,19 @@ public interface User_DAO {
 	// ◆◆◆ === 나의 이력서 수정하기 === ◆◆◆ //
 	int update_paper(Map<String, String> paraMap, String paper_code);
 	
-	
-	
-	
 	// ◆◆◆ === 이력서가 존재하는지 확인하기  === ◆◆◆ //
 	boolean check_paper(int paper_code, User_DTO user);
 
+	// ◆◆◆ === 이력서 삭제전 간단하게 보여주기 === ◆◆◆
+	List<Paper_DTO> get_paperlist(User_DTO user);
+	
+	// ◆◆◆ === 이력서 삭제 === ◆◆◆ //
+	int delete_paper(String input_rcno);
+	
+	
+	
+	
+	
 	// ◆◆◆ ===  관리자 탈퇴 처리 === ◆◆◆ //
 	int remove();
 
@@ -73,7 +81,23 @@ public interface User_DAO {
 	String findid(User_DTO user);
 
 	// ◆◆◆ === 비밀번호 찾기  === ◆◆◆ //
-	User_DTO findpasswd(User_DTO user);
+	String findpasswd(User_DTO user);
+	
+	// ◆◆◆ === 이력서 상세조회 === ◆◆◆ //
+	Map<String, String> paper_info_detail(int u_Choice1, User_DTO user);
+
+	
+
+	
+
+	
+
+	
+
+	
+	
+
+	
 
 	
 

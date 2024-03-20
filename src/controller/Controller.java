@@ -224,14 +224,17 @@ public class Controller {
         
         // 주민번호 유효성 검사
         String user_security_num = null;
+        String security = "";
         do {
 	        System.out.print("\n▶ 주민번호 :  ");
 	        user_security_num = sc.nextLine();
 	        if(Set_util.Check_security_num(user_security_num)) {
+	        	String[] user_security_num_arr = user_security_num.split("[-]");
+	    		security = String.join("", user_security_num_arr);
 	        	break;
 	        }
 		} while(true);	// do~while---------------------------
-        user.setUser_security_num(user_security_num);
+        user.setUser_security_num(security);
         
         // 이메일 유효성 검사
         String user_email = null;
@@ -1001,7 +1004,6 @@ public class Controller {
 		                System.out.println(">> 가입된 회원이 존재하지 않습니다. <<");  
 					break;
 					
-					
 				case "2":	// 모든 기업 조회
 					List<Company_DTO> companyList = cdao.All_company();
 					
@@ -1029,7 +1031,6 @@ public class Controller {
 	                	System.out.println(sb.toString() );  
 		            } else 
 		                System.out.println(">> 가입된 기업이 존재하지 않습니다. <<");  
-					
 					break;
 					
 				case "3":	// 구직자 탈퇴처리
@@ -1173,25 +1174,27 @@ public class Controller {
 	// ◆◆◆ ==  비밀번호 찾기  == ◆◆◆ //
 	private void find_passwd(Scanner sc, User_DTO user) {
 		
-		  String user_email = "";
-	      String user_security_num = "";
-	      int n = 0;
+		String user_email = "";
+		String user_security_num = "";
+		int n = 0;
 	      
-	      System.out.println("[정보 입력]");
-	      System.out.println("이전 메뉴로 돌아가시려면 'Q'를 입력하세요.");
+		System.out.println("[정보 입력]");
+		System.out.println("이전 메뉴로 돌아가시려면 'Q'를 입력하세요.");
 	      
-	      outer:
-	      do {
-	         System.out.print("> 아이디 : ");
-	         String user_id = "";
-	         user_id = sc.nextLine();
+		outer:
+		do {
+			System.out.print("> 아이디 : ");
+			String user_id = "";
+			user_id = sc.nextLine();
 	         
-	         if(user_id.isEmpty() || user_id == null) {
+			if(user_id.isEmpty() || user_id == null) {
 	            System.out.println("정확히 입력하세요.");
-	         }
-	         else if ("q".equalsIgnoreCase(user_id)) 
+	            continue;
+			}
+			else if ("q".equalsIgnoreCase(user_id)) {
 	            break;
-	         else {
+			}
+			else {
 	            user.setUser_id(user_id);
 	            
 	            do {
@@ -1202,9 +1205,11 @@ public class Controller {
 	            
 	            	if(user_name.isEmpty() || user_name == null) {
 	            		System.out.println("정확히 입력하세요.");
+	            		continue;
 	            	}
-	            	else if ("q".equalsIgnoreCase(user_name)) 
+	            	else if ("q".equalsIgnoreCase(user_name)) {
 	            		break;
+	            	}
 	            	else {
 	            		user.setUser_name(user_name);
 	               
@@ -1214,9 +1219,11 @@ public class Controller {
 	                  
 	            			if(user_email.isEmpty() || user_email == null) {
 	            				System.out.println("정확히 입력하세요.");
+	            				continue;
 	            			}
-	            			else if ("q".equalsIgnoreCase(user_email))
+	            			else if ("q".equalsIgnoreCase(user_email)) {
 	            				break outer;
+	            			}
 	            			else {
 	            				user.setUser_email(user_email);
 	                     
@@ -1226,6 +1233,7 @@ public class Controller {
 	                     
 	            					if(user_security_num.isEmpty() || user_security_num == null) {
 	            						System.out.println("정확히 입력하세요.");
+	            						continue;
 	            					}
 	            					else if ("q".equalsIgnoreCase(user_security_num)) {
 	            						break outer;
@@ -1233,23 +1241,23 @@ public class Controller {
 	            					else {
 	            						user.setUser_security_num(user_security_num);
 	            						break;
-	            					}
-	            				} while(true);	// end of do~while----------------
-	            			}		// end of if~else(이메일 입력)
+	            					}      
+	            				} while(true);
+	            			}
 	            			break;
 	            		} while(true);
 	            	}
 	            	break;
-            	} while(true);
-	      } 
-	      n=1;
-	      break;
-	   }while(true);
+	            }while(true);
+			}
+			n=1;
+			break;
+		}while(true);
 
-      if (n == 1) {
-         User_DTO result = udao.findpasswd(user);
-         System.out.println("패스워드 : " + result.getUser_passwd());
-      }
+		if (n == 1) {
+			String result = udao.findpasswd(user);
+			System.out.println(result);
+		}
 	}	// end of private void find_passwd(Scanner sc, User_DTO user)------
 
 

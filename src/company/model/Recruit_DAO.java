@@ -2,11 +2,9 @@ package company.model;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 import company.domain.Company_DTO;
 import company.domain.Recruit_INFO_DTO;
-import user.domain.User_DTO;
 
 public interface Recruit_DAO {
 
@@ -82,9 +80,6 @@ public interface Recruit_DAO {
 	
 	// ◆◆◆ === 채용공고 삭제 === ◆◆◆ //
 	int delete_recruitlist(String input_rcno);
-
-	// ◆◆◆ === 지원한 구직자 조회 === ◆◆◆ //
-	void apply_user_search(Scanner sc, User_DTO user, Company_DTO company);
 
 	
 

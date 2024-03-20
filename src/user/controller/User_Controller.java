@@ -31,6 +31,8 @@ public class User_Controller {
 	Recruit_DAO rdao = new Recruit_DAO_imple();
 	Recruit_apply_DAO radao = new Recruit_apply_DAO_imple();
 	
+
+	
 	
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 	
@@ -141,8 +143,8 @@ public class User_Controller {
 		// ◆◆◆ === 나의 정보 수정 === ◆◆◆ //
 		public void change_information(Scanner sc, User_DTO user) {
 			
-			User_DTO udto = new User_DTO();		// 전체수정 바꿀값 담을 용도
-	        udto.setUser_id(user.getUser_id());
+			// User_DTO udto = new User_DTO();		// 전체수정 바꿀값 담을 용도
+	        //udto.setUser_id(user.getUser_id());
 			
 			System.out.println("\n>>> 나의 정보 수정하기 <<<");
 			System.out.println("\n ※ 이전으로 돌아가시려면 엔터하세요.");
@@ -177,6 +179,7 @@ public class User_Controller {
 	        			System.out.println("\n▶ 수정 전 비밀번호 : " + user.getUser_passwd());
 	        			
 	        			System.out.println("※ 변경하지 않으려면 엔터하세요.");
+	        			System.out.print("▶ 변경할 비밀번호 : ");
 	        			fix_info = sc.nextLine();
 	        			
 	        			if(!(fix_info.isBlank() || user.getUser_passwd().equals(fix_info))) {
@@ -208,6 +211,7 @@ public class User_Controller {
 	        			System.out.println("\n▶ 수정 전 성명 : " + user.getUser_name());
 	        			
 	        			System.out.println("※ 변경하지 않으려면 엔터하세요.");
+	        			System.out.print("▶ 변경 할 성명 : ");
 	        			fix_info = sc.nextLine();
 	        			
 	        			if(!(fix_info.isBlank() || user.getUser_name().equals(fix_info))) {
@@ -236,8 +240,8 @@ public class User_Controller {
 	        		case "3":	// 주소
 	        			infoview = "user_address";
 	        			System.out.println("\n▶ 수정 전 주소 : " + user.getUser_address());
-	        			
 	        			System.out.println("※ 변경하지 않으려면 엔터하세요.");
+	        			System.out.print("▶ 변경 할 주소 : ");
 	        			fix_info = sc.nextLine();
 	        		       
 	        			 if(!(fix_info.isBlank() || user.getUser_address().equals(fix_info))) {
@@ -261,8 +265,8 @@ public class User_Controller {
 	        		case "4":	// 연락처
 	        			infoview = "user_tel";
 	        			System.out.println("\n▶ 수정 전 연락처 : " + user.getUser_tel());
-	        			
 	        			System.out.println("※ 변경하지 않으려면 엔터하세요.");
+	        			System.out.print("▶ 변경 할 연락처 : ");
 	        			fix_info = sc.nextLine();
 	        			
 	        			if(!(fix_info.isBlank() || user.getUser_tel().equals(fix_info))) {
@@ -291,8 +295,8 @@ public class User_Controller {
 	        		case "5":	// 주민번호
 	        			infoview = "user_security_num";
 	        			System.out.println("\n▶ 수정 전 주민번호 : " + user.getUser_security_num());
-	        			
 	        			System.out.println("※ 변경하지 않으려면 엔터하세요.");
+	        			System.out.print("▶ 변경 할 주민번호 : ");
 	        			fix_info = sc.nextLine();
 	        			
 	        			if(!(fix_info.isBlank() || user.getUser_security_num().equals(fix_info))) {
@@ -310,8 +314,8 @@ public class User_Controller {
 	        		case "6":	// 이메일
 	        			infoview = "user_email";
 	        			System.out.println("\n▶ 수정 전 이메일 : " + user.getUser_email());
-	        			
 	        			System.out.println("※ 변경하지 않으려면 엔터하세요.");
+	        			System.out.print("▶ 변경 할 이메일 : ");
 	        			fix_info = sc.nextLine();
 	        			
 	        			if(!(fix_info.isBlank() || user.getUser_email().equals(fix_info))) {
@@ -338,133 +342,179 @@ public class User_Controller {
 	        			}	// end of if(공백이 아닌 경우)--------------
 	        			break;
 	        		case "7":	// 전체 수정
-	        			System.out.println("\n ※ 변경하지 않으려면 엔터하세요.");
-	        			do {
-	     	           		System.out.print("\n▶ 비밀번호 : ");
-	     	           		user_passwd = sc.nextLine();
-		     	           	if(!(user_passwd.isBlank() || user.getUser_passwd().equals(user_passwd))) {
-		     	           		if(Set_util.Check_passwd(user_passwd)) {
-		     	           			udto.setUser_passwd(user_passwd);
-		     	           			break;
-		     	           		}
-		     	           		else {
-		     	           			System.out.println(">>> [경고] 8~16자의 영문 대/소문자, 숫자, 특수문자를 사용해 주세요. <<<");
-		     	           		}
-		     	           	}	
-		     	           	else {
-		     	           		break;
-		     	           	}
-	        			}while(true);
-	     	           
-	     	           	do {
-	     	           		System.out.print("\n▶ 성명 : ");
-	     	           		String user_name = sc.nextLine();
-	     	           		if(!(user_name.isBlank() || user.getUser_name().equals(user_name))) {
-	     	           			if(Set_util.Check_name(user_name)) {
-	     	           				udto.setUser_name(user_name);
-	     	           				break;
-	     	           			}
-	     	           			else {
-	     	           				System.out.println(">>> [경고] 2~37자리 / 영문, 한글만 사용 가능합니다. <<<");
-	     	           			}
-	     	           		}	
-	     	           		else {
-	     	           			break;
-	     	           		}
-	     	           	}while(true);
-	     	           
-	     	           	System.out.print("\n▶ 주소 : ");
-	     	           	String user_address = sc.nextLine();
-	     	       
-	     	           	if(!(user_address.isBlank() || user.getUser_address().equals(user_address))) {
-	     	        	  udto.setUser_address(user_address);
-	     	           	}
-	     	           
-	     	           	do {
-	     	           		System.out.print("\n▶ 연락처 : ");
-	     	           		String user_tel = sc.nextLine();
-	     	       
-	     	           		if(!(user_tel.isBlank() || user.getUser_tel().equals(user_tel))) {
-	     	           			if(Set_util.Check_tel(user_tel)) {
-	     	           				udto.setUser_tel(user_tel);
-	     	           				break;
-	     	           			}
-	     	           			else {
-	     	           				System.out.println(">>> [경고] 공백이 없으며, 숫자만 사용 가능합니다. <<<");
-	     	           			}
-	     	           		}	
-	     	           		else {
-	     	           			break;
-	     	           		}
-     	           		}while(true);
-	     	           
-	     	           	do {
-	     	        	   System.out.print("\n▶ 주민번호 : ");
-	     	        	   String user_security_num = sc.nextLine();
-	     	       
-	     	        	   if(!(user_security_num.isBlank() || user.getUser_security_num().equals(user_security_num))) {
-	     	           			if(Set_util.Check_security_num(user_security_num)) {
-	     	           				udto.setUser_security_num(user_security_num);
-	     	           				break;
-	     	           			}
-	     	           		}	
-	     	           		else {
-	     	           			break;
-	     	           		}
-	     	           	}while(true);
-	     	           
-	     	           do {
-	     	        	   System.out.print("\n▶ 이메일 : ");
-	     	        	   String user_email = sc.nextLine();
-	     	       
-	     	        	  if(!(user_email.isBlank() || user.getUser_email().equals(user_email))) {
-	     	           			if(Set_util.Check_email(user_email)) {
-		     	           			udto.setUser_email(user_email);
-	     	           				break;
-	     	           			}
-	     	           		}	
-	     	           		else {
-	     	           			break;
-	     	           		}
-	     	           	}while(true);	        	
-	           
-			           yn = "";
-			           n = 0;
-			           do {
-			        	   ///////////////////////////////////////////////////////////////
-			        	   System.out.print("\n▶ 정보를 수정하시겠습니까?[Y/N] : ");
-			        	   yn = sc.nextLine();
-			             
-			        	   if("y".equalsIgnoreCase(yn)) {
-			               
-			        		   Map<String, String> paraMap = new HashMap<>();
-			                   
-			                   paraMap.put("user_id", udto.getUser_id());
-			                   paraMap.put("user_passwd", udto.getUser_passwd());
-			                   paraMap.put("user_name", udto.getUser_name());
-			                   paraMap.put("user_address", udto.getUser_address());
-			                   paraMap.put("user_tel", udto.getUser_tel());
-			                   paraMap.put("user_security_num", udto.getUser_security_num());
-			                   paraMap.put("user_email", udto.getUser_email());
-			                   
-			                   n = udao.updateBoard(paraMap);   // 나의 정보 수정하기
-			                   
-			                   if(n==1) {
-			                      System.out.println(">>> 수정 성공!! <<<\n");
-			                   }
-			                   else {
-			                      System.out.println(">>> SQL 구문 오류 발생으로 인해 글수정이 실패되었습니다. <<<\n");   
-			                   }
-			               } 
-			        	   else if("n".equalsIgnoreCase(yn)) {
-			        		   System.out.println(">>> 수정을 취소하셨습니다. <<<\n");
-			        	   } 
-			        	   else {
-			        		   System.out.println(">>> Y 또는 N만 입력하세요.!! <<<\n");
-			        	   }	// end of if~else------------
-			            ///////////////////////////////////////////////////////////////
-			           } while(!("y".equalsIgnoreCase(yn) || "n".equalsIgnoreCase(yn)));
-			           
+	        			String chk = "";
+	                    String before = "";
+	                       
+	                    Map<String, String> paraMap = new HashMap<>();
+	                            
+	                    paraMap.put("user_id", user.getUser_id());
+	                   
+	                    System.out.println("\n ※ 변경하지 않으려면 엔터하세요.");
+	                    do {
+	                            System.out.print("\n▶ 비밀번호 : ");
+	                            user_passwd = sc.nextLine();
+	                            if(user_passwd.isBlank()) {
+	                            chk = "user_passwd";
+	                            before = udao.check_user_info(chk, user.getUser_id());
+	                            
+	                            paraMap.put("user_passwd", before);
+	                            
+	                             break;
+	                            }
+	                            if(!(user_passwd.isBlank() || user.getUser_passwd().equals(user_passwd))) {
+	                               if(Set_util.Check_passwd(user_passwd)) {
+	                               paraMap.put("user_passwd", user_passwd);
+	                                  break;
+	                               }
+	                               else {
+	                                  System.out.println(">>> [경고] 8~16자의 영문 대/소문자, 숫자, 특수문자를 사용해 주세요. <<<");
+	                               }
+	                            }   
+	                            else {
+	                               break;
+	                            }
+	                    }while(true);
+	                      
+	                         do {
+	                            
+	                            System.out.print("\n▶ 성명 : ");
+	                            String user_name = sc.nextLine();
+	                            if(user_name.isBlank()) {
+	                            chk = "user_name";   
+	                            before = udao.check_user_info(chk,user.getUser_id());
+	                            paraMap.put("user_name", before);
+	                        
+	                            break;
+	                            }
+	                            if(!(user_name.isBlank() || user.getUser_name().equals(user_name))) {
+	                            
+	                               if(Set_util.Check_name(user_name)) {
+	                               paraMap.put("user_name", user_name);
+	                               break;
+	                                  
+	                               }
+	                               else {
+	                                  System.out.println(">>> [경고] 2~37자리 / 영문, 한글만 사용 가능합니다. <<<");
+	                               }
+	                            }   
+	                            else {
+	                               break;
+	                            }
+	                         }while(true);
+	                       do {    
+	                         System.out.print("\n▶ 주소 : ");
+	                         String user_address = sc.nextLine();
+	                       if(user_address.isBlank()) {
+	                  
+	                            chk = "user_address";   
+	                            before = udao.check_user_info(chk,user.getUser_id());
+	                            paraMap.put("user_address", before);
+	                             break;
+	                            }
+	                  
+	                         if(!(user_address.isBlank() || user.getUser_address().equals(user_address))) {
+	                           paraMap.put("user_address", user_address);
+	                        break;
+	                         }
+	                      } while (true);
+	                         do {
+	                            System.out.print("\n▶ 연락처 : ");
+	                            String user_tel = sc.nextLine();
+	                            if(user_tel.isBlank()) {
+	                            
+	                            chk = "user_tel";   
+	                             before = udao.check_user_info(chk,user.getUser_id());
+	                             paraMap.put("user_tel", before);
+	                             break;
+	                            }
+
+	                  
+	                            if(!(user_tel.isBlank() || user.getUser_tel().equals(user_tel))) {
+	                               if(Set_util.Check_tel(user_tel)) {
+	                                   paraMap.put("user_tel", user_tel);
+	                                  break;
+	                               }
+	                               else {
+	                                  System.out.println(">>> [경고] 공백이 없으며, 숫자만 사용 가능합니다. <<<");
+	                               }
+	                            }   
+	                            else {
+	                               break;
+	                            }
+	                         }while(true);
+	                      
+	                         do {
+	                         System.out.print("\n▶ 주민번호 : ");
+	                         String user_security_num = sc.nextLine();
+	                        if(user_security_num.isBlank()) {
+	                               
+	                               chk = "user_security_num";   
+	                               before = udao.check_user_info(chk,user.getUser_id());
+	                                paraMap.put("user_security_num", before);
+	                                break;
+	                               }
+	                  
+	                         if(!(user_security_num.isBlank() || user.getUser_security_num().equals(user_security_num))) {
+	                               if(Set_util.Check_security_num(user_security_num)) {
+	                                   paraMap.put("user_security_num", user_security_num);
+	                                  break;
+	                               }
+	                            }   
+	                            else {
+	                               break;
+	                            }
+	                         }while(true);
+	                      
+	                      do {
+	                         System.out.print("\n▶ 이메일 : ");
+	                         String user_email = sc.nextLine();
+	                        if(user_email.isBlank()) {
+	                               
+	                            chk = "user_email";   
+	                            before = udao.check_user_info(chk,user.getUser_id());
+	                          paraMap.put("user_email", before);                            
+	                                break;
+	                               }
+	                  
+	                        if(!(user_email.isBlank() || user.getUser_email().equals(user_email))) {
+	                               if(Set_util.Check_email(user_email)) {
+	                               paraMap.put("user_email", user_email);
+	                                  break;
+	                               }
+	                            }   
+	                            else {
+	                               break;
+	                            }
+	                         }while(true);              
+	              
+	                    yn = "";
+	                    n = 0;
+	                    do {
+	                       ///////////////////////////////////////////////////////////////
+	                       System.out.print("\n▶ 정보를 수정하시겠습니까?[Y/N] : ");
+	                       yn = sc.nextLine();
+	                      
+	                       if("y".equalsIgnoreCase(yn)) {
+
+	                            
+	                            n = udao.updateBoard(paraMap);   // 나의 정보 수정하기
+	                            
+	                            if(n==1) {
+	                               System.out.println(">>> 수정 성공!! <<<\n");
+	                            }
+	                            else {
+	                               System.out.println(">>> SQL 구문 오류 발생으로 인해 글수정이 실패되었습니다. <<<\n");   
+	                            }
+	                        } 
+	                       else if("n".equalsIgnoreCase(yn)) {
+	                          System.out.println(">>> 수정을 취소하셨습니다. <<<\n");
+	                       } 
+	                       else {
+	                          System.out.println(">>> Y 또는 N만 입력하세요.!! <<<\n");
+	                       }   // end of if~else------------
+	                     ///////////////////////////////////////////////////////////////
+	                    } while(!("y".equalsIgnoreCase(yn) || "n".equalsIgnoreCase(yn)));
+			           break;
 		        	case "8":
 		        		break;
 	        		default:
@@ -501,10 +551,22 @@ public class User_Controller {
 	         System.out.println("\t>>> 나의 추가정보 입력하기 <<<");
 	         System.out.println("--------------------------------------");
 	           
-	         System.out.println("1. 학력 2. 취업우대 3. 돌아가기");
-	         System.out.print("▶ 메뉴번호 선택(번호로 입력해주세요.) : ");
-	         String choice = sc.nextLine();
-	           
+	         String choice = "";
+	         do {
+	        	 System.out.println("1. 학력 2. 취업우대 3. 돌아가기");
+	        	 System.out.print("▶ 메뉴번호 선택(번호로 입력해주세요.) : ");
+	        	 choice = sc.nextLine();
+	        	 if("1".equals(choice) || "2".equals(choice)) {
+	                  break;
+	             }
+	             if("3".equals(choice)) {
+	                  return;
+	             }
+	             else {
+	                 System.out.println("[경고] 메뉴에 있는 번호만 입력하세요!");
+	             } 
+	         } while (true); 
+	            
 	         String academy_code = "";
 	         String priority_code = "";
 	         switch(choice) {
@@ -520,7 +582,7 @@ public class User_Controller {
 	        	   System.out.print("▶ 학력 입력 [숫자만 입력] : ");
 	        	   academy_code = sc.nextLine();
 	             
-	        	   if("z".equalsIgnoreCase(academy_code)) {
+	        	   if("q".equalsIgnoreCase(academy_code)) {
 	        		   return;
 	        	   }
 	        	   try {
@@ -545,7 +607,7 @@ public class User_Controller {
 	        	 System.out.print(">> 취업우대에 해당하는 번호를 입력하세요 << \n"
 	                    + "1.컴퓨터활용능력 우수 \t2.국가유공자 \t3.보훈대상자 \t4.고용촉진지원금 대상\n"
 	                    + "5.취업보호대상자 \t6.병역특례 \t7.공모전입상자 \t8.외국어가능자\n"
-	                    + "9.인근거주자 [입력을 취소하시려면 Z키를 눌러주세요]\n");
+	                    + "9.인근거주자 [입력을 취소하시려면 Q키를 눌러주세요]\n");
 	        	 System.out.println("-".repeat(80));
 	        	 System.out.print("▶ 번호 입력 [숫자만 입력] (해당하지않는다면 엔터를 입력하세요) : ");
 	        	 
@@ -554,7 +616,7 @@ public class User_Controller {
 	        		 System.out.println(" >> 해당없음으로 입력됩니다! << ");
 	        		 break;
 	        	 }
-	        	 if("z".equalsIgnoreCase(priority_code)) {
+	        	 if("Q".equalsIgnoreCase(priority_code)) {
 	        		   return;
 	        	   }
 	        	 try {
@@ -626,51 +688,96 @@ public class User_Controller {
 			    switch (u_Choice) {
 			        
 					case "1": 	// 이력서 조회
-						String yn = "";
-		                   List<Paper_DTO> paperlist = udao.paper_info(user);
+						 String yn = "";
+		                  List<Paper_DTO> paperlist = udao.paper_info(user);
+		                  
+		                  if(paperlist.isEmpty()) {
+		                     System.out.println("> 작성한 이력서가 없습니다.");
+		                     do {
+		                        System.out.print("> 이력서를 작성하시겠습니까? [Y/N] : ");
+		                        yn = sc.nextLine();
 		                     
-		                   if(paperlist == null) {
-		                      System.out.println("> 작성한 이력서가 없습니다.");
-		                        
-		                      do {
-		                         System.out.print("> 이력서를 작성하시겠습니까? [Y/N] : ");
-		                           yn = sc.nextLine();
-		                           
-		                           if("y".equalsIgnoreCase(yn)) {
-		                              //udao.write_paper(sc, user);
-		                              break;
-		                           }
-		                           else if ("n".equalsIgnoreCase(yn)){
-		                              System.out.println("이전 메뉴로 돌아갑니다.");
-		                              break;
-		                           }
-		                           else {
-		                              System.out.println(">>> Y 또는 N 만 입력하세요. <<<\n");
-		                           }
-		                       } while((!("y".equalsIgnoreCase(yn) || "n".equalsIgnoreCase(yn))));
-		                        
-		                   }
-		                   else { 
-		                      System.out.println("\n[ " + user.getUser_id() + " 님의 이력서 보기]");
-		                       System.out.print("▶ 번호\t▶ 이력서 제목\t\t▶ 작성일\n");
-		                          
-		                       StringBuilder sb = new StringBuilder();
-		                      
-		                       for(Paper_DTO paper1 : paperlist) {
-		                          sb.append(paper1.getPaper_no());
-		                           sb.append(paper1.getPaper_name());
-		                           sb.append(paper1.getPaper_registerday()+"\n");
-		                           
-		                       }
-		                      
-		                       System.out.println(sb.toString());
+		                        if("y".equalsIgnoreCase(yn)) {
+		                           write_paper(sc, user);
+		                           break;
+		                        }
+		                        else if ("n".equalsIgnoreCase(yn)){
+		                           System.out.println("이전 메뉴로 돌아갑니다.");
+		                           break;
+		                        }
+		                        else {
+		                           System.out.println(">>> Y 또는 N 만 입력하세요. <<<\\n");
+		                        }
+		                     }while((!("y".equalsIgnoreCase(yn) || "n".equalsIgnoreCase(yn)))); 
+		                  }
+		                  else {
+		                	  System.out.println("\n[ " + user.getUser_id() + " 님의 이력서 보기]");
+		                	  System.out.print("▶ 번호\t▶ 이력서 제목\t▶ 작성일\n");
 		                       
-		                       System.out.print("자세한 내용을 확인하시려면 글번호를 입력하세요. : " );
-		                       u_Choice = sc.nextLine();
+		                	  StringBuilder sb = new StringBuilder();
+		                     
+		                	  for(Paper_DTO paper : paperlist) {
+		                        sb.append(paper.getPaper_no() + "\t");
+		                        sb.append(paper.getPaper_name() + "\t\t");
+		                        sb.append(paper.getPaper_registerday()+"\n");
 		                        
-		                       //udao.paper_info_detail(user);
-		                   }
-		                   break;
+		                        Map<String, String> paraMap = new HashMap<>();
+		                        String paper_no_str = Integer.toString(paper.getPaper_no());
+		                             paraMap.put("paper_no", paper_no_str);
+		                             paraMap.put("paper_code", paper.getPaper_code());
+		                             paraMap.put("user_id", user.getUser_id());
+		                             
+		                             udao.update_paper_no(paraMap);
+		                	  }
+		                	  System.out.println(sb.toString());
+
+		                	  do {
+		                		  try{
+		                			  System.out.print("자세한 내용을 확인하시려면 글번호를 입력하세요. : " );
+		                			  u_Choice = sc.nextLine();
+		                			  int u_Choice1 = Integer.parseInt(u_Choice);
+		                        
+		                			  if(u_Choice1 >= user.getPaper().getPaper_no() || u_Choice1 <= 0) {
+		                				  System.out.println("입력하신 글번호는 없는 글번호입니다.");
+		                				  continue;
+		                			  }
+		                			  else if(u_Choice1 < user.getPaper().getPaper_no()) {
+		                           
+		                				  user.getPaper().setPaper_no(Integer.parseInt(u_Choice));
+		                				  Map<String,String> paper = udao.paper_info_detail(u_Choice1, user);
+		                           
+		                           
+		                				  System.out.println("[이력서 상세 정보]");
+
+		                				  System.out.println("▶ 이력서 제목 : " + paper.get("paper_name"));
+		                				  System.out.println("▶ 최종 수정 날짜 : " + paper.get("register_day"));
+		                				  System.out.println("▶ 성명 : " + paper.get("user_name"));
+		                				  System.out.println("▶ 성별 : " + paper.get("gender"));
+		                				  System.out.println("▶ 나이 : " + paper.get("age"));
+		                				  System.out.println("▶ 연락처 : " + paper.get("user_tel"));
+		                				  System.out.println("▶ 주소 : " + paper.get("user_address"));
+		                				  System.out.println("▶ 이메일 : " + paper.get("user_email"));
+		                				  System.out.println("▶ 학력 : " + paper.get("academy_name"));
+		                				  System.out.println("▶ 취업우대사항 : " + paper.get("priority_name"));
+		                				  System.out.println("▶ 희망근무지역 : " + paper.get("hope_city"));
+		                				  System.out.println("▶ 신입/경력여부 : " + paper.get("career"));
+		                				  System.out.println("▶ 자격증명 :" + paper.get("license_name"));
+		                				  System.out.println("▶ 자격증 취득일자 : " + paper.get("license_day"));
+		                				  System.out.println("▶ 자격증 취득기관 : " + paper.get("license_company"));
+		                				  System.out.println("▶ 희망연봉 : " + paper.get("hope_money"));
+		                            
+		                				  break;
+		                			  }
+		                			  else {
+		                				  System.out.println("정확히 입력하세요.");
+		                				  continue;
+		                			  }
+		                		  }catch(NumberFormatException e) {
+		                			  System.out.println("정확히 입력하세요.");
+		                		  }
+		                	  }while(true); 
+		                  }
+		                  break;
 					case "2": 	// 이력서 작성
 						write_paper(sc, user);
 					   	break;
@@ -691,18 +798,14 @@ public class User_Controller {
 
 		
 		
-
+		// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 
 
 		// ◆◆◆ === 이력서 조회 === ◆◆◆ //
-		private void paper_info(Scanner sc, User_DTO user) {
-			// TODO Auto-generated method stub
-			
-		}
 		
 		
 
-
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 
 
 
@@ -731,6 +834,9 @@ public class User_Controller {
 		    		  else if ("q".equalsIgnoreCase(paper_name)) {
 		    			  break outer;
 		    		  }
+		    		  else if(paper_name.length() > 20) {
+		                  System.out.println("[경고] 이력서제목은 최대 20글자 이내이어야 합니다.");
+		              }
 		    		  else {	// 제목을 입력한 경우
 		    			  n = 1;
 		    			  user.getPaper().setPaper_name(paper_name);
@@ -863,7 +969,7 @@ public class User_Controller {
 		               System.out.println("1. 신입");
 		               System.out.println("2. 경력");
 		               System.out.println("-".repeat(50));
-		               System.out.print("> 경력사항 선택 : ");
+		               System.out.print("> 경력사항 선택 (번호로 입력해주세요) : ");
 		               career_choice = sc.nextLine();
 		               
 		               if("q".equalsIgnoreCase(career_choice)) {
@@ -1019,18 +1125,21 @@ public class User_Controller {
 		         
 		         }
 		      }while(!(n==1));
+		      System.out.println(">>> 이력서 작성이 완료되었습니다. <<<");
 		}	// end of private void write_paper(Scanner sc, User_DTO user)
 
 
 		
 
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 
 
-
+		
+		
 
 		// ◆◆◆ === 이력서 수정 === ◆◆◆ //
 		private void change_paper(Scanner sc, User_DTO user) {
-			User_DAO udao = new User_DAO_imple();
+			  User_DAO udao = new User_DAO_imple();
 		      
 		      System.out.println("\n>>> 이력서 수정하기 <<<");
 		      
@@ -1196,22 +1305,110 @@ public class User_Controller {
 		               }
 		               ////////////////////////////////////////////////////////////
 		            } while(!("y".equalsIgnoreCase(yn) || "n".equalsIgnoreCase(yn)));
+		            
 		         }
+		         
 		      }
-		}	// end of private void change_paper(Scanner sc, User_DTO user)-------
+		      
+		   }   // end of public void change_paper(Scanner sc, User_DTO user)----
 
 
-		
-		
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
-		
-		
+		 
 
-		// ◆◆◆ === 이력서 삭제 === ◆◆◆ //
-		private void delete_paper(Scanner sc, User_DTO user) {
-			// TODO Auto-generated method stub
-			
-		}
+
+	// ◆◆◆ === 이력서 삭제 === ◆◆◆ //
+	private void delete_paper(Scanner sc, User_DTO user) {
+
+		List<Paper_DTO> palist = udao.get_paperlist(user);
+        
+        
+        StringBuilder sb = new StringBuilder();
+          
+          if(palist.size() > 0) {
+            
+             System.out.println("-".repeat(30));
+             System.out.println("이력서번호  이력서제목  신입/경력  희망연봉 ");
+             System.out.println("-".repeat(30));
+            
+             sb = new StringBuilder();
+          
+             for(Paper_DTO rcinfo : palist) {
+                sb.append(rcinfo.getPaper_code() + " " +
+                      rcinfo.getPaper_name() + " " +
+                      rcinfo.getCareer() + " " +
+                      rcinfo.getHope_money() + "\n");
+             } // end of for
+             System.out.println(sb.toString() );  
+          }
+          else {
+             
+             System.out.println(">> 존재하는 이력서가 없습니다!! <<");
+             return;
+          }
+          
+        String input_rcno = "";
+        String yn = "";
+        do {
+           System.out.print(">> 삭제할 이력서번호를 입력하세요 [삭제를 취소하려면 Q키를 누르세오] : ");
+             input_rcno = sc.nextLine();
+
+             if("q".equalsIgnoreCase(input_rcno)) {
+                 System.out.println(">> 삭제를 취소하고 이전메뉴로 돌아갑니다!"); 
+                 
+                 return;
+             } else if (input_rcno.isBlank()) {
+                 System.out.println(">> 삭제하려면 이력서 번호는 반드시 입력해야 합니다!");
+                 continue;
+             } else {
+                 boolean found = false;
+                 for(Paper_DTO rcinfo : palist) {
+                     if(input_rcno == rcinfo.getPaper_code() ) {
+                      
+                         found = true;
+                        
+                         break; 
+                     }
+                 }
+                 if(!found) {
+                     System.out.println(">> 존재하지 않는 이력서 번호입니다.");
+                     
+                     continue;
+                 }
+                 
+                 break;
+             }
+           
+              
+        } while (true);   
+                          
+              do {
+                 
+                 ////////////////////////////////////////////////////////////////////////////////////////
+                 System.out.print(">> 정말로 해당 이력서를 삭제 하시겠습니까?[Y/N] : ");
+                 yn = sc.nextLine();
+                    
+                 if("y".equalsIgnoreCase(yn) ) {
+
+                       int n =  udao.delete_paper(input_rcno);
+                       if( n == 1 ) { 
+                          System.out.println(">> 이력서 삭제 성공!! << \n");
+                          return;
+                       }
+                       else {
+                          System.out.println(">> SQL 구문 오류 발생으로 인해 이력서 삭제가 실패되었습니다. << \n");
+                          break;
+                       }	// end of if~else---------
+                 } // end yn if
+                 else if ("n".equalsIgnoreCase(yn) ) {
+                       System.out.println(">> 이력서 삭제를 취소하셨습니다. << \n");
+                       break;
+                 } // else if
+                 else {
+                	 System.out.println(">> [경고] Y 또는 N 만 입력하세요.!!");  
+                 } 
+             } while (true);
+	}	// end of private void delete_paper(Scanner sc, User_DTO user)------
 		
 		
 
@@ -1225,19 +1422,50 @@ public class User_Controller {
 	         do {
 	            System.out.println("\n>>> ---- " + user.getUser_name() + "님의 구직 메뉴 ---- <<<\n"
 	                            + "1. 구인회사 조회\n"
-	                            + "2. 채용공고 조회\n"
-	                            + "3. 공고분야별 검색\n"
-	                            + "4. 지원현황\n"
-	                            + "5. 이전 메뉴로 돌아가기" );
+	                            + "2. 구인회사 검색\n"
+	                            + "3. 채용공고 조회\n"
+	                            + "4. 공고분야별 검색\n"
+	                            + "5. 지원현황\n"
+	                            + "6. 이전 메뉴로 돌아가기" );
 	               
 	             System.out.print("▶ 메뉴번호 선택 : ");
 	             u_Choice = sc.nextLine();
 	               
 	             switch (u_Choice) {
-	               case "1": // 구인회사 조회
+	             	case "1":	// 구인회사 조회
+	             		StringBuilder sb = new StringBuilder();
+	             		
+	             		List<Company_DTO> companyList = cdao.All_company();
+						
+		                if(companyList.size() > 0) {
+		                  
+		                	System.out.println("-".repeat(100));
+		                	System.out.println("회사아이디\t회사명\t사업자등록번호\t대표자명\t기업주소\t\t설립일자\t사원수\t상장여부\t자본금\t계열회사수");
+		                	System.out.println("-".repeat(100));
+		                  
+		                	sb = new StringBuilder();
+		                  
+		                	for(Company_DTO company_list : companyList) {
+		                		sb.append(company_list.getCompany_id()+ "\t"
+		                				+ company_list.getCompany_name() + "\t" 
+		                				+ company_list.getBusiness_number() + "\t"
+		                				+ company_list.getCeo_name() + "\t"
+		                				+ company_list.getCompany_address() + "\t\t"
+		                				+ company_list.getCompany_type_detail().getBegin_day() + "\t\t"
+		                				+ company_list.getCompany_type_detail().getEmployee_num() + "\t"
+		                				+ company_list.getCompany_type_detail().getPublic_status() + "\t"
+		                				+ company_list.getCompany_type_detail().getCapital_money() + "\t"
+		                				+ company_list.getCompany_type_detail().getCompanylist_num() + "\n");
+		                				
+		                	} // end of for(Company_DTO company_list : companyList)
+		                	System.out.println(sb.toString() );  
+			            } else 
+			                System.out.println(">> 가입된 기업이 존재하지 않습니다. <<");  
+	             		break;
+	               case "2": // 구인회사 검색
 	                  company_search(sc, user, company);
 	                     break;
-	               case "2": // 채용공고 조회
+	               case "3": // 채용공고 조회
 	            	   List<Recruit_INFO_DTO> recruit_info_list = rdao.recruit_info_list();
 	                   
 	                   if(recruit_info_list.size() > 0) {
@@ -1246,7 +1474,7 @@ public class User_Controller {
 	                      System.out.println("채용공고번호\t\t채용공고명\t\t기업명\t주소\t신입,경력여부\t연봉\t채용마감일");
 	                      System.out.println("-------------------------------------------------------------------------"); 
 	                        
-	                      StringBuilder sb = new StringBuilder();
+	                      sb = new StringBuilder();
 	                        
 	                      for(Recruit_INFO_DTO recruit_info_li : recruit_info_list) {
 	                           sb.append(recruit_info_li.getRecruit_no() + "\t" +
@@ -1330,19 +1558,19 @@ public class User_Controller {
 	                      System.out.println("\n>> 채용공고 목록이 존재하지 않습니다. <<");
 	                   }	// end of if~else(채용공고 존재)----------------------------
 	                   break;
-	               case "3":   // 공고분야별 검색
+	               case "4":   // 공고분야별 검색
 	            	  search_recruit(sc, user, company);
 	                  break;
-	               case "4":   // 지원한 공고 조회
+	               case "5":   // 지원한 공고 조회
 	                  recruit_apply_situation(sc, user, company);
 	                  break;
-	               case "5": // 이전 메뉴로 돌아가기
+	               case "6": // 이전 메뉴로 돌아가기
 	                  break;   
 	               default:
 	                  System.out.println(">>> 메뉴에 없는 번호 입니다. 다시 선택하세요!! <<<");
 	                  break;
 	             } // end of switch (u_Choice)-----------------
-	         } while (!"5".equalsIgnoreCase(u_Choice));   // end of do~while------------------   
+	         } while (!"6".equalsIgnoreCase(u_Choice));   // end of do~while------------------   
 	      }   // end of public void Recruit_apply(Scanner sc, User_DTO user, Company_DTO company)------
 
 

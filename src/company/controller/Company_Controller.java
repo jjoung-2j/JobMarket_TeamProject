@@ -132,30 +132,30 @@ public class Company_Controller {
 	            
 				case "1": // 로그인된 기업정보 보기
 					Map<String, String> paraMap = new HashMap<>();
-					paraMap.put("company_id", company.getCompany_id());
-	               
-					company = my_company_info(company , paraMap); //   company = select 조인문장
-	              
-					StringBuilder sb = new StringBuilder();  
-	               
-					sb.append("\n=== 기업 정보 ===\n"
-	                     + "▶ 기업명 : " + company.getCompany_name() + "\n"
-	                     + "▶ 기업대표 : " + company.getCeo_name() + "\n"
-	                     + "▶ 사업자등록번호 : " + company.getBusiness_number()+ "\n"
-	                     + "▶ 기업소재지 : " + company.getCompany_address() + "\n" );
-	               
-					if( company.getCompany_type_detail().getBegin_day() != null ) 
-	                  sb.append("▶ 설립일자 : " + company.getCompany_type_detail().getBegin_day() + "\n");
-					if( company.getCompany_type_detail().getCompany_type() != null ) 
-	                  sb.append("▶ 업종 : " + company.getCompany_type_detail().getCompany_type() + "\n");
-					if(   company.getCompany_type_detail().getCapital_money() != null ) 
-	                  sb.append("▶ 자본금 : " + company.getCompany_type_detail().getCapital_money() + "\n");
-					if (company.getCompany_type_detail().getEmployee_num() != null) 
-	                  sb.append("▶ 사원수 : " + company.getCompany_type_detail().getEmployee_num() + "\n");
-					if (company.getCompany_type_detail().getPublic_status() != null ) 
-	                  sb.append("▶ 상장여부 : " + company.getCompany_type_detail().getPublic_status() + "\n");
-					System.out.print(sb.toString());
-					break;
+	                paraMap.put("company_id", company.getCompany_id());
+	                    
+	                Company_DTO company_1 = my_company_info(company , paraMap); //   company = select 조인문장
+	                  
+	                StringBuilder sb = new StringBuilder();  
+	                   
+	                sb.append(" === 기업 정보 ===\n"
+	                         + "▶ 기업명 : " + company_1.getCompany_name() + "\n"
+	                         + "▶ 기업대표 : " + company_1.getCeo_name() + "\n"
+	                         + "▶ 사업자등록번호 : " + company_1.getBusiness_number()+ "\n"
+	                         + "▶ 기업주소 : " + company_1.getCompany_address() + "\n" );
+	                   
+	                if( company_1.getCompany_type_detail().getBegin_day() != null ) 
+	                      sb.append("▶ 설립일자 : " + company_1.getCompany_type_detail().getBegin_day() + "\n");
+	                if( company_1.getCompany_type_detail().getCapital_money() != null ) 
+	                      sb.append("▶ 자본금 : " + company_1.getCompany_type_detail().getCapital_money() + "\n");
+	                if (company_1.getCompany_type_detail().getEmployee_num() != null) 
+	                      sb.append("▶ 사원수 : " + company_1.getCompany_type_detail().getEmployee_num() + "\n");
+	                if (company_1.getCompany_type_detail().getPublic_status() != null ) 
+	                      sb.append("▶ 상장여부 : " + company_1.getCompany_type_detail().getPublic_status() + "\n");
+	                if (company_1.getCompany_type_detail().getCompanylist_num() != null ) 
+	                     sb.append("▶ 계열회사수 : " + company_1.getCompany_type_detail().getCompanylist_num() + "\n");
+	                System.out.print(sb.toString());
+	                break;
 				case "2": // 기업 추가정보 입력
 					company_detail_info(sc, company);
 					break;
@@ -504,13 +504,19 @@ public class Company_Controller {
 				break;
 			}
 			else {
-				if(Set_util.Check_recruit_num(recruit_people)) {
-					paraMap.put("recruit_people", "0");
-					break;
-				}
-				else {
-					System.out.println(">>> [경고] 숫자 3자리 이내로 입력해주세요. <<<");
-				}
+				try {
+					if(Integer.parseInt(recruit_people) > 0) {
+						if(Set_util.Check_recruit_num(recruit_people)) {
+							paraMap.put("recruit_people", "0");
+							break;
+						}
+						else {
+							System.out.println(">>> [경고] 숫자 3자리 이내로 입력해주세요. <<<");
+						}
+					}	// end of if(0명 이상인 경우)
+				}catch(NumberFormatException e) {
+					System.out.println(">>> [경고] 반드시 숫자를 입력해주세요. <<<");
+				}	// end of try~catch------------------------
 			}
 		}while(true);
 		
@@ -883,22 +889,25 @@ public class Company_Controller {
 	         
 	         if(paper!=null) {
 	            
-	            System.out.println ( "\n ===== " + paper.get("user_name") + " 님의 이력서 =====  \n" 
-	                   + "▶ 지원한 채용공고 번호 : " + paper.get("recruit_no") + "\n"
-	                   + "▶ 이력서 번호 : " + paper.get("paper_code") + "\n"
-	                   + "▶ 이력서 제목 : " + paper.get("paper_name") + "\n"
-	                   + "▶ 지원자 성명 : " + paper.get("user_name") + "\n"
-	                   + "▶ 지원자 연락처 : " + paper.get("user_tel") + "\n"
-	                   + "▶ 지원자 주소 : " + paper.get("user_address") + "\n"
-	                   + "▶ 지원자 이메일 : " + paper.get("user_email") + "\n"
-	                   + "▶ 지원자 학력 : " + paper.get("academy_name") + "\n"
-	                   + "▶ 취업우대사항 : " + paper.get("priority_name") + "\n"
-	                   + "▶ 희망근무지역 : " + paper.get("hope_city") + "\n"
-	                   + "▶ 신입/경력여부 : " + paper.get("career") + "\n"
-	                   + "▶ 자격증명 : " + paper.get("license_name") + "\n"
-	                   + "▶ 자격증 취득일자 : " + paper.get("license_day") + "\n"
-	                   + "▶ 자격증 취득기관 : " + paper.get("license_company") + "\n"
-	                   + "▶ 지원동기 : " + paper.get("apply_motive") + "\n");
+	        	 System.out.println ( "\n ===== " + paper.get("user_name") + " 님의 이력서 =====  \n" 
+	                     + "▶ 지원한 채용공고 번호 : " + paper.get("recruit_no") + "\n"
+	                     + "▶ 이력서 번호 : " + paper.get("paper_code") + "\n"
+	                     + "▶ 이력서 제목 : " + paper.get("paper_name") + "\n"
+	                     + "▶ 지원자 성명 : " + paper.get("user_name") + "\n"
+	                     + "▶ 지원자 나이 : " + paper.get("age") + "\n"
+	                     + "▶ 지원자 성별 : " + paper.get("gender") + "\n"
+	                     + "▶ 지원자 연락처 : " + paper.get("user_tel") + "\n"
+	                     + "▶ 지원자 주소 : " + paper.get("user_address") + "\n"
+	                     + "▶ 지원자 이메일 : " + paper.get("user_email") + "\n"
+	                     + "▶ 지원자 학력 : " + paper.get("academy_name") + "\n"
+	                     + "▶ 취업우대사항 : " + paper.get("priority_name") + "\n"
+	                     + "▶ 희망근무지역 : " + paper.get("hope_city") + "\n"
+	                     + "▶ 신입/경력여부 : " + paper.get("career") + "\n"
+	                     + "▶ 자격증명 : " + paper.get("license_name") + "\n"
+	                     + "▶ 자격증 취득일자 : " + paper.get("license_day") + "\n"
+	                     + "▶ 자격증 취득기관 : " + paper.get("license_company") + "\n"
+	                     + "▶ 희망연봉 : " + paper.get("hope_money") + "\n"
+	                     + "▶ 지원동기 : " + paper.get("apply_motive") + "\n");
 	            
 	            do {
 	               boolean chk = rdao.apply_close(paper);
@@ -1690,56 +1699,34 @@ public class Company_Controller {
 	
 	
 		
-	// ◆◆◆ === 구직자 정보 메뉴 === ◆◆◆ //
+	// ◆◆◆ === 구직자 정보 조회 === ◆◆◆ //
 	public void user_info(Scanner sc, Company_DTO company) {
-		String c_Choice = "";
-	      
-	     do {
-	    	 User_DTO user = new User_DTO();
-		     System.out.println("\n>>> ---- 구직자 정보 메뉴 ---- <<<\n"
-		                   + "1. 모든 구직자 조회\n"
-		                   + "2. 지원한 구직자 조회\n"
-		                   + "3.이전 메뉴로 돌아가기" );
-		      
-		     System.out.print("▶ 메뉴번호 선택 : ");
-		     c_Choice = sc.nextLine();
-		      
-	         switch (c_Choice) {
-	            
-				case "1": // 모든 구직자 조회
-					List<User_DTO> memberList = cdao.All_user();
-		               
-	                StringBuilder sb = new StringBuilder();
-	               
-	                if(memberList.size() > 0) {
-	                  
-	                	System.out.println("-".repeat(60));
-	                	System.out.println("성명\t주소\t\t연락처\t\t이메일\t\t생년월일");
-	                	System.out.println("-".repeat(60));
-	                  
-	                	sb = new StringBuilder();
-	                  
-	                	for(User_DTO member : memberList) {
-	                		sb.append(member.getUser_name() + " " +
-	                				member.getUser_address() + " " +
-	                				member.getUser_tel() + " " +
-	                				member.getUser_email() + " " +
-	                				member.getUser_security_num().substring(0, 6) + "\n");
-	                	} // end of for
-	                	System.out.println(sb.toString() );  
-		            } else 
-		                System.out.println(">> 가입된 회원이 1명도 없습니다. ㅜㅜ");  
-				   break;
-				case "2": // 지원한 구직자 조회
-				   rdao.apply_user_search(sc, user, company);
-				   break;
-				case "3": // 이전메뉴로 되돌아가기
-				   break;   
-				default:
-				   System.out.println(">>> 메뉴에 없는 번호 입니다. 다시 선택하세요!! <<<");
-				   break;
-				} // end of switch (c_Choice)-----------------
-	      } while (!"3".equalsIgnoreCase(c_Choice));	// end of do~while------------------	
-	}	// end of public void user_info(Scanner sc, User_DTO user)-------
+		
+		User_DTO user = new User_DTO();
+		System.out.println("\n>>> ---- 구직자 정보 ---- <<<\n");
+	           
+		List<User_DTO> memberList = cdao.All_user();
+	           
+    	StringBuilder sb = new StringBuilder();
+	       
+        if(memberList.size() > 0) {
+	          
+           System.out.println("-".repeat(60));
+           System.out.println("성명\t\t이메일\t\t생년월일");
+           System.out.println("-".repeat(60));
+	          
+           sb = new StringBuilder();
+	          
+           for(User_DTO member : memberList) {
+              sb.append(member.getUser_name() + "\t" 
+                    + member.getUser_email() + "\t" 
+                    + member.getUser_security_num().substring(0, 6) + "\n");
+           } // end of for------------------
+           System.out.println(sb.toString() );  
+        } else {
+            System.out.println(">> 가입된 회원이 1명도 없습니다. ㅜㅜ");  
+        }	// end of if~else------------------------------
+		
+	}	// end of public void user_info(Scanner sc, Company_DTO company)----------------
 
 }

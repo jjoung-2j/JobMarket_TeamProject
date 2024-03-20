@@ -6,25 +6,7 @@ public class Paper_DTO {
 
 	// ==== field ====
 		// insert 용
-		private int paper_code;		
-		public String getFk_user_id() {
-			return fk_user_id;
-		}
-		public void setFk_user_id(String fk_user_id) {
-			this.fk_user_id = fk_user_id;
-		}
-		public String getFk_license_code() {
-			return fk_license_code;
-		}
-		public void setFk_license_code(String fk_license_code) {
-			this.fk_license_code = fk_license_code;
-		}
-		public String getFk_local_code() {
-			return fk_local_code;
-		}
-		public void setFk_local_code(String fk_local_code) {
-			this.fk_local_code = fk_local_code;
-		}
+		private String paper_code;		
 		private String fk_user_id;
 		private String fk_license_code;
 		private String fk_local_code;
@@ -59,14 +41,15 @@ public class Paper_DTO {
 		
 		///////////////////////////////////////
 		// ==== method ====
-		public int getPaper_code() {
+		public String getPaper_code() {
 			return paper_code;
 		}
-		public void setPaper_code(int paper_code) {
-			this.paper_code = paper_code;
+		public void setPaper_code(String string) {
+			this.paper_code = string;
 		}
 		
-
+	
+		
 		public String getUser_security_num() {
 			return user_security_num;
 		}
@@ -83,6 +66,24 @@ public class Paper_DTO {
 		}
 		
 		
+		public String getFk_user_id() {
+			return fk_user_id;
+		}
+		public void setFk_user_id(String fk_user_id) {
+			this.fk_user_id = fk_user_id;
+		}
+		public String getFk_license_code() {
+			return fk_license_code;
+		}
+		public void setFk_license_code(String fk_license_code) {
+			this.fk_license_code = fk_license_code;
+		}
+		public String getFk_local_code() {
+			return fk_local_code;
+		}
+		public void setFk_local_code(String fk_local_code) {
+			this.fk_local_code = fk_local_code;
+		}
 		public String getHope_money() {
 			return hope_money;
 		}

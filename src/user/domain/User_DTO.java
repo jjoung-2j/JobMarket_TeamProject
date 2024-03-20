@@ -26,6 +26,8 @@ public class User_DTO {
 	private Paper_DTO paper = new Paper_DTO();		// 이력서
 	private Recruit_Apply_DTO rcapply = new Recruit_Apply_DTO();	// 채용지원
 	
+	private String age;    // 나이 
+	private String gender; // 성별
 	
 	
 	///////////////////////////////////////
@@ -147,5 +149,17 @@ public class User_DTO {
 		this.rcapply = rcapply;
 	}
 	
+	public String getAge() {
+		return age;
+	}
+	public void setAge(String age) {
+		this.age = age;
+	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
 	
 }

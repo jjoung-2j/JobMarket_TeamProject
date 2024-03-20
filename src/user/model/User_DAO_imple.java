@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -76,6 +77,7 @@ public class User_DAO_imple implements User_DAO {
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆		
 		
 		
+	
 	
 	// ◆◆◆ === 회원 가입시 입력한 아이디가 존재하는지 존재하지 않는지 알아오기 === ◆◆◆ //
 	@Override
@@ -198,35 +200,41 @@ public class User_DAO_imple implements User_DAO {
 	// ◆◆◆ === 나의 정보 보기 === ◆◆◆ //
 	@Override
 	public User_DTO view_userinfo(User_DTO user) {
-		 User_DTO userdto = null;
-         try {
-            String sql = " select user_id, user_name, user_passwd, user_address, user_tel, user_security_num, user_email  "
-                  + " from tbl_user_info "
-                  + " where user_id = ? " ;
-            
-            pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, user.getUser_id()); 
-            
-            rs = pstmt.executeQuery(); // sql문 실행
-            
-            while(rs.next()) {
-               userdto = new User_DTO();
-               
-               userdto.setUser_id(rs.getString("user_id"));
-               userdto.setUser_passwd(rs.getString("user_passwd"));
-               userdto.setUser_name(rs.getString("user_name"));
-               userdto.setUser_address(rs.getString("user_address"));
-               userdto.setUser_tel(rs.getString("user_tel"));
-               userdto.setUser_address(rs.getString("user_address"));
-               userdto.setUser_security_num(rs.getString("User_security_num"));
-               userdto.setUser_email(rs.getString("User_email"));
-            }	// end of while------------
-         } catch (SQLException e) {
-            e.printStackTrace();
-         } finally {
-            close();   
-         }    // end of try~catch~fianlly------------------  
-         return userdto;
+		User_DTO userdto = null;
+        try {
+           String sql = " select user_id, user_name, substr(user_passwd ,1,3) || lpad('*', length(user_passwd)-3, '*') as user_passwd ,"
+                 + " user_address, user_tel,"
+                 + " substr(user_security_num, 1 ,7) || lpad('*', length(user_security_num)-7, '*') as user_security_num , user_email ,"
+                 + " func_age(user_security_num)as age , func_gender(user_security_num) as gender  "
+                 + " from tbl_user_info "
+                 + " where user_id = ? " ;
+           
+           pstmt = conn.prepareStatement(sql);
+           pstmt.setString(1, user.getUser_id()); 
+           
+           rs = pstmt.executeQuery(); // sql문 실행
+           
+           while(rs.next()) {
+              userdto = new User_DTO();
+              
+              userdto.setUser_id(rs.getString("user_id"));
+              userdto.setUser_passwd(rs.getString("user_passwd"));
+              userdto.setUser_name(rs.getString("user_name"));
+              userdto.setAge(String.valueOf(rs.getInt("age")));
+              userdto.setGender(rs.getString("gender"));
+              userdto.setUser_address(rs.getString("user_address"));
+              userdto.setUser_tel(rs.getString("user_tel"));
+              userdto.setUser_address(rs.getString("user_address"));
+              userdto.setUser_security_num(rs.getString("User_security_num"));
+              userdto.setUser_email(rs.getString("User_email"));
+           }   // end of while------------
+        } catch (SQLException e) {
+           e.printStackTrace();
+        } finally {
+           close();   
+        }    // end of try~catch~fianlly------------------  
+        return userdto;
+
 	}	// end of public void view_userinfo(Scanner sc, User_DTO user)-------
 	
 	
@@ -310,12 +318,207 @@ public class User_DAO_imple implements User_DAO {
 	}	// end of private int updateBoard(Map<String, String> paraMap)-------
 
 
+	
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+	
+	
+	
+	
+	//◆◆◆ === 나의 정보 수정전 정보 가져오기 === ◆◆◆ //
+	@Override
+	public String check_user_info(String chk, String user_id) {
+      
+		String result = "";
+      
+		try {
+     		String sql = " select " + chk 
+					+ " from tbl_user_info "
+					+ " where user_id = ? ";
+
+     		pstmt = conn.prepareStatement(sql); // 우편배달부 = 서버.prepareStatement(전달할sql문)
+
+     		pstmt.setString(1, user_id);
+         
+     		rs = pstmt.executeQuery(); // SQL문 실행  
+         
+     		if(rs.next()) {
+     			result =  rs.getString(chk);
+     		}
+               
+		} catch (SQLException e) {
+            e.printStackTrace();
+		} finally { // 성공하든 안하든 무조건! 
+			close();
+		} // end of finally
+		return result;
+   } // end of public String check_user_info(String chk, String user_id)
+	
 
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 	
+
+	// ◆◆◆ === 이력서 조회 === ◆◆◆ //
+	   @Override
+	   public List<Paper_DTO> paper_info(User_DTO user) {
+		   
+		   List<Paper_DTO> paperlist = new ArrayList<>();
+		   int paper_no = 0;
+		   paper_no++;
+		       
+		   try {
+
+	           String sql = " select paper_code, fk_user_id, paper_name, paper_registerday, paper_no "
+		                 + " from tbl_paper "
+		                 + " where fk_user_id = ? ";
+		                 
+	           pstmt = conn.prepareStatement(sql);
+	           pstmt.setString(1, user.getUser_id()); 
+		           
+	           rs = pstmt.executeQuery(); // sql문 실행
+		           
+	           while(rs.next()) {
+	        	   Paper_DTO paperdto = new Paper_DTO();
+		            
+	        	   paperdto.setFk_user_id(user.getUser_id());
+	        	   paperdto.setPaper_code(rs.getString("paper_code"));
+	        	   paperdto.setPaper_name(rs.getString("paper_name"));
+	        	   paperdto.setPaper_registerday(rs.getString("paper_registerday"));
+	        	   paperdto.setPaper_no(paper_no++);
+		            
+		             
+		           paperlist.add(paperdto);
+		              
+	           }   // end of while------------
+		           
+	           Map<String, String> paraMap = new HashMap<>();
+	           String paper_no_str = Integer.toString(paper_no);
+	           paraMap.put("paper_no", paper_no_str);
+	           paraMap.put("paper_code", user.getPaper().getPaper_code());
+	           paraMap.put("user_id", user.getUser_id());
+		           
+	           update_paper_no(paraMap);
+		           
+	           user.getPaper().setPaper_no(paper_no);;
+		           
+	        } catch (SQLException e) {
+	           e.printStackTrace();
+	        } finally {
+	           close();   
+	        }    // end of try~catch~fianlly------------------  
+	        return paperlist;  
+	   }	// end of public List<Paper_DTO> paper_info(User_DTO user)----
+
+
+	   
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆	   
+	   
+	   
+	   // ◆◆◆ ===  이력서 조회(이력서 없는 경우) === ◆◆◆ //
+	   @Override
+	   public int update_paper_no(Map<String, String> paraMap) {
+	   
+		   int result = 0;
+	   
+		   try {
+			   String sql = " update tbl_paper set paper_no = ? "
+	                 + " where fk_user_id = ? and paper_code = ? ";
+	            
+	   
+			   pstmt = conn.prepareStatement(sql);
+			   pstmt.setString(1, paraMap.get("paper_no"));
+			   pstmt.setString(2, paraMap.get("user_id"));
+			   pstmt.setString(3, paraMap.get("paper_code"));
+	        	
+			   result = pstmt.executeUpdate();   // sql 문 실행
+
+		   } catch (SQLException e) {
+			   e.printStackTrace();
+		   } finally {
+			   close();   
+		   }    // end of try~catch~fianlly------------------  
+		   return result;
+      }		// end of public int update_paper_no(Map<String, String> paraMap)--------
 	
 
+	   
+	   
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 
+
+   // ◆◆◆ === 이력서 상세조회 === ◆◆◆ //   //   수정필요
+   @Override
+   public Map<String, String> paper_info_detail(int u_Choice1, User_DTO user) {
+	      
+         Map<String,String> papermap = null;
+         try {
+	            // SQL 문 작성
+            String sql =  "   select paper_no, s.paper_name, u.user_name, "
+	                  + "                     to_char(paper_registerday, 'yyyy-mm-dd') as register_day , "
+	                  + "                      func_gender(u.user_security_num) AS gender "
+	                  + "                       , func_age(u.user_security_num) AS age  "
+	                  + "                       , substr(u.user_security_num, 1, 7) || lpad('*', length(u.user_security_num) - 7, '*') AS jubun , "
+	                  + "                     u.user_name, func_gender(u.user_security_num) AS gender  "
+	                  + "                       , func_age(u.user_security_num) AS age , u.user_tel, u.user_address, u.user_email,  "
+	                  + "                     nvl(a.academy_name , '미등록') as academy_name , nvl(r.priority_name, '미등록') as priority_name,  "
+	                  + "                     y.local_name || y.city_name as hope_city , "
+	                  + "                      s.career, nvl(d.license_name , '미등록') as license_name , "
+	                  + "                      case when d.license_day is not null then to_char(d.license_day , 'yyyy-mm-dd' ) "
+	                  + "                          else '미등록' end as license_day ,  "
+	                  + "                     nvl(d.license_company, '미등록') as license_company  , to_char(s.paper_registerday, 'yyyy-mm-dd') as paper_registerday , nvl(s.hope_money, '미등록') as hope_money "
+	                  + "                     from tbl_academy a "
+	                  + "                     right join tbl_user_info u on a.academy_code = u.fk_academy_code "
+	                  + "                     left join tbl_priority r on u.fk_priority_code = r.priority_code "
+	                  + "                      join tbl_paper s on u.user_id = s.fk_user_id "
+	                  + "                      left join tbl_license_detail d on s.fk_license_code = d.license_code "
+	                  + "                      join tbl_local y on s.fk_local_code = y.local_code "
+	                  
+	                  + "                      where user_id = ? and paper_no = ? ";
+	                  
+	             pstmt = conn.prepareStatement(sql); // 우편배달부 = 서버.prepareStatement(전달할sql문)
+	             
+	             
+	             pstmt.setString(1, user.getUser_id());
+	             pstmt.setInt(2, user.getPaper().getPaper_no());
+	             
+	             rs = pstmt.executeQuery(); // SQL문 실행  
+	                  
+	             if(rs.next()) { // select 결과가 있다면~
+	                     
+	                papermap = new HashMap<String, String>();
+	                
+	                papermap.put("paper_no", rs.getString("paper_no"));
+	                papermap.put("paper_name", rs.getString("paper_name"));
+	                papermap.put("user_name", rs.getString("user_name"));
+	                papermap.put("register_day", rs.getString("register_day"));
+	                papermap.put("gender", rs.getString("gender"));
+	                papermap.put("age", rs.getString("age"));
+	                papermap.put("user_tel", rs.getString("user_tel"));
+	                papermap.put("user_address", rs.getString("user_address"));
+	                papermap.put("user_email", rs.getString("user_email"));
+	                papermap.put("academy_name", rs.getString("academy_name"));
+	                papermap.put("priority_name", rs.getString("priority_name"));
+	                papermap.put("hope_city", rs.getString("hope_city"));
+	                papermap.put("career", rs.getString("career"));
+	                papermap.put("license_name", rs.getString("license_name"));
+	                papermap.put("license_day", rs.getString("license_day"));
+	                papermap.put("license_company", rs.getString("license_company"));
+	                papermap.put("hope_money", rs.getString("hope_money"));
+ 
+	             } // end of while        
+	         } catch (SQLException e) {
+	                 e.printStackTrace();
+	         } finally {    // 성공하든 안하든 무조건! 
+	            close();   // 자원반납 하기
+	         } // end of finally
+	         return papermap;
+  } // end of public Map<String, String> paper_one(String input_rcno, Company_DTO company)
+
+	   
+	   
+	   
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+	   
+	   
 	
 	// ◆◆◆ === 희망지역 검색 === ◆◆◆ //
 	public Paper_DTO hope_local(Scanner sc, User_DTO user) {
@@ -454,92 +657,103 @@ public class User_DAO_imple implements User_DAO {
 	           result = pstmt.executeUpdate();      // SQL문 실행
 	        } catch (SQLException e) { 
 	              e.printStackTrace();
-	        
 	        } finally {
 	           close();
 	        }   // end of try~catch~finally-------------------
 	        return result;
-	   }	// end of public int write_paper_sql(User_DTO user)-----
+	   }
+   
    
    
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
    
+   
 	
- //◆◆◆ === 나의 정보 수정전 정보 가져오기 === ◆◆◆ //
- 	@Override
- 	public String check_user_info(String chk, String user_id) {
-       
- 		String result = "";
-       
- 		try {
-      		String sql = " select " + chk 
- 					+ " from tbl_user_info "
- 					+ " where user_id = ? ";
+   // ◆◆◆ === 이력서 보여주기 === ◆◆◆ //
+   public Paper_DTO view_paper(String paper_code, User_DTO user) {
+      
+      Paper_DTO paperdto = null;
+      
+      try {
+         String sql = " SELECT U.user_id, P.fk_user_id, P.paper_code, P.fk_license_code, P.fk_local_code, P.career, P.hope_money, P.paper_name "
+                  + " FROM TBL_USER_INFO U RIGHT JOIN TBL_PAPER P "
+                  + " ON U.user_id = P.fk_user_id "
+                  + " WHERE U.user_id = ? and P.paper_code = ? ";
+         
+         pstmt = conn.prepareStatement(sql);
+         pstmt.setString(1, user.getUser_id());
+         pstmt.setString(2, paper_code);
+         
+         rs = pstmt.executeQuery(); // SQL문 실행
+         
+         if(rs.next()) { // 입력한 숫자에 해당하는 글번호가 존재하는 경우
+            paperdto = new Paper_DTO();
+            
+            paperdto.setFk_user_id(rs.getString("fk_user_id"));
+            paperdto.setPaper_code(rs.getString("paper_code"));
+            paperdto.setFk_license_code(rs.getString("fk_license_code"));
+            paperdto.setFk_local_code(rs.getString("fk_local_code"));
+            paperdto.setCareer(rs.getString("career"));
+            paperdto.setHope_money(rs.getString("hope_money"));
+            paperdto.setPaper_name(rs.getString("paper_name"));
+         }
+         
+      } catch (SQLException e) {
+         if(e.getErrorCode() == 1722) {
+            System.out.println(">> [경고] 이력서번호는 정수만 가능합니다. <<\n");
+         }
+         else {
+            e.printStackTrace();
+         }
+         
+      } finally {
+         close();
+      }
+      
+      return paperdto;
 
-      		pstmt = conn.prepareStatement(sql); // 우편배달부 = 서버.prepareStatement(전달할sql문)
-
-      		pstmt.setString(1, user_id);
-          
-      		rs = pstmt.executeQuery(); // SQL문 실행  
-          
-      		if(rs.next()) {
-      			result =  rs.getString(chk);
-      		}
-                
- 		} catch (SQLException e) {
-             e.printStackTrace();
- 		} finally { // 성공하든 안하든 무조건! 
- 			close();
- 		} // end of finally
- 		return result;
-    } // end of public String check_user_info(String chk, String user_id)
- 	
-
- // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
- 	
-
- 	// ◆◆◆ === 이력서 조회 === ◆◆◆ //
- 	   @Override
- 	   public List<Paper_DTO> paper_info(User_DTO user) {
- 	       Paper_DTO paperdto = null;
- 	      
- 	      List<Paper_DTO> paperlist = new ArrayList<>();
- 	         int paper_no = 0;
- 	         paper_no++;
- 	          
- 	           try {
- 	              String sql = " select paper_code, fk_user_id"
- 	                          + "      , CASE WHEN length(paper_name) > 10 THEN substr(paper_name,1,7) || '...' ELSE paper_name END AS paper_name"
- 	                          + "      , paper_registerday, paper_no "
- 	                         + " from tbl_paper p, tbl_license_detail l "
- 	                         + " where p.fk_license_code = l.license_code and fk_user_id = ? ";
- 	                    
- 	              pstmt = conn.prepareStatement(sql);
- 	              pstmt.setString(1, user.getUser_id()); 
- 	              
- 	              rs = pstmt.executeQuery(); // sql문 실행
- 	              
- 	              while(rs.next()) {
- 	                 paperdto = new Paper_DTO();
- 	                 
- 	                 //paperdto.setUser_id(user.getUser_id());
- 	                 paperdto.setPaper_code(rs.getInt("paper_code"));
- 	                 paperdto.setPaper_name(rs.getString("paper_name"));
- 	                 paperdto.setPaper_registerday(rs.getString("paper_registerday"));
- 	                 paperdto.setPaper_no(paper_no++);
- 	                 
- 	                 paperlist.add(paperdto);
- 	              }   // end of while------------
- 	           } catch (SQLException e) {
- 	              e.printStackTrace();
- 	           } finally {
- 	              close();   
- 	           }    // end of try~catch~fianlly------------------  
- 	           
- 	           return paperlist;
- 	         
- 	      }
-
+   }   // end of public Paper_DTO view_paper(String paper_code, User_DTO user)----
+   
+   
+   
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+   
+   
+   
+   // ◆◆◆ === 나의 이력서 수정하기 === ◆◆◆ //
+   public int update_paper(Map<String, String> paraMap, String paper_code) {
+      
+      int result = 0;
+      
+      try {
+         String sql = " update TBL_PAPER set fk_license_code = ?, fk_local_code = ?, career = ?, hope_money = ?, paper_name = ? "
+                  + " where paper_code = ? ";
+         
+         pstmt = conn.prepareStatement(sql);
+         pstmt.setString(1, paraMap.get("fk_license_code"));
+         pstmt.setString(2, paraMap.get("fk_local_code"));
+         pstmt.setString(3, paraMap.get("career"));
+         pstmt.setString(4, paraMap.get("hope_money"));
+         pstmt.setString(5, paraMap.get("paper_name"));
+         pstmt.setString(6, paper_code);
+      
+         result = pstmt.executeUpdate(); // SQL문 실행
+         
+      } catch (SQLException e) {
+         if(e.getErrorCode() == 1722) {
+            System.out.println(">> [경고] 이력서번호는 정수로만 입력하세요. <<\n");
+         }
+         else {
+            e.printStackTrace();
+         }
+      } finally {
+         close(); 
+      }
+      
+      return result;
+      
+   }   // end of public int update_paper(Map<String, String> paraMap, String paper_code)----
+	
 	
 	
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
@@ -619,6 +833,77 @@ public class User_DAO_imple implements User_DAO {
 	}	// end of public boolean check_paper(String paper_code, User_DTO user)---------------
 
 
+//◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+	
+	// ◆◆◆ === 이력서 삭제전 간단하게 보여주기 === ◆◆◆
+	   @Override
+	   public List<Paper_DTO> get_paperlist(User_DTO user) {
+
+	       Paper_DTO papinfo = null;
+	       
+	       List<Paper_DTO> paplist = new ArrayList<>(); // 이거 설명
+	               
+	       try {
+	            String sql = " select paper_code , paper_name , career , hope_money "   
+	                  + " from tbl_paper "
+	                  + " where fk_user_id = ? ";
+	            
+	            pstmt = conn.prepareStatement(sql); // 우편배달부 = 서버.prepareStatement(전달할sql문)
+	             
+	            pstmt.setString(1, user.getUser_id());
+	             
+	            rs = pstmt.executeQuery(); // SQL문 실행  
+	                  
+	            while (rs.next()) { // select 결과가 있다면~
+	                papinfo = new Paper_DTO();
+	                     
+	                papinfo.setPaper_code(rs.getString("paper_code"));
+	                papinfo.setPaper_name(rs.getString("paper_name"));
+	                papinfo.setCareer(rs.getString("career"));
+	                papinfo.setHope_money(rs.getString("hope_money"));
+	                     
+	                paplist.add(papinfo);           
+	            } // end of while        
+	         } catch (SQLException e) {
+	                 e.printStackTrace();
+	         } finally {    // 성공하든 안하든 무조건! 
+	            close();   // 자원반납 하기
+	         } // end of finally  
+	         return paplist;
+	   } // end of public List<Paper_DTO> get_paperlist(User_DTO user)
+
+	
+	   
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+	   
+	   
+   // ◆◆◆ === 이력서 삭제 === ◆◆◆ //
+   @Override
+   public int delete_paper(String input_rcno) {
+
+         int result = 0;
+         
+         try {
+               String sql = " delete from tbl_paper where paper_code = ? ";
+                         
+               pstmt = conn.prepareStatement(sql);   
+               
+               pstmt.setString(1, input_rcno);   
+               
+               result = pstmt.executeUpdate();      // SQL문 실행
+               
+         } catch (SQLException e) {
+               e.printStackTrace(); 
+         } finally {
+            close();
+         }   // end try~catch~finally--------------------
+          
+      return result;
+      
+   } // end of public int delete_paper(String input_rcno)
+	   
+	   
+	   
 	
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 	
@@ -647,7 +932,9 @@ public class User_DAO_imple implements User_DAO {
 
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 
-	//  아이디찾기
+	
+	
+	// ◆◆◆ ===  아이디 찾기 === ◆◆◆ //
 	@Override
 	public String findid(User_DTO user) {
 		User_DTO userdto = null;
@@ -686,9 +973,9 @@ public class User_DAO_imple implements User_DAO {
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
    
    
-   //   비밀번호 찾기
+	// ◆◆◆ ===  비밀번호 찾기 === ◆◆◆ //
    @Override
-   public User_DTO findpasswd(User_DTO user) {
+   public String findpasswd(User_DTO user) {
       User_DTO userdto = null;
       
       try {
@@ -702,115 +989,27 @@ public class User_DAO_imple implements User_DAO {
          pstmt.setString(3, user.getUser_security_num());
          pstmt.setString(4, user.getUser_id());
          
-           rs = pstmt.executeQuery(); // sql문 실행
+         rs = pstmt.executeQuery(); // sql문 실행
            
-           if(rs.next()) {
-              userdto = new User_DTO();
-              userdto.setUser_passwd(rs.getString("user_passwd"));
-              
-              }
-           else {
-              System.out.println("값이 없습니다.");
-           }
+         if(rs.next()) {
+        	 userdto = new User_DTO();
+        	 userdto.setUser_passwd(rs.getString("user_passwd"));
+         }
+         else if (user.getUser_passwd() == null) {
+        	 return "값이 없습니다.";
+         }
+         else {
+        	 System.out.println("값이 없습니다."); 
+         }  
       } catch (SQLException e) {
               e.printStackTrace();
-           } finally {
-              close();   
-           }    // end of try~catch~fianlly------------------  
-      return userdto;
-   }	// end of public User_DTO findpasswd(User_DTO user)--------------
-
-
-
-// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
-   
-   
-	
-   // ◆◆◆ === 이력서 보여주기 === ◆◆◆ //
-   public Paper_DTO view_paper(String paper_code, User_DTO user) {
-      
-      Paper_DTO paperdto = null;
-      
-      try {
-         String sql = " SELECT U.user_id, P.fk_user_id, P.paper_code, P.fk_license_code, P.fk_local_code, P.career, P.hope_money, P.paper_name "
-                  + " FROM TBL_USER_INFO U RIGHT JOIN TBL_PAPER P "
-                  + " ON U.user_id = P.fk_user_id "
-                  + " WHERE U.user_id = ? and P.paper_code = ? ";
-         
-         pstmt = conn.prepareStatement(sql);
-         pstmt.setString(1, user.getUser_id());
-         pstmt.setString(2, paper_code);
-         
-         rs = pstmt.executeQuery(); // SQL문 실행
-         
-         if(rs.next()) { // 입력한 숫자에 해당하는 글번호가 존재하는 경우
-            paperdto = new Paper_DTO();
-            
-            paperdto.setFk_user_id(rs.getString("fk_user_id"));
-            paperdto.setPaper_code(rs.getInt("paper_code"));
-            paperdto.setFk_license_code(rs.getString("fk_license_code"));
-            paperdto.setFk_local_code(rs.getString("fk_local_code"));
-            paperdto.setCareer(rs.getString("career"));
-            paperdto.setHope_money(rs.getString("hope_money"));
-            paperdto.setPaper_name(rs.getString("paper_name"));
-         }
-         
-      } catch (SQLException e) {
-         if(e.getErrorCode() == 1722) {
-            System.out.println(">> [경고] 이력서번호는 정수만 가능합니다. <<\n");
-         }
-         else {
-            e.printStackTrace();
-         }
-         
       } finally {
-         close();
-      }
-      
-      return paperdto;
+          close();   
+      }    // end of try~catch~fianlly------------------  
+      return "비밀번호 : " + userdto.getUser_passwd();
+   }	// end of public String findpasswd(User_DTO user)--------------
 
-   }   // end of public Paper_DTO view_paper(String paper_code, User_DTO user)----
-   
-   
-   
-// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
-   
-   
-   
-   // ◆◆◆ === 나의 이력서 수정하기 === ◆◆◆ //
-   public int update_paper(Map<String, String> paraMap, String paper_code) {
-      
-      int result = 0;
-      
-      try {
-         String sql = " update TBL_PAPER set fk_license_code = ?, fk_local_code = ?, career = ?, hope_money = ?, paper_name = ? "
-                  + " where paper_code = ? ";
-         
-         pstmt = conn.prepareStatement(sql);
-         pstmt.setString(1, paraMap.get("fk_license_code"));
-         pstmt.setString(2, paraMap.get("fk_local_code"));
-         pstmt.setString(3, paraMap.get("career"));
-         pstmt.setString(4, paraMap.get("hope_money"));
-         pstmt.setString(5, paraMap.get("paper_name"));
-         pstmt.setString(6, paper_code);
-      
-         result = pstmt.executeUpdate(); // SQL문 실행
-         
-      } catch (SQLException e) {
-         if(e.getErrorCode() == 1722) {
-            System.out.println(">> [경고] 이력서번호는 정수로만 입력하세요. <<\n");
-         }
-         else {
-            e.printStackTrace();
-         }
-      } finally {
-         close(); 
-      }
-      
-      return result;
-      
-   }   // end of public int update_paper(Map<String, String> paraMap, String paper_code)----
-	
-	
+
+
 
 }

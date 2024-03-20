@@ -8,12 +8,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 import common.MYDBConnection;
 import company.domain.Company_DTO;
 import company.domain.Recruit_INFO_DTO;
-import user.domain.User_DTO;
 
 public class Recruit_DAO_imple implements Recruit_DAO {
 
@@ -443,61 +441,65 @@ public class Recruit_DAO_imple implements Recruit_DAO {
    @Override
    public Map<String, String> paper_one(String input_rcno, Company_DTO company) {
       
-      Map<String,String> papermap = null;
-      
-      try {
-         // SQL 문 작성
-         String sql =  " select e.recruit_no, to_char(s.paper_code) as paper_code , s.paper_name, u.user_name, "
-                  + " to_char(q.apply_day, 'yyyy-mm-dd') as apply_day , "
-                  + " u.user_tel, u.user_address, u.user_email, "
-                  + " nvl(a.academy_name , '미등록') as academy_name , nvl(r.priority_name, '미등록') as priority_name , "
-                  + " y.local_name || y.city_name as hope_city , "
-                  + " s.career, nvl(d.license_name , '미등록') as license_name , "
-                  + " case when d.license_day is not null then to_char(d.license_day , 'yyyy-mm-dd' ) "
-                  + "      else '미등록' end as license_day , "
-                  + " nvl(d.license_company, '미등록') as license_company , q.apply_motive "
-                  + " from tbl_academy a "
-                  + " right join tbl_user_info u on a.academy_code = u.fk_academy_code "
-                  + " left join tbl_priority r on u.fk_priority_code = r.priority_code "
-                  + " join tbl_paper s on u.user_id = s.fk_user_id "
-                  + " left join tbl_license_detail d on s.fk_license_code = d.license_code "
-                  + " join tbl_local y on s.fk_local_code = y.local_code "
-                  + " join tbl_recruit_apply q on s.paper_code = q.fk_paper_code "
-                  + " join tbl_recruit_info e on q.fk_recruit_no = e.recruit_no "
-                  + " where paper_code = ? ";
-               
-          pstmt = conn.prepareStatement(sql); // 우편배달부 = 서버.prepareStatement(전달할sql문)
-   
-          pstmt.setString(1, input_rcno);
-          
-          rs = pstmt.executeQuery(); // SQL문 실행  
-               
-          if(rs.next()) { // select 결과가 있다면~
-                  
-             papermap = new HashMap<String, String>();
-             
-             papermap.put("recruit_no", rs.getString("recruit_no"));
-             papermap.put("paper_code", rs.getString("paper_code"));
-             papermap.put("paper_name", rs.getString("paper_name"));
-             papermap.put("user_name", rs.getString("user_name"));
-             papermap.put("user_tel", rs.getString("user_tel"));
-             papermap.put("user_address", rs.getString("user_address"));
-             papermap.put("user_email", rs.getString("user_email"));
-             papermap.put("academy_name", rs.getString("academy_name"));
-             papermap.put("priority_name", rs.getString("priority_name"));
-             papermap.put("hope_city", rs.getString("hope_city"));
-             papermap.put("career", rs.getString("career"));
-             papermap.put("license_name", rs.getString("license_name"));
-             papermap.put("license_day", rs.getString("license_day"));
-             papermap.put("license_company", rs.getString("license_company"));
-             papermap.put("apply_motive", rs.getString("apply_motive"));
-          } // end of while        
-      } catch (SQLException e) {
-              e.printStackTrace();
-      } finally {    // 성공하든 안하든 무조건! 
-         close();   // 자원반납 하기
-      } // end of finally
-      return papermap;
+	   Map<String,String> papermap = null;
+       
+       try {
+          // SQL 문 작성
+          String sql =  " select e.recruit_no, to_char(s.paper_code) as paper_code , s.paper_name, u.user_name, "
+                   + " to_char(q.apply_day, 'yyyy-mm-dd') as apply_day , "
+                   + " u.user_tel, u.user_address, u.user_email, "
+                   + " nvl(a.academy_name , '미등록') as academy_name , nvl(r.priority_name, '미등록') as priority_name , "
+                   + " y.local_name || y.city_name as hope_city , "
+                   + " s.career, nvl(d.license_name , '미등록') as license_name , "
+                   + " case when d.license_day is not null then to_char(d.license_day , 'yyyy-mm-dd' ) "
+                   + "      else '미등록' end as license_day , func_age(u.user_security_num)as age , func_gender(u.user_security_num) as gender ,"
+                   + " nvl(d.license_company, '미등록') as license_company , q.apply_motive ,"
+                   + " nvl(s.hope_money, '미등록') as hope_money "
+                   + " from tbl_academy a "
+                   + " right join tbl_user_info u on a.academy_code = u.fk_academy_code "
+                   + " left join tbl_priority r on u.fk_priority_code = r.priority_code "
+                   + " join tbl_paper s on u.user_id = s.fk_user_id "
+                   + " left join tbl_license_detail d on s.fk_license_code = d.license_code "
+                   + " join tbl_local y on s.fk_local_code = y.local_code "
+                   + " join tbl_recruit_apply q on s.paper_code = q.fk_paper_code "
+                   + " join tbl_recruit_info e on q.fk_recruit_no = e.recruit_no "
+                   + " where paper_code = ? ";
+                
+           pstmt = conn.prepareStatement(sql); // 우편배달부 = 서버.prepareStatement(전달할sql문)
+    
+           pstmt.setString(1, input_rcno);
+           
+           rs = pstmt.executeQuery(); // SQL문 실행  
+                
+           if(rs.next()) { // select 결과가 있다면~
+                   
+              papermap = new HashMap<String, String>();
+              
+              papermap.put("recruit_no", rs.getString("recruit_no"));
+              papermap.put("paper_code", rs.getString("paper_code"));
+              papermap.put("paper_name", rs.getString("paper_name"));
+              papermap.put("user_name", rs.getString("user_name"));
+              papermap.put("age", rs.getString("age"));
+              papermap.put("gender", rs.getString("gender"));
+              papermap.put("user_tel", rs.getString("user_tel"));
+              papermap.put("user_address", rs.getString("user_address"));
+              papermap.put("user_email", rs.getString("user_email"));
+              papermap.put("academy_name", rs.getString("academy_name"));
+              papermap.put("priority_name", rs.getString("priority_name"));
+              papermap.put("hope_city", rs.getString("hope_city"));
+              papermap.put("career", rs.getString("career"));
+              papermap.put("license_name", rs.getString("license_name"));
+              papermap.put("license_day", rs.getString("license_day"));
+              papermap.put("license_company", rs.getString("license_company"));
+              papermap.put("hope_money", rs.getString("hope_money"));
+              papermap.put("apply_motive", rs.getString("apply_motive"));
+           } // end of while        
+       } catch (SQLException e) {
+               e.printStackTrace();
+       } finally {    // 성공하든 안하든 무조건! 
+          close();   // 자원반납 하기
+       } // end of finally
+       return papermap;
    } // end of public Map<String, String> paper_one(String input_rcno, Company_DTO company)
    
    
@@ -1063,17 +1065,6 @@ public class Recruit_DAO_imple implements Recruit_DAO {
 
 
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
-
-
-	// ◆◆◆ === 지원한 구직자 조회 === ◆◆◆ //
-	@Override
-	public void apply_user_search(Scanner sc,  User_DTO user, Company_DTO company) {
-		// TODO Auto-generated method stub
-		
-	}	// end of public void apply_user_search(Scanner sc, User_DTO user, Company_DTO company, Recruit_INFO_DTO recruit)------
-
-
-	
 
 
 
