@@ -1,12 +1,7 @@
 package user.controller;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +9,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
 
-import common.MYDBConnection;
 import common.Set_util;
 import company.domain.Company_DTO;
 import company.domain.Recruit_INFO_DTO;
@@ -36,28 +30,6 @@ public class User_Controller {
 	Company_DAO cdao = new Company_DAO_imple();
 	Recruit_DAO rdao = new Recruit_DAO_imple();
 	Recruit_apply_DAO radao = new Recruit_apply_DAO_imple();
-	
-	
-	private Connection conn = MYDBConnection.getConn();		// 데이터베이스 서버 연결
-	private PreparedStatement pstmt;	// 우편배달부
-	private ResultSet rs;
-	
-	// ◆◆◆ === 자원반납을 해주는 메소드 === ◆◆◆ //
-	private void close() {
-		try {
-			if(rs != null) {
-				rs.close();
-				rs = null;
-			}
-			if(pstmt != null) {
-				pstmt.close();
-				pstmt = null;
-			}
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}	// end of try~catch----------
-	}	// end of private void close()---------------
-	
 	
 	
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
@@ -654,8 +626,51 @@ public class User_Controller {
 			    switch (u_Choice) {
 			        
 					case "1": 	// 이력서 조회
-						paper_info(sc, user);
-					   	break;
+						String yn = "";
+		                   List<Paper_DTO> paperlist = udao.paper_info(user);
+		                     
+		                   if(paperlist == null) {
+		                      System.out.println("> 작성한 이력서가 없습니다.");
+		                        
+		                      do {
+		                         System.out.print("> 이력서를 작성하시겠습니까? [Y/N] : ");
+		                           yn = sc.nextLine();
+		                           
+		                           if("y".equalsIgnoreCase(yn)) {
+		                              //udao.write_paper(sc, user);
+		                              break;
+		                           }
+		                           else if ("n".equalsIgnoreCase(yn)){
+		                              System.out.println("이전 메뉴로 돌아갑니다.");
+		                              break;
+		                           }
+		                           else {
+		                              System.out.println(">>> Y 또는 N 만 입력하세요. <<<\n");
+		                           }
+		                       } while((!("y".equalsIgnoreCase(yn) || "n".equalsIgnoreCase(yn))));
+		                        
+		                   }
+		                   else { 
+		                      System.out.println("\n[ " + user.getUser_id() + " 님의 이력서 보기]");
+		                       System.out.print("▶ 번호\t▶ 이력서 제목\t\t▶ 작성일\n");
+		                          
+		                       StringBuilder sb = new StringBuilder();
+		                      
+		                       for(Paper_DTO paper1 : paperlist) {
+		                          sb.append(paper1.getPaper_no());
+		                           sb.append(paper1.getPaper_name());
+		                           sb.append(paper1.getPaper_registerday()+"\n");
+		                           
+		                       }
+		                      
+		                       System.out.println(sb.toString());
+		                       
+		                       System.out.print("자세한 내용을 확인하시려면 글번호를 입력하세요. : " );
+		                       u_Choice = sc.nextLine();
+		                        
+		                       //udao.paper_info_detail(user);
+		                   }
+		                   break;
 					case "2": 	// 이력서 작성
 						write_paper(sc, user);
 					   	break;
@@ -833,7 +848,7 @@ public class User_Controller {
 		                    }
 		                 }
 		                 udao.hope_local(sc, user);	// 희망지역 메소드
-		            }while(!(user.getPaper().getLocal_code() != null));
+		            }while(!(user.getPaper().getFk_local_code() != null));
 		            
 	    		  	n = 1;
 		         }	// end of if----------------
@@ -1015,12 +1030,182 @@ public class User_Controller {
 
 		// ◆◆◆ === 이력서 수정 === ◆◆◆ //
 		private void change_paper(Scanner sc, User_DTO user) {
-			// TODO Auto-generated method stub
-			
-		}
+			User_DAO udao = new User_DAO_imple();
+		      
+		      System.out.println("\n>>> 이력서 수정하기 <<<");
+		      
+		      ////////////////////////////////////////////////////////////
+		      
+		      System.out.println("-".repeat(20) + " [" + user.getUser_name() + " 님의 이력서 목록] " + "-".repeat(20));
+		        System.out.print("번호\t제목\t\t작성일\n");
+		     
+		        StringBuilder sb = new StringBuilder();
+		        List<Paper_DTO> paperlist = udao.paper_info(user);
+		      
+		        if(paperlist.size() > 0) {
+		     
+		           for(Paper_DTO paper : paperlist) {
+		                sb.append(paper.getPaper_code() + "\t");
+		                sb.append(paper.getPaper_name() + "\t");
+		                sb.append(paper.getPaper_registerday() + "\n");
+		            }
+		           
+		           System.out.print(sb.toString());
+		        }
+		        else {
+		           System.out.println(">> 작성하신 이력서가 존재하지 않습니다.");
+		        }
+		                
+		      System.out.println("-".repeat(60));
+		      
+		      ////////////////////////////////////////////////////////////
+		      
+		      System.out.print("▶ 수정할 이력서번호 : ");
+		      String paper_code = sc.nextLine();
+		      
+		      if(paper_code.isBlank()) {
+		         System.out.println(">> 이력서 수정을 취소하셨습니다. <<");
+		         return;
+		      }
+		      
+		      Paper_DTO paperdto = udao.view_paper(paper_code, user);
+		      
+		      if(paperdto == null) { 
+		         System.out.println(">> 이력서번호 " + paper_code + "은 이력서 목록에 존재하지 않습니다. <<");
+		      }
+		      else { 
+		         if(!user.getUser_id().equals(paperdto.getFk_user_id())) { 
+		            System.out.println("[경고] 다른 사용자의 이력서는 수정이 불가합니다.\n");
+		         }
+		         else {
+		            System.out.println("-".repeat(60));
+		            System.out.println("[수정전 이력서제목] " + paperdto.getPaper_name());
+		            System.out.println("[수정전 자격증코드] " + paperdto.getFk_license_code());
+		            System.out.println("[수정전 지역코드] " + paperdto.getFk_local_code());
+		            System.out.println("[수정전 신입/경력여부] " + paperdto.getCareer());
+		            System.out.println("[수정전 희망연봉] " + paperdto.getHope_money());
+		            System.out.println("-".repeat(60));
+		            
+		            String paper_name = "";
+		            do {
+		               ////////////////////////////////////////////////////////////
+		               System.out.print("1. 이력서제목 [최대 20글자, 변경하지 않으려면 엔터를 누르세요.] : ");
+		               paper_name = sc.nextLine();
+		               if(paper_name.length() > 20) {
+		                  System.out.println("[경고] 이력서제목은 최대 20글자 이내이어야 합니다.");
+		               }
+		               else {
+		                  break;
+		               }
+		               ////////////////////////////////////////////////////////////
+		            } while(true);
+		            
+		            if(paper_name != null && paper_name.length() == 0) {
+		               paper_name = paperdto.getFk_license_code();
+		            }
+		            
+		            System.out.print("2. 자격증코드 [변경하지 않으려면 엔터를 누르세요.] : ");
+		            String fk_license_code = sc.nextLine();
+		            if(fk_license_code != null && fk_license_code.length() == 0) {
+		               fk_license_code = paperdto.getFk_license_code();
+		            }
+		            
+		            System.out.print("3. 희망지역 [변경하지 않으려면 엔터를 누르세요.] : ");
+		            // String fk_local_code = sc.nextLine();
+		            String hope_local_name = "";
+		            String hope_city_name = "";
+		            
+		            outer:
+		            do {
+			            System.out.print("희망하는 지역을 입력하세요[예 : 서울] : ");
+			            hope_local_name = sc.nextLine();
+		               
+			            if(hope_local_name != null && hope_local_name.length() == 0 ||hope_local_name.isEmpty()) {
+			            	System.out.println("정확히 입력하세요.");
+			            }
+			            else if("q".equalsIgnoreCase(hope_local_name)) {
+			            	break outer;
+			            }
+			            else {
+		                    user.getPaper().setHope_local_name(hope_local_name);
+		                 
+		                    System.out.print("희망하는 도시명을 입력하세요[예 : 마포구] : ");
+		                    hope_city_name = sc.nextLine();
+		                    
+		                    if(hope_city_name != null && hope_city_name.length() == 0 ||hope_city_name.isEmpty()) {
+		                       System.out.println("정확히 입력하세요.");
+		                    }
+		                    else if ("q".equalsIgnoreCase(hope_city_name)) {
+		                       break outer;
+		                    }
+		                    else {
+		                       user.getPaper().setHope_city_name(hope_city_name);
+		                       udao.hope_local(sc, user);	// 희망지역 메소드
+		                    }
+			            }
+		            }while(user.getPaper().getFk_local_code() == null);
+	                 
+		         
+		            /*
+		            if(fk_local_code != null && fk_local_code.length() == 0) {
+		               fk_local_code = String.valueOf(paperdto.getFk_local_code());
+		            }
+		            */
+		            System.out.print("4. 신입/경력여부 [변경하지 않으려면 엔터를 누르세요.] : ");
+		            String career = sc.nextLine();
+		            if(career != null && career.length() == 0) {
+		               career = paperdto.getCareer();
+		            }
+		            
+		            System.out.print("5. 희망연봉 [변경하지 않으려면 엔터를 누르세요.] : ");
+		            String hope_money = sc.nextLine();
+		            if(hope_money != null && hope_money.length() == 0) {
+		               hope_money = paperdto.getHope_money();
+		            }
+		         
+		            String yn = "";
+		            
+		            do {
+		               ////////////////////////////////////////////////////////////
+		               System.out.print("▶ 정말로 이력서를 수정하시겠습니까? [Y/N] => ");
+		               yn = sc.nextLine();
+		               
+		               if("y".equalsIgnoreCase(yn)) {
+		                  Map<String, String> paraMap = new HashMap<>();
+		                  
+		                  paraMap.put("paper_name", paper_name);
+		                  paraMap.put("fk_license_code", fk_license_code);
+		                  paraMap.put("fk_local_code", user.getPaper().getFk_local_code());
+		                  paraMap.put("career", career);
+		                  paraMap.put("hope_money", hope_money);
+		                  
+		                  int n = udao.update_paper(paraMap, paper_code);
+		                  
+		                  if(n == 1) {
+		                     System.out.println(">> 이력서 수정이 성공되었습니다. <<");
+		                  }
+		                  else {
+		                     System.out.println(">> SQL 구문 오류 발생으로 인해 이력서 수정이 실패되었습니다. <<");
+		                  }
+		               }
+		               else if("n".equalsIgnoreCase(yn)) {
+		                  System.out.println(">> 이력서 수정을 취소하셨습니다. <<");
+		               }
+		               else {
+		                  System.out.println(">> [경고] Y 또는 N 만 입력하세요.!!");
+		               }
+		               ////////////////////////////////////////////////////////////
+		            } while(!("y".equalsIgnoreCase(yn) || "n".equalsIgnoreCase(yn)));
+		         }
+		      }
+		}	// end of private void change_paper(Scanner sc, User_DTO user)-------
+
 
 		
-
+		
+// ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
+		
+		
 
 		// ◆◆◆ === 이력서 삭제 === ◆◆◆ //
 		private void delete_paper(Scanner sc, User_DTO user) {

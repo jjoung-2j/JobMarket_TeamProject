@@ -1,5 +1,6 @@
 package user.model;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -26,13 +27,20 @@ public interface User_DAO {
 	// ◆◆◆ === 나의 정보 수정 === ◆◆◆ //
 	int fix_info(User_DTO user, String infoview, String fix_info);
 
-	// ◆◆◆ === 나의 정보 수정(전체) === ◆◆◆ //
+	// ◆◆◆ === 나의 정보 수정(기존 정보 불러오기) === ◆◆◆ //
 	int updateBoard(Map<String, String> paraMap);
 	
+	// ◆◆◆ === 나의 정보 수정전 정보 가져오기 === ◆◆◆ //
+	String check_user_info(String chk, String user_id);
+
 	// ◆◆◆ === 나의 추가 정보 입력(학력, 취업우대) === ◆◆◆ //
 	int insert_anotherinfo(String academy_code, String priority_code, String user_id);
 
 	
+	
+	
+	// ◆◆◆ ===  이력서 조회 === ◆◆◆ //
+	List<Paper_DTO> paper_info(User_DTO user);
 	
 	// ◆◆◆ === 희망지역 검색 === ◆◆◆ //
 	Paper_DTO hope_local(Scanner sc, User_DTO user);
@@ -46,6 +54,11 @@ public interface User_DAO {
 	// ◆◆◆ === 이력서 작성 === ◆◆◆ //
 	int write_paper_sql(User_DTO user);
 	
+	// ◆◆◆ === 이력서 보여주기 === ◆◆◆ //
+	Paper_DTO view_paper(String paper_code, User_DTO user);
+
+	// ◆◆◆ === 나의 이력서 수정하기 === ◆◆◆ //
+	int update_paper(Map<String, String> paraMap, String paper_code);
 	
 	
 	

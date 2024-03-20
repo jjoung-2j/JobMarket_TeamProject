@@ -749,9 +749,10 @@ order by recruit_no desc;
 	on A.user_id = R.user_id join U 
 	on R.user_id = U.user_id left join D 
 	on U.fk_license_code = D.fk_license_code join Q 
-	on U.paper_code = Q.paper_code;
-    
+	on U.paper_code = Q.paper_code
+    where U.user_id = 'ttest';
     
 	where U.user_id = ? ;
+    
     
     

@@ -7,9 +7,27 @@ public class Paper_DTO {
 	// ==== field ====
 		// insert 용
 		private int paper_code;		
-		private String user_id;
-		private String license_code;
-		private String local_code;
+		public String getFk_user_id() {
+			return fk_user_id;
+		}
+		public void setFk_user_id(String fk_user_id) {
+			this.fk_user_id = fk_user_id;
+		}
+		public String getFk_license_code() {
+			return fk_license_code;
+		}
+		public void setFk_license_code(String fk_license_code) {
+			this.fk_license_code = fk_license_code;
+		}
+		public String getFk_local_code() {
+			return fk_local_code;
+		}
+		public void setFk_local_code(String fk_local_code) {
+			this.fk_local_code = fk_local_code;
+		}
+		private String fk_user_id;
+		private String fk_license_code;
+		private String fk_local_code;
 		private String user_security_num;
 		private String career;
 		private String hope_money;
@@ -48,31 +66,7 @@ public class Paper_DTO {
 			this.paper_code = paper_code;
 		}
 		
-		
-		public String getUser_id() {
-			return user_id;
-		}
-		public void setUser_id(String user_id) {
-			this.user_id = user_id;
-		}
-		
-		
-		public String getLicense_code() {
-			return license_code;
-		}
-		public void setLicense_code(String license_code) {
-			this.license_code = license_code;
-		}
-		
-		
-		public String getLocal_code() {
-			return local_code;
-		}
-		public void setLocal_code(String local_code) {
-			this.local_code = local_code;
-		}
-		
-		
+
 		public String getUser_security_num() {
 			return user_security_num;
 		}
