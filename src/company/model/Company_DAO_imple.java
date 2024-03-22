@@ -385,14 +385,16 @@ public class Company_DAO_imple implements Company_DAO {
 		List<Company_DTO> companyList = new ArrayList<>();
 			
 		try {
-			String sql = " select A.company_id, A.company_name, A.businees_number, A.ceo_name, A.company_address "
-					   + " , to_char(B.begin_day,'yyyy-mm-dd') as begin_day "
-					   + " , B.employee_num "
-					   + " , decode(B.public_status, 0, '비상장', 1, '상장') AS public_status "
-					   + " , B.capital_money, B.companylist_num "
-					   + " from tbl_company A LEFT JOIN tbl_company_type B "
-					   + " on A.company_id = B.fk_company_id "
-					   + " order by company_id ";
+			String sql  = " select A.company_id, A.company_name, A.businees_number, A.ceo_name, A.company_address "
+	                  + " , to_char(B.begin_day,'yyyy-mm-dd') as begin_day "
+	                  + " , B.employee_num "
+	                  + " , decode(B.public_status, 0, '비상장', 1, '상장') AS public_status "
+	                  + " , B.capital_money, B.companylist_num "
+	                  + " from tbl_company A LEFT JOIN tbl_company_type B "
+	                  + " on A.company_id = B.fk_company_id "
+	                  + " order by company_id ";
+
+
 		         
 		    pstmt = conn.prepareStatement(sql); 
 		    

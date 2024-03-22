@@ -14,7 +14,7 @@ public class MYDBConnection {
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@211.238.142.186:1521:xe", "MINI_ORAUSER1", "gclass");
+			conn = DriverManager.getConnection("jdbc:oracle:thin:@127.0.0.1:1521:xe", "MINI_ORAUSER1", "gclass");
 		
 		} catch(ClassNotFoundException e) {
 			System.out.println(">>> ojdbc8.jar 파일이 없습니다. <<<");

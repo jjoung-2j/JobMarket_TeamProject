@@ -432,7 +432,8 @@
     -- 테이블 데이터타입 조회
    select table_name  , column_name  , data_type  , 
           data_length  , nullable  , data_default 
-    from USER_TAB_COLUMNS;
+    from USER_TAB_COLUMNS
+    where table_name = 'TBL_LICENSE_DETAIL';
     
    
     alter table tbl_company drop column company_type; -- 기업테이블의 기업형태 컬럼 삭제
@@ -501,258 +502,259 @@
    -- 기업테이블 company_id(기업아이디 lg,hd,samsung) 제외하고 전부 삭제 by 정수(20240317 00시07분경)
    
  ---------------------------------------------------------------------------------------
-   -- 채용공고 테이블 마감일 미입력시 채용마감시까지로 하기위해 변경 및 삭제
-   delete from tbl_recruit_info;
-   -- 4개 행 이(가) 삭제되었습니다.
-   
-   alter table tbl_recruit_info modify recruit_deadline Nvarchar2(20);
-   -- Table TBL_RECRUIT_INFO이(가) 변경되었습니다.
-   
-   commit;
-   -- 커밋 완료.
-   
-   -- user_name , ceo_name , manager_name 현실성 첨가해서 37글자 제한으로 변경
-   alter table tbl_company modify ceo_name Nvarchar2(37);
-   alter table tbl_user_info modify user_name Nvarchar2(37);
-   alter table tbl_recruit_info modify manager_name Nvarchar2(37);
-   -- Table TBL_COMPANY이(가) 변경되었습니다.
-   -- Table TBL_USER_INFO이(가) 변경되었습니다.
-   -- Table TBL_RECRUIT_INFO이(가) 변경되었습니다. by 정수
-   
   
+  select * from TBL_CAREER_DETAIL
+  select table_name  , column_name  , data_type  , 
+          data_length  , nullable  , data_default 
+    from USER_TAB_COLUMNS
+    where table_name = 'TBL_CAREER_DETAIL'
+    desc TBL_CAREER_DETAIL
+       select * from tbl_company
+     select * from tbl_company_type
+     select * from tbl_academy
+     
+     update tbl_user_info set user_tel = '010-1847-1324' where user_id = 'ttest';
+     commit
+     
+     select * from tbl_user_info
+     select * from tbl_paper
+     select * from tbl_recruit_info
+      select * from tbl_recruit_apply
+      select * from tbl_recruit_info where 'fk_company_id' = 'test1';
+      select * from tbl_priority
+      select * from tbl_local
+
+    select *
+    from tbl_user_info
+    
+      create or replace function func_gender 
+    (p_jubun  IN  varchar2) 
+    return varchar2       
+    is
+       v_result varchar2(6);
+    begin
+       select case when substr(p_jubun, 7 , 1) in ('1','3') then '남' else '여' end 
+              INTO 
+              v_result
+       from dual;
+       return v_result;
+    end func_gender;
+     -- Function FUNC_GENDER이(가) 컴파일되었습니다. 성별 함수
+    
+    select e.recruit_no, to_char(s.paper_code) as paper_code , s.paper_name, u.user_name, 
+                     to_char(q.apply_day, 'yyyy-mm-dd') as apply_day , 
+                      u.user_tel, u.user_address, u.user_email, 
+                     nvl(a.academy_name , '미등록') as academy_name , nvl(r.priority_name, '미등록') as priority_name, 
+                     y.local_name || y.city_name as hope_city ,
+                      s.career, nvl(d.license_name , '미등록') as license_name ,
+                      case when d.license_day is not null then to_char(d.license_day , 'yyyy-mm-dd' ) 
+                          else '미등록' end as license_day , 
+                     nvl(d.license_company, '미등록') as license_company , q.apply_motive  , to_char(s.paper_registerday, 'yyyy-mm-dd') as paper_registerday , nvl(s.hope_money, '미등록') as hope_money
+                     from tbl_academy a 
+                     right join tbl_user_info u on a.academy_code = u.fk_academy_code 
+                     left join tbl_priority r on u.fk_priority_code = r.priority_code 
+                      join tbl_paper s on u.user_id = s.fk_user_id 
+                      left join tbl_license_detail d on s.fk_license_code = d.license_code 
+                      join tbl_local y on s.fk_local_code = y.local_code 
+                      join tbl_recruit_apply q on s.paper_code = q.fk_paper_code 
+                      join tbl_recruit_info e on q.fk_recruit_no = e.recruit_no
+                      where user_id = 'test2';
+     select A.table_name, A.constraint_name, A.constraint_type, A.search_condition
+         , B.column_name, B.position 
+    from user_constraints A
+    join user_cons_columns B
+    on A.constraint_name = B.constraint_name
+    where A.constraint_type = 'C'
+    select * from tbl_user_info
+    select * from tbl_paper
+    select * from tbl_recruit_apply
+     create or replace function func_age
+    (p_jubun  IN  varchar2) 
+      return number     
+    is
+       v_age number(3);
+    begin
+       v_age := case when to_date(to_char(sysdate, 'yyyy') || substr(p_jubun, 3, 4), 'yyyymmdd') - to_date(to_char(sysdate, 'yyyymmdd') , 'yyyymmdd') > 0 
+               then extract(year from sysdate) - ( to_number(substr(p_jubun,1,2)) + case when substr(p_jubun,7,1) in('1','2') then 1900 else 2000 end ) - 1
+               else extract(year from sysdate) - ( to_number(substr(p_jubun,1,2)) + case when substr(p_jubun,7,1) in('1','2') then 1900 else 2000 end ) 
+               end;
+       return v_age;
+    end func_age;
+    -- Function FUNC_AGE이(가) 컴파일되었습니다. 나이함수
+    
+    
+    select C.company_id , C.company_name , C.businees_number , C.ceo_name , L.local_name || ' ' || L.city_name || ' ' || C.company_address, 
+                    T.employee_num , decode(T.public_status , 1 , '상장기업' , '비상장기업') as public_status , to_char(T.begin_day , 'yyyy-mm-dd') as begin_day , 
+                    T.capital_money, to_char (T.companylist_num)  as companylist_num  
+                    from tbl_company C join tbl_company_type T  
+                    on C.company_id = T.fk_company_id 
+                    join tbl_local L 
+                    on C.fk_local_code = L.local_code
+    select * from tbl_company
+    select * from tbl_user_info
+    select user_id, user_name, substr(user_passwd ,1,3) || lpad('*', length(user_passwd)-3, '*') as user_passwd ,
+    user_address, user_tel, substr(user_security_num, 1 ,7) || lpad('*', length(user_security_num)-7, '*') as user_security_num
+    , func_age(user_security_num)as age , func_gender(user_security_num) as gender
+    from tbl_user_info ;
+    
+    
+    
+    
+    select paper_no, s.paper_name, u.user_name,  
+    to_char(paper_registerday, 'yyyy-mm-dd') as regieter_day ,  
+    func_gender(u.user_security_num) AS gender  
+     , func_age(u.user_security_num) AS age  
+     , u.user_tel, u.user_address, u.user_email,  
+    nvl(a.academy_name , '미등록') as academy_name , nvl(r.priority_name, '미등록') as priority_name,  
+    y.local_name || y.city_name as hope_city , 
+    s.career, nvl(d.license_name , '미등록') as license_name , 
+    case when d.license_day is not null then to_char(d.license_day , 'yyyy-mm-dd' )  
+       else '미등록' end as license_day ,  
+    nvl(d.license_company, '미등록') as license_company , q.apply_motive  , to_char(s.paper_registerday, 'yyyy-mm-dd') as paper_registerday , nvl(s.hope_money, '미등록') as hope_money 
+    from tbl_academy a 
+    right join tbl_user_info u on a.academy_code = u.fk_academy_code 
+    left join tbl_priority r on u.fk_priority_code = r.priority_code 
+    join tbl_paper s on u.user_id = s.fk_user_id 
+    left join tbl_license_detail d on s.fk_license_code = d.license_code 
+    join tbl_local y on s.fk_local_code = y.local_code 
+    join tbl_recruit_apply q on s.paper_code = q.fk_paper_code 
+    join tbl_recruit_info e on q.fk_recruit_no = e.recruit_no
+    where user_id = 'test2' and paper_no = 4
+    
+    select * from tbl_paper where paper_code = 20;
+    
+    
+    select * from tbl_paper where fk_user_id = 'liecense'
+    select * from tbl_license_detail
+   select * from tbl_user_info;
+  select * from user_sequences;
+  select * from tbl_company
    
-  
-    with
-   A as
-   (
-   select academy_name , academy_code , fk_academy_code ,user_id
-   from tbl_academy A join tbl_user_info U
-   on A.academy_code = U.fk_academy_code
-   -- 학력과 유저
-   )
-   ,
-   R as
-   (
-   select priority_name , priority_code , fk_priority_code , user_id
-   from tbl_priority P join tbl_user_info U
-   on P.priority_code = U.fk_priority_code
-   -- 취업우대와 유저
-   )
-   ,
-   U as
-   (
-   select user_name, user_tel, user_address, user_email , user_id , 
-   fk_user_id , career , fk_local_code, fk_license_code , paper_code ,paper_name
-   from tbl_user_info U join tbl_paper P
-   on U.user_id = P.fk_user_id
-   -- 유저정보와 이력서
-   )
-   ,
-   D as
-   (
-   select license_name , license_day, license_company , license_code , fk_license_code
-   from tbl_license_detail join tbl_paper
-   on license_code = fk_license_code
-   -- 자격증과 이력서
-   )
-   , Y as
-   (
-   select local_code, fk_local_code , local_name, city_name
-   from tbl_local join tbl_paper
-   on local_code = fk_local_code
-   ) -- 지역과 이력서
-   , Q as
-   (
-   select fk_paper_code , fk_recruit_no ,paper_code , apply_motive , apply_day
-   from tbl_recruit_apply N join tbl_paper G
-   on N.fk_paper_code = G.paper_code
-   ) -- 이력서와 채용지원
-   select Q.fk_recruit_no , Q.paper_code , U.paper_name, U.user_name , U.user_tel, U.user_address, U.user_email ,
-   A.academy_name , R.priority_name , local_name, city_name , U.career , license_name , license_day,
-   license_company , Q.apply_motive , Q.apply_day
-   from A join R
-   on A.user_id = R.user_id join U
-   on R.user_id = U.user_id left join D
-   on U.fk_license_code = D.fk_license_code join Y
-   on U.fk_local_code = Y.local_code join Q
-   on U.paper_code = Q.fk_paper_code;
+
+select * from tbl_paper    
+    rollback
+    
+    
+    
+    select * from tbl_recruit_apply
+    
+    update tbl_paper set fk_license_code = 1310100 where paper_code = 29
+    rollback;
+
+
+    select Y.fk_recruit_no
+    from tbl_user_info U join tbl_academy A
+    on U.fk_academy_code = A.academy_code 
+    join tbl_priority P 
+    on P.priority_code = U.fk_priority_code
+    join tbl_paper E join U
+    on U.user_id = E.fk_user_id
+    join tbl_license_detail L
+    on L.license_cdoe = E.fk_license_code
+    join tbl_local O
+    on O.local_code = E.fk_local_code
+    join tbl_recruit_apply Y
+    on E.paper_code = Y.fk_paper_code
+      s.fk_user_id
+    select * from tbl_academy
+    select * from tbl_paper where fk_user_id = 'jjoung-2j'
+    select * from tbl_company_type
    
+    select  q.fk_recruit_no, career, q.apply_motive, q.fk_paper_code, paper_name, NVL(academy_name,'미입력') AS academy_name 
+            , nvl(license_name, '미입력') as license_name , q.apply_day , nvl(priority_name, '미입력') as priority_name
+    from tbl_academy a 
+    RIGHT join tbl_user_info u on a.academy_code = u.fk_academy_code 
+    left join tbl_priority r on u.fk_priority_code = r.priority_code 
+    join tbl_paper s on u.user_id = s.fk_user_id 
+    left join tbl_license_detail d on s.fk_license_code = d.license_code 
+     join tbl_local y on s.fk_local_code = y.local_code 
+     join tbl_recruit_apply q on s.paper_code = q.fk_paper_code 
+    where user_id = 'jjoung-2j'
+    
+    ALTER TABLE TBL_RECRUIT_APPLY DROP CONSTRAINT CK_RC_APPLY_SUCCESS_STATUS;
+    ALTER TABLE TBL_RECRUIT_APPLY
+ADD CONSTRAINT CK_RC_APPLY_SUCCESS_STATUS CHECK (SUCCESS_STATUS IN (0, 1, 2));
+    
+    select * from tbl_recruit_apply
+     select * from tbl_recruit_info where recruit_no = '20240319-46'
 
-    -- 채용공고 해제
-alter table tbl_recruit_info
-drop constraint FK_RC_INFO_FK_COMPANY_ID;
---Table TBL_RECRUIT_INFO이(가) 변경되었습니다.
+select A.fk_recruit_no
+from tbl_recruit_apply A 
+join tbl_paper P
+on A.fk_paper_code = P.paper_code
+where P.fk_user_id = 'jjoung-2j' and A.fk_recruit_no = '20240319-46'
 
-alter table tbl_recruit_info
-add constraint FK_RC_INFO_FK_COMPANY_ID
-FOREIGN KEY(FK_COMPANY_ID) REFERENCES TBL_COMPANY(COMPANY_ID) on delete cascade;
--- Table TBL_RECRUIT_INFO이(가) 변경되었습니다.
-
--- 기업로그인 해제
-alter table tbl_company_login
-drop constraint fk_company_login_fk_company_id;
--- Table TBL_COMPANY_LOGIN이(가) 변경되었습니다.
-
-
-alter table tbl_company_login
-add constraint fk_company_login_fk_company_id
-FOREIGN KEY(FK_COMPANY_ID) REFERENCES TBL_COMPANY(COMPANY_ID) on delete cascade;
--- Table TBL_COMPANY_LOGIN이(가) 변경되었습니다.
-
--- 기업형태 해제
-alter table tbl_company_type
-drop constraint fk_company_type_fk_company_id;
--- Table TBL_COMPANY_TYPE이(가) 변경되었습니다.
-
-
-alter table tbl_company_type
-add constraint fk_company_type_fk_company_id
-FOREIGN KEY(FK_COMPANY_ID) REFERENCES TBL_COMPANY(COMPANY_ID) on delete cascade;
--- Table TBL_COMPANY_TYPE이(가) 변경되었습니다.
-
--- 채용지원 on delete cascade 추가
-alter table tbl_recruit_apply
-drop constraint fk_rc_apply_fk_recruit_no;
--- Table TBL_COMPANY_TYPE이(가) 변경되었습니다.
-
-
-alter table tbl_recruit_apply
-add constraint fk_rc_apply_fk_recruit_no
-FOREIGN KEY(fk_recruit_no) REFERENCES tbl_recruit_info(recruit_no) on delete cascade;
+select P.priority_name , A.academy_name , user_id
+from tbl_user_info U join
+tbl_priority P 
+on U.fk_priority_code = P.priority_code
+join tbl_academy A
+on U.fk_academy_code = A.academy_code
+where U.user_id = 'kudi03612'
 
 select *
-from tbl_company;
+from tbl_user_info
 
-select *
-from tbl_jobtype;
+select 
+desc TBL_CAREER_DETAIL 
 
-
-select B.recruit_no
-, A.company_name, A.company_address, B.career, B.year_salary
-, '~' || B.recruit_deadline AS recruit_deadline
-from TBL_COMPANY A RIGHT JOIN TBL_RECRUIT_INFO B
-ON A.company_id = B.fk_company_id
-order by recruit_no desc;
+alter table TBL_CAREER_DETAIL modify FK_USER_ID varchar2(20);
 
 
-    with
-    P as
-    (
-        select *
-        from tbl_paper
-    )
-    ,
-    U as
-    (
-        select *
-        from tbl_user_info
-    )
-    select U.user_id, P.paper_code
-    from P JOIN U
-    ON P.fk_user_id = U.user_id
-    where U.user_id = 'test2' and paper_code = '20';
-    
-    
-   
-   
-    with 
-    A as 	
-    ( 
-        select academy_name, user_id 
-        from tbl_academy A join tbl_user_info U 
-        on A.academy_code = U.fk_academy_code 
-    ) 
-    , R as 	
-    ( 
-        select priority_name, user_id 
-        from tbl_priority P join tbl_user_info U 
-        on P.priority_code = U.fk_priority_code 
-    ) 
-    , 
-    U as 
-    ( 	
-        select career, paper_name, user_id, fk_license_code, paper_code 
-        from tbl_user_info U join tbl_paper P 
-        on U.user_id = P.fk_user_id 
-    ) 
-    , 
-    D as 
-    ( 	
-        select license_name, fk_license_code 
-        from tbl_license_detail join tbl_paper 
-        on license_code = fk_license_code 
-    ) 
-    , Q as 
-    ( 	
-        select paper_code , fk_recruit_no, apply_motive , apply_day 
-        from tbl_recruit_apply N join tbl_paper G 
-        on N.fk_paper_code = G.paper_code 
-    )  	
-    select  Q.fk_recruit_no , U.career ,Q.apply_motive, Q.paper_code , U.paper_name 
-        , A.academy_name , R.priority_name , nvl(license_name, ' ') as 취업우대 
-        , Q.apply_day 
-    from A join R 
-    on A.user_id = R.user_id join U 
-    on R.user_id = U.user_id left join D 
-    on U.fk_license_code = D.fk_license_code join Q 
-    on U.paper_code = Q.paper_code
-    where user_id = 'ttest';
-   
-   alter table TBL_COMPANY
-    modify CEO_NAME NVARCHAR2(40);
-    
-    alter table TBL_RECRUIT_INFO
-    modify MANAGER_NAME NVARCHAR2(40);
-    
-    drop table tbl_user_login purge;
-    
-    commit;
-    
-    
-    with
-	A as
-	( 
-	select academy_name, user_id 
-	from tbl_academy A join tbl_user_info U 
-	on A.academy_code = U.fk_academy_code 
-	) 
-	, R as
-    ( 
-	select priority_name, user_id 
-	from tbl_priority P join tbl_user_info U 
-	on P.priority_code = U.fk_priority_code 
-	) 
-	, 
-	 U as 
-	( 
-	select career, paper_name, user_id, fk_license_code, paper_code 
-	from tbl_user_info U join tbl_paper P 
-	on U.user_id = P.fk_user_id 
-	) 
-	, 
-	D as 
-	( 
-	select license_name, fk_license_code 
-	from tbl_license_detail join tbl_paper 
-	on license_code = fk_license_code 
-	) 
-	, Q as 
-	( 
-    select paper_code , fk_recruit_no, apply_motive , apply_day 
-	from tbl_recruit_apply N join tbl_paper G 
-	on N.fk_paper_code = G.paper_code 
-	)
-	select  Q.fk_recruit_no , U.career ,Q.apply_motive, Q.paper_code , U.paper_name 
-	, A.academy_name , R.priority_name , nvl(license_name, ' ') as 취업우대 
-    , Q.apply_day 
-    from A join R 
-	on A.user_id = R.user_id join U 
-	on R.user_id = U.user_id left join D 
-	on U.fk_license_code = D.fk_license_code join Q 
-	on U.paper_code = Q.paper_code
-    where U.user_id = 'ttest';
-    
-	where U.user_id = ? ;
-    
-    
-    
+select paper_no, s.paper_name, u.user_name, 
+	                   to_char(paper_registerday, 'yyyy-mm-dd') as register_day , 
+	                   func_gender(u.user_security_num) AS gender 
+	                    , func_age(u.user_security_num) AS age  
+	                    , substr(u.user_security_num, 1, 7) || lpad('*', length(u.user_security_num) - 7, '*') AS jubun , 
+	                   u.user_name, func_gender(u.user_security_num) AS gender  
+	                   , func_age(u.user_security_num) AS age , u.user_tel, u.user_address, u.user_email,  
+	                   nvl(a.academy_name , '미등록') as academy_name , nvl(r.priority_name, '미등록') as priority_name,  
+	                   y.local_name || y.city_name as hope_city , 
+	                   s.career, nvl(d.license_name , '미등록') as license_name , 
+	                   case when d.license_day is not null then to_char(d.license_day , 'yyyy-mm-dd' ) 
+	                    else '미등록' end as license_day ,  
+	                   nvl(d.license_company, '미등록') as license_company  , to_char(s.paper_registerday, 'yyyy-mm-dd') as paper_registerday , nvl(s.hope_money, '미등록') as hope_money 
+	                   from tbl_academy a 
+	                   right join tbl_user_info u on a.academy_code = u.fk_academy_code 
+	                  left join tbl_priority r on u.fk_priority_code = r.priority_code 
+	                    join tbl_paper s on u.user_id = s.fk_user_id 
+	                    left join tbl_license_detail d on s.fk_license_code = d.license_code 
+	                  join tbl_local y on s.fk_local_code = y.local_code 
+	                  
+	                  where user_id = 'final' and paper_no = '1' 
+                      
+                      select * from tbl_user_info where user_id = 'final'
+                      
+                      select * from tbl_company
+                      
+                      
+                      select * from tbl_paper where fk_user_id = 'final'
+                      select * from tbl_recruit_info
+                      
+                      select * from tbl_recruit_apply;
+                      
+                      
+alter table tbl_recruit_apply
+drop constraint FK_rc_apply_fk_paper_code;
+-- Table TBL_RECRUIT_APPLY이(가) 변경되었습니다.
+
+alter table tbl_recruit_apply
+add constraint FK_rc_apply_fk_paper_code
+FOREIGN KEY(fk_paper_code) REFERENCES tbl_paper(paper_code) on delete cascade;
+-- Table TBL_RECRUIT_APPLY이(가) 변경되었습니다.
+
+commit;
+                      select * from tbl_local where local_code = 8
+                      
+                      select * from tbl_paper where paper_code = 144
+                      
+  constraint FK_rc_apply_fk_paper_code foreign key(fk_paper_code) references tbl_paper(paper_code)
+                      
+                      
+                select * from tbl_recruit_apply
+                      
+                      
+                      
+                     select fk_paper_code , fk_recruit_no, success_status 
+                from tbl_recruit_apply 
+                where fk_paper_code = 99 and fk_recruit_no = '20240321-69' and success_status in( 1 , 2) 

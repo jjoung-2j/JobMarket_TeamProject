@@ -23,9 +23,15 @@ public interface Recruit_apply_DAO {
 	int my_recruit_apply(Map<String, String> paraMap, int paper_code);
 
 	// ◆◆◆ === 채용지원 === ◆◆◆ //
-	int recruit_apply(String search_recruint_no, Scanner sc, User_DTO user);
+	void recruit_apply(String search_recruint_no, Scanner sc, User_DTO user);
 
 	// ◆◆◆ === 나의 채용지원 === ◆◆◆ //
 	int my_recruit_apply(Map<String, String> paraMap);
+
+
+	// ◆◆◆ === 이미 지원한 공고 체크 === ◆◆◆ //
+	boolean chk_apply(String user_id, String search_recruint_no);
+
+
 	
 }

@@ -122,7 +122,7 @@ public class Company_Controller {
 	     do {
 		     System.out.println("\n>>> ---- 기업 정보 메뉴 ---- <<<\n"
 		                   + "1.기업정보 보기 \n"
-		                   + "2.추가정보 입력 \n"
+		                   + "2.추가정보 입력 및 수정 \n"
 		                   + "3.이전 메뉴로 돌아가기" );
 		      
 		     System.out.print("▶ 메뉴번호 선택 : ");
@@ -138,7 +138,7 @@ public class Company_Controller {
 	                  
 	                StringBuilder sb = new StringBuilder();  
 	                   
-	                sb.append(" === 기업 정보 ===\n"
+	                sb.append("\n === 기업 정보 ===\n"
 	                         + "▶ 기업명 : " + company_1.getCompany_name() + "\n"
 	                         + "▶ 기업대표 : " + company_1.getCeo_name() + "\n"
 	                         + "▶ 사업자등록번호 : " + company_1.getBusiness_number()+ "\n"
@@ -195,8 +195,13 @@ public class Company_Controller {
 	        
 	        do {
 	           ///////////////////////////////////////////////////////////
-	           System.out.print("▶ 사원수[숫자만 입력] : ");
+	           System.out.print("(이전메뉴로 돌아가시려면 Q를 눌러주세요)"
+	           		+ "▶ 사원수[숫자만 입력] : ");
 	           String c_employee_num = sc.nextLine();
+	           if("q".equalsIgnoreCase(c_employee_num)) {
+	        	   
+	        	   return;
+	           }
 	         
 	           try {
 	              employee_num = Integer.parseInt(c_employee_num);
@@ -223,8 +228,14 @@ public class Company_Controller {
 	        do {
 	         ///////////////////////////////////////////////////////////
 	    	  String public_status = "";
-	    	  System.out.print("▶ 상장여부[상장은 1, 비상장은 0을 입력] : ");
+	    	  System.out.print("(이전메뉴로 돌아가시려면 Q를 눌러주세요)\n"
+	    	  		+ "▶ 상장여부[상장은 1, 비상장은 0을 입력] : ");
 	    	  public_status = sc.nextLine();
+	    	  if("q".equalsIgnoreCase(public_status)) {
+	        	   
+	        	   return;
+	           }
+	         
 	         
 	    	  if("1".equals(public_status)) {
 	    		  System.out.println(">> 상장여부에 '상장'을 선택하셨습니다.");
@@ -248,8 +259,13 @@ public class Company_Controller {
   			do {
 	         ///////////////////////////////////////////////////////////
   				String begin_day = "";
-  				System.out.print("▶ 설립일자[예 : 2024-03-15 ] : ");
+  				System.out.print("(이전메뉴로 돌아가시려면 Q를 눌러주세요)\n"
+  						+ "▶ 설립일자[예 : 2024-03-15 ] : ");
   				begin_day = sc.nextLine();
+  			    if("q".equalsIgnoreCase(begin_day)) {
+	        	   
+	        	   return;
+	           }
   				if( begin_day.isBlank() ) {   // 그냥 엔터 또는 공백으로 입력한 경우
  	               System.out.println(">> [경고] 설립일자는 필수로 입력하셔야 합니다. <<\n");
  	               continue;
@@ -266,8 +282,13 @@ public class Company_Controller {
   			long capital_money = 0;
   			do {
 	          ///////////////////////////////////////////////////////////
-  				System.out.print("▶ 자본금[숫자만 입력] : ");
+  				System.out.print("(이전메뉴로 돌아가시려면 Q를 눌러주세요)\n"
+  						+ "▶ 자본금[숫자만 입력] : ");
   				String c_capital_money = sc.nextLine();
+  				if("q".equalsIgnoreCase(c_capital_money)) {
+ 	        	   
+ 	        	   return;
+ 	           }
   				try {
   					capital_money = Long.parseLong(c_capital_money);
 	      
@@ -291,8 +312,13 @@ public class Company_Controller {
   			int companylist_num = 0;
 	        do {
 	           ///////////////////////////////////////////////////////////
-	        	System.out.print("▶ 계열회사수[숫자만 입력] : ");
+	        	System.out.print("(이전메뉴로 돌아가시려면 Q를 눌러주세요)\n"
+	        			+ "▶ 계열회사수[숫자만 입력] : ");
 	        	String c_companylist_num = sc.nextLine();
+	        	if("q".equalsIgnoreCase(c_companylist_num)) {
+	 	        	   
+	 	        	   return;
+	 	           }
 	        	
 	        	try {
 	        		companylist_num = Integer.parseInt(c_companylist_num);
@@ -396,7 +422,7 @@ public class Company_Controller {
 		                   + "2. 채용공고 조회\n"
 		                   + "3. 채용공고 수정\n"
 		                   + "4. 채용공고 삭제\n"
-		                   + "5.이전 메뉴로 돌아가기" );
+		                   + "5. 이전 메뉴로 돌아가기" );
 		     
 		     System.out.print("▶ 메뉴번호 선택 : ");
 		     c_Choice = sc.nextLine();
@@ -472,7 +498,7 @@ public class Company_Controller {
 		// 채용공고명
 		do {
 			System.out.println(">> 작성을 중단하시려면 Q를 누르세요. <<");
-			System.out.print("\n▶ 채용공고명 [ 40자 이내 ] : ");
+			System.out.print("\n▶ 채용공고명 [ 20자 이내 ] : ");
 			String recruit_title = sc.nextLine();
 			if("q".equalsIgnoreCase(recruit_title)) {
 		            return;
@@ -483,7 +509,7 @@ public class Company_Controller {
 					break;
 				}
 				else {
-					System.out.println(">>> [경고] 채용공고명은 40자 이하로 작성해주세요. <<<");
+					System.out.println(">>> [경고] 채용공고명은 20자 이하로 작성해주세요. <<<");
 				}
 			}
 			else {
@@ -738,8 +764,8 @@ public class Company_Controller {
 	              
 	            for(Recruit_INFO_DTO recruit : countlist) {
 	               sb.append(recruit.getRecruit_no() + "\t" +
-	                        recruit.getRecruit_title() + "\t" +
-	                        recruit.getRecruit_registerday() + "\t" +
+	                        "   " + recruit.getRecruit_title() + "\t\t" +
+	                        recruit.getRecruit_registerday() + "\t\t" +
 	                        recruit.getRecruit_deadline() + "\t" + "\n");
 	                    
 	         } // end of for(Recruit_INFO_DTO recruit_info : recruitList)
@@ -936,7 +962,7 @@ public class Company_Controller {
 	                  else if("n".equalsIgnoreCase(yn)) {
 	                     
 	                     System.out.println(" >> 불합격 처리 되었습니다 ! << ");
-	                     
+	                     rdao.apply_yesorno(yn,paper);
 	                     return;
 	                     
 	                  }else if ("q".equalsIgnoreCase(yn)) {
@@ -975,9 +1001,9 @@ public class Company_Controller {
 	        
 	        if(rclist.size() > 0) {
 	          
-	           System.out.println("-".repeat(50));
-	           System.out.println("채용공고번호  채용공고명  채용분야 채용등록일 채용마감일 신입/경력여부 채용담당자이름 채용담당자이메일 ");
-	           System.out.println("-".repeat(50));
+	           System.out.println("-".repeat(80));
+	           System.out.println("채용공고번호  \t채용공고명  채용분야 채용등록일 채용마감일 신입/경력여부 채용담당자이름 채용담당자이메일 ");
+	           System.out.println("-".repeat(80));
 	          
 	           sb = new StringBuilder();
 	          
@@ -997,17 +1023,19 @@ public class Company_Controller {
 	        do {
 	         System.out.println(sb.toString() + "\n");  
 	         
-	         System.out.print(">> 수정할 채용공고번호를 입력하세요 [수정을 취소하려면 Q키를 누르세오] : ");
+	         System.out.print(">> 수정할 채용공고번호를 입력하세요 [수정을 취소하려면 Q키를 누르세요] : ");
 	         input_rcno = sc.nextLine();
+	         
+	         boolean chk = rdao.chk_recruit(company , input_rcno);
 	         
 	         if("Q".equalsIgnoreCase(input_rcno)) {
 	            System.out.println(">> 수정을 취소하고 이전메뉴로 돌아갑니다!"); 
 	         }
-	         else if (input_rcno.isBlank() || !input_rcno.equals(rclist.get(0).getRecruit_no()) ) {
+	         else if (input_rcno.isBlank() || !chk ) {
 	            System.out.println(">> 올바른 채용공고번호를 입력하세요!");
 	            continue;
 	         }
-	         else if(input_rcno.equals(rclist.get(0).getRecruit_no())) {
+	         else if(chk) {
 	            
 	              do {
 	                 System.out.println("\n>>> ---- " + company.getCompany_name() + " 기업의 채용공고 수정 메뉴 ---- <<<\n"
@@ -1313,7 +1341,7 @@ public class Company_Controller {
 		            	   break;
 		               case "12":
 		            	   Map<String,String> rc_allfixmap = new HashMap<>();
-	                  
+		            	   int ct = 0;
 		            	   do {
 	                     
 		            		   infoview = "recruit_title";
@@ -1326,6 +1354,7 @@ public class Company_Controller {
 		            		   if ( fix_recruit_title.isBlank() ) { 
 		            			   System.out.println(">> 기존 내용으로 유지 됩니다. <<\n");
 		            			   rc_allfixmap.put("recruit_title", result_value);
+		            			   ct++;
 		            			   break;
 		            		   }
 		            		   else if ( fix_info != null ){
@@ -1350,6 +1379,7 @@ public class Company_Controller {
 		            		   if ( fix_recruit_deadline.isBlank() ) { 
 		            			   System.out.println(">> 기존 내용으로 유지 됩니다. <<\n");
 		            			   rc_allfixmap.put("recruit_deadline", result_value);
+		            			   ct++;
 		            			   break;
 		            		   }
 		            		   else if ( fix_info != null ){
@@ -1372,6 +1402,7 @@ public class Company_Controller {
 		            		   if ( fix_manager_name.isBlank() ) { 
 		            			   System.out.println(">> 기존 내용으로 유지 됩니다. <<\n");
 		            			   rc_allfixmap.put("manager_name", result_value);
+		            			   ct++;
 		            			   break;
 		            		   }
 		            		   else if ( fix_info != null ){
@@ -1394,6 +1425,7 @@ public class Company_Controller {
 		                	  if ( fix_manager_email.isBlank() ) { 
 		                        System.out.println(">> 기존 내용으로 유지 됩니다. <<\n");
 		                        rc_allfixmap.put("manager_email", result_value);
+		                        ct++;
 		                        break;
 		                     }
 		                     else if ( fix_info != null ){
@@ -1416,6 +1448,7 @@ public class Company_Controller {
 		                     if ( fix_recruit_content.isBlank() ) { 
 		                        System.out.println(">> 기존 내용으로 유지 됩니다. <<\n");
 		                        rc_allfixmap.put("recruit_content", result_value);
+		                        ct++;
 		                        break;
 		                     }
 		                     else if ( fix_info != null ){
@@ -1438,6 +1471,7 @@ public class Company_Controller {
 		                     if ( fix_career.isBlank() ) { 
 		                        System.out.println(">> 기존 내용으로 유지 됩니다. <<\n");
 		                        rc_allfixmap.put("career", result_value);
+		                        ct++;
 		                        break;
 		                     }
 		                     else if ( fix_info != null ){
@@ -1460,6 +1494,7 @@ public class Company_Controller {
 		                     if ( fix_year_salary.isBlank() ) { 
 		                        System.out.println(">> 기존 내용으로 유지 됩니다. <<\n");
 		                        rc_allfixmap.put("year_salary", result_value);
+		                        ct++;
 		                        break;
 		                     }
 		                     else if ( fix_info != null ){
@@ -1482,6 +1517,7 @@ public class Company_Controller {
 		                     if ( fix_recruit_people.isBlank() ) { 
 		                        System.out.println(">> 기존 내용으로 유지 됩니다. <<\n");
 		                        rc_allfixmap.put("recruit_people", result_value);
+		                        ct++;
 		                        break;
 		                     }
 		                     else if ( fix_info != null ){
@@ -1504,6 +1540,7 @@ public class Company_Controller {
 		                     if ( fix_recruit_field.isBlank() ) { 
 		                        System.out.println(">> 기존 내용으로 유지 됩니다. <<\n");
 		                        rc_allfixmap.put("recruit_field", result_value);
+		                        ct++;
 		                        break;
 		                     }
 		                     else if ( fix_info != null ){
@@ -1526,6 +1563,7 @@ public class Company_Controller {
 		                     if ( fix_work_day.isBlank() ) { 
 		                        System.out.println(">> 기존 내용으로 유지 됩니다. <<\n");
 		                        rc_allfixmap.put("work_day", result_value);
+		                        ct++;
 		                        break;
 		                     }
 		                     else if ( fix_info != null ){
@@ -1548,6 +1586,7 @@ public class Company_Controller {
 		                     if ( fix_work_time.isBlank() ) { 
 		                        System.out.println(">> 기존 내용으로 유지 됩니다. <<\n");
 		                        rc_allfixmap.put("work_time", result_value);
+		                        ct++;
 		                        break;
 		                     }
 		                     else if ( fix_info != null ){
@@ -1559,6 +1598,12 @@ public class Company_Controller {
 		                     }
 		                  } while (true);
 		                  ////////////////////////////////////////////////////////////////////////////////////
+		                  if(ct==11) {
+		                	  
+		                	  System.out.println(">> 전부 변경을 하지않으셨기에 자동으로 이전메뉴로 되돌아갑니다 <<");
+		                	  
+		                	  return;
+		                  }
 		                  do {
 		                     
 		                     System.out.print(">> 정말 수정하시겠습니까? [Y/N] :");
@@ -1642,7 +1687,7 @@ public class Company_Controller {
 	   String input_rcno = "";
 	   String yn = "";
 	   do {
-	       System.out.print(">> 삭제할 채용공고번호를 입력하세요 [삭제를 취소하려면 Q키를 누르세오] : ");
+	       System.out.print(">> 삭제할 채용공고번호를 입력하세요 [삭제를 취소하려면 Q키를 누르세요] : ");
 	       input_rcno = sc.nextLine();
 
 	       if("q".equalsIgnoreCase(input_rcno)) {
@@ -1712,7 +1757,7 @@ public class Company_Controller {
         if(memberList.size() > 0) {
 	          
            System.out.println("-".repeat(60));
-           System.out.println("성명\t\t이메일\t\t생년월일");
+           System.out.println("성명\t이메일\t\t생년월일");
            System.out.println("-".repeat(60));
 	          
            sb = new StringBuilder();
