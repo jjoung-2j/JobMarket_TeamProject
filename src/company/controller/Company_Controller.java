@@ -1746,8 +1746,7 @@ public class Company_Controller {
 		
 	// ◆◆◆ === 구직자 정보 조회 === ◆◆◆ //
 	public void user_info(Scanner sc, Company_DTO company) {
-		
-		User_DTO user = new User_DTO();
+	
 		System.out.println("\n>>> ---- 구직자 정보 ---- <<<\n");
 	           
 		List<User_DTO> memberList = cdao.All_user();
