@@ -81,6 +81,10 @@ public interface Recruit_DAO {
 	// ◆◆◆ === 채용공고 삭제 === ◆◆◆ //
 	int delete_recruitlist(String input_rcno);
 
+	// ◆◆◆ === 로그인한 기업 채용공고 확인 === ◆◆◆ //
+	boolean chk_recruit( Company_DTO company, String input_rcno);
+
+
 	
 
 	

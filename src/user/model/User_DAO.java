@@ -34,7 +34,7 @@ public interface User_DAO {
 	String check_user_info(String chk, String user_id);
 
 	// ◆◆◆ === 나의 추가 정보 입력(학력, 취업우대) === ◆◆◆ //
-	int insert_anotherinfo(String academy_code, String priority_code, String user_id);
+	int insert_anotherinfo(Map<String, String> para, String user_id);
 
 	
 	// ◆◆◆ ===  이력서 조회 === ◆◆◆ //
@@ -53,7 +53,7 @@ public interface User_DAO {
 	int career_detail(User_DTO user);
 	
 	// ◆◆◆ === 이력서 작성 === ◆◆◆ //
-	int write_paper_sql(User_DTO user);
+	int write_paper_sql(User_DTO user, Map<String, String> license_map);
 	
 	// ◆◆◆ === 이력서 보여주기 === ◆◆◆ //
 	Paper_DTO view_paper(String paper_code, User_DTO user);
@@ -84,6 +84,14 @@ public interface User_DAO {
 
 	// ◆◆◆ === 비밀번호 찾기  === ◆◆◆ //
 	String findpasswd(User_DTO user);
+
+	// ◆◆◆ === 자격증,취업우대 가져오기  === ◆◆◆ //
+	Map<String, String> select_acaprio(User_DTO user);
+
+	// ◆◆◆ === db에서 최신화된 유저정보 가져오기  === ◆◆◆ //
+	String recently_info(User_DTO user, String infoview);
+
+	
 	
 	
 

@@ -526,7 +526,8 @@ public class Recruit_DAO_imple implements Recruit_DAO {
          
          if(rs.next()) {
             result = false; 
-         }   
+         }
+         
       } catch (SQLException e) {
             e.printStackTrace();
       } finally { // 성공하든 안하든 무조건! 
@@ -1003,7 +1004,7 @@ public class Recruit_DAO_imple implements Recruit_DAO {
 	                  + ", recruit_field , to_char(recruit_registerday, 'yyyy-mm-dd') as recruit_registerday , "
 	                  + " recruit_deadline , career,  manager_name , manager_email "
 	                  + " from tbl_recruit_info "
-	                  + " where fk_company_id = ? ";
+	                  + " where fk_company_id = ?  ";
 	            
 	    	  pstmt = conn.prepareStatement(sql); // 우편배달부 = 서버.prepareStatement(전달할sql문)
 	    	  pstmt.setString(1, company.getCompany_id());
@@ -1061,6 +1062,39 @@ public class Recruit_DAO_imple implements Recruit_DAO {
 	      }   // end try~catch~finally--------------------
 	      return result;
 	   } // end of public int delete_recruitlist(String input_rcno) 
+
+
+	// ◆◆◆ === 로그인한 기업 채용공고 확인 === ◆◆◆ //
+	@Override
+	public boolean chk_recruit( Company_DTO company, String input_rcno){
+		
+		boolean result = false;
+		
+		try {
+			String sql = " select recruit_no "
+	                  + " from tbl_recruit_info "
+	                  + " where fk_company_id = ? and recruit_no = ? ";
+	               
+			pstmt = conn.prepareStatement(sql); // 우편배달부 = 서버.prepareStatement(전달할sql문)
+
+			pstmt.setString(1, company.getCompany_id());
+			pstmt.setString(2, input_rcno);
+	         
+			rs = pstmt.executeQuery(); // SQL문 실행  
+	         
+			if(rs.next()) {
+				
+	    			  result = true;
+	    		
+			}     
+		} catch (SQLException e) {
+        	e.printStackTrace();
+		} finally { // 성공하든 안하든 무조건! 
+			close();
+		} // end of finally
+		
+		return result;
+	} // end of
 
 
 

@@ -131,48 +131,18 @@ public class Recruit_apply_DAO_imple implements Recruit_apply_DAO {
 		List<User_DTO> applyList = new ArrayList<>();
 		
 		try {
-			String sql = " with "
-					+ "   A as "	// 학력
-					+ "   ( "
-					+ "   select academy_name, user_id "
-					+ "   from tbl_academy A join tbl_user_info U "
-					+ "   on A.academy_code = U.fk_academy_code "
-					+ "   ) "
-					+ "   , R as "	// 취업우대
-					+ "   ( "
-					+ "   select priority_name, user_id "
-					+ "   from tbl_priority P join tbl_user_info U "
-					+ "   on P.priority_code = U.fk_priority_code "
-					+ "   ) "
-					+ "   , "
-					+ "   U as "
-					+ "   ( "		// 이력서
-					+ "   select career, paper_name, user_id, fk_license_code, paper_code "
-					+ "   from tbl_user_info U join tbl_paper P "
-					+ "   on U.user_id = P.fk_user_id "
-					+ "   ) "
-					+ "   , "
-					+ "   D as "
-					+ "   ( "		// 자격증
-					+ "   select license_name, fk_license_code "
-					+ "   from tbl_license_detail join tbl_paper "
-					+ "   on license_code = fk_license_code "
-					+ "   ) "
-					+ "   , Q as "
-					+ "   ( "		// 지원
-					+ "   select paper_code , fk_recruit_no, apply_motive , apply_day "
-					+ "   from tbl_recruit_apply N join tbl_paper G "
-					+ "   on N.fk_paper_code = G.paper_code "
-					+ "   )  "		// select 문 시작
-					+ "   select  Q.fk_recruit_no , U.career ,Q.apply_motive, Q.paper_code , U.paper_name "
-					+ "    , A.academy_name , R.priority_name , nvl(license_name, ' ') as 취업우대 "
-					+ "    , Q.apply_day "
-					+ "   from A join R "
-					+ "   on A.user_id = R.user_id join U "
-					+ "   on R.user_id = U.user_id left join D "
-					+ "   on U.fk_license_code = D.fk_license_code join Q "
-					+ "   on U.paper_code = Q.paper_code "
-					+ "   where U.user_id = ? ";
+			String sql = "   select  q.fk_recruit_no, career, q.apply_motive, q.fk_paper_code, "
+					+ " paper_name, NVL(academy_name,'미입력') AS academy_name "
+					+ " , nvl(license_name, '미입력') as license_name , q.apply_day , "
+					+ " nvl(priority_name, '미입력') as priority_name "
+					+ " from tbl_academy a "
+					+ " RIGHT join tbl_user_info u on a.academy_code = u.fk_academy_code "
+					+ " left join tbl_priority r on u.fk_priority_code = r.priority_code "
+					+ " join tbl_paper s on u.user_id = s.fk_user_id "
+					+ " left join tbl_license_detail d on s.fk_license_code = d.license_code "
+					+ " join tbl_local y on s.fk_local_code = y.local_code "
+					+ " join tbl_recruit_apply q on s.paper_code = q.fk_paper_code  "
+                    + " WHERE U.USER_ID = ? ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -185,22 +155,25 @@ public class Recruit_apply_DAO_imple implements Recruit_apply_DAO {
 				Recruit_Apply_DTO rdto = new Recruit_Apply_DTO();
 				rdto.setRecruit_no(rs.getString("fk_recruit_no"));
 				rdto.setApply_motive(rs.getString("apply_motive"));
-				rdto.setPaper_code(rs.getInt("paper_code"));
+				rdto.setPaper_code(rs.getInt("fk_paper_code"));
 				rdto.setApply_day(rs.getString("apply_day"));
 				
 				Paper_DTO pdto = new Paper_DTO();
 				pdto.setCareer(rs.getString("career"));
 				pdto.setPaper_name(rs.getString("paper_name"));
+				pdto.setPaper_code(rs.getString("fk_paper_code"));
+				pdto.setLicense_name(rs.getString("license_name"));
 				
 				User_DTO udto = new User_DTO();
-				udto.setPriority_name(rs.getString("취업우대"));
+				udto.setPriority_name(rs.getString("priority_name"));
 				udto.setAcademy_name(rs.getString("academy_name"));
 				
 				udto.setRcapply(rdto);
 				
 				udto.setPaper(pdto);
 				
-				// 확인용 System.out.println(udto);
+				// 확인용 
+				
 				applyList.add(udto);	
 			}	// end of while(rs.next())-------
 		} catch(SQLException e) {
@@ -273,9 +246,9 @@ public class Recruit_apply_DAO_imple implements Recruit_apply_DAO {
 	
 	// ◆◆◆ === 채용지원 === ◆◆◆ //
 	   @Override
-	   public int recruit_apply(String search_recruint_no, Scanner sc, User_DTO user) {
+	   public void recruit_apply(String search_recruint_no, Scanner sc, User_DTO user) {
 	      
-	      int result = 0;
+	
 	      
 	      Map<String, String> paraMap = new HashMap<>();
 	      User_DAO udao = new User_DAO_imple();
@@ -309,9 +282,22 @@ public class Recruit_apply_DAO_imple implements Recruit_apply_DAO {
 	      
 	      String input_paper_code = "";
 	      do {
+	    	 
 	         ////////////////////////////////////////////////////////////
-	         System.out.print("2. 이력서번호 : ");
+	         System.out.print(" (지원을 취소하시려면 Q를 누르세요)]\n"
+	         		+ "2. 이력서번호 : ");
 	         input_paper_code = sc.nextLine();
+	         if("q".equalsIgnoreCase(input_paper_code)) {
+	        	 
+	        	 return;
+	    		 
+	    	 }
+	         else if (input_paper_code.isBlank()) {
+	        	 
+	        	 System.out.println(">> Q를 누르시거나 이력서번호를 입력해주세요! ");
+	        	 
+	        	 continue;
+	         }
 	         
 	         boolean chk = chk_papercode(user, input_paper_code);
 	         
@@ -321,7 +307,7 @@ public class Recruit_apply_DAO_imple implements Recruit_apply_DAO {
 	         }
 	         else {
 	            System.out.println(">> 입력하신 이력서번호 " + input_paper_code + "번은 존재하지 않습니다.");
-	            return 0;
+	        
 	         }
 	         ////////////////////////////////////////////////////////////
 	      } while(true);
@@ -375,7 +361,6 @@ public class Recruit_apply_DAO_imple implements Recruit_apply_DAO {
 	         ////////////////////////////////////////////////////////////
 	      } while(true);
 	      
-	      return result;
 	      
 	   }   // end of public int recruit_apply(String search_recruint_no, Scanner sc, User_DTO user)-----
 
@@ -469,6 +454,44 @@ public class Recruit_apply_DAO_imple implements Recruit_apply_DAO {
 	      return n;
 	      
 	   }   // end of public int my_recruit_apply(Map<String, String> paraMap)-----
+
+
+	// ◆◆◆ === 이미 지원한 공고 체크 === ◆◆◆ //   
+	@Override
+	public 	boolean chk_apply(String user_id, String search_recruint_no) {
+		
+		boolean chk = true;
+		
+		try {
+	         String sql = " select A.fk_recruit_no "
+	         		+ " from tbl_recruit_apply A "
+	         		+ " join tbl_paper P "
+	         		+ " on A.fk_paper_code = P.paper_code "
+	         		+ " where P.fk_user_id = ? and A.fk_recruit_no = ? ";
+	           
+	         pstmt = conn.prepareStatement(sql);
+	         
+	         pstmt.setString(1, user_id);
+	         pstmt.setString(2, search_recruint_no);
+	           
+	           rs = pstmt.executeQuery(); // SQL문 실행
+	           
+	           if(rs.next()) {   
+	             
+	        	   chk = false;
+	        	   
+	           }
+	        
+	           
+	      } catch (SQLException e) {
+	         e.printStackTrace();
+	      } finally {
+	         close(); 
+	      }
+		
+		
+		return chk;
+	} // end of public boolean chk_apply(String search_recruint_no)
 
    
    

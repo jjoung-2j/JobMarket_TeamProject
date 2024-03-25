@@ -159,6 +159,7 @@ public class User_Controller {
 	        	String fixno = "";
 	        	outer:
 	        	do {
+	        		
 	        		System.out.println("\n>>> 수정할 내용을 선택해주세요. <<<");
 	        		System.out.println("-".repeat(70));
 	        		System.out.println("1. 비밀번호		2. 성명		3. 주소			4. 연락처\n"
@@ -176,13 +177,14 @@ public class User_Controller {
 	        		switch(fixno) {
 	        		case "1":	// 비밀번호
 	        			infoview = "user_passwd";
-	        			System.out.println("\n▶ 수정 전 비밀번호 : " + user.getUser_passwd());
+	        			String result = udao.recently_info(user,infoview);
+	        			System.out.println("\n▶ 수정 전 비밀번호 : " + result);
 	        			
 	        			System.out.println("※ 변경하지 않으려면 엔터하세요.");
 	        			System.out.print("▶ 변경할 비밀번호 : ");
 	        			fix_info = sc.nextLine();
 	        			
-	        			if(!(fix_info.isBlank() || user.getUser_passwd().equals(fix_info))) {
+	        			if(!(fix_info.isBlank() ||user.getUser_passwd().equals(fix_info) )) {
 	        				if(Set_util.Check_passwd(fix_info)) {
 	        					do {
 		        					System.out.println(fix_info + "로 수정하시겠습니까? [Y/N]");
@@ -190,6 +192,7 @@ public class User_Controller {
 		        					if("y".equalsIgnoreCase(yn)) {
 		        						udao.fix_info(user, infoview, fix_info);
 			        					System.out.println(">>> 비밀번호 수정 성공!! <<<");
+			        					break outer;
 		        					}
 		        					else if("n".equalsIgnoreCase(yn)){
 		        						System.out.println(">>> 비밀번호 수정 취소!! <<<");
@@ -202,13 +205,17 @@ public class User_Controller {
 	        				else {	// 비밀번호 규격에 맞지 않은 경우
 	        					System.out.println(">>> [경고] 8~16자의 영문 대/소문자, 숫자, 특수문자를 사용해 주세요. <<<");
 	        					System.out.println(">>> 비밀번호 수정 실패!! <<<");
-	        					continue outer;
+	        					
 	        				}
 	        			}	// end of if(공백이 아닌 경우)--------------
+	        		
+	        		
 	        			break;
+	        			
 	        		case "2":	// 성명
 	        			infoview = "user_name";
-	        			System.out.println("\n▶ 수정 전 성명 : " + user.getUser_name());
+	        			result = udao.recently_info(user,infoview);
+	        			System.out.println("\n▶ 수정 전 성명 : " + result);
 	        			
 	        			System.out.println("※ 변경하지 않으려면 엔터하세요.");
 	        			System.out.print("▶ 변경 할 성명 : ");
@@ -239,7 +246,8 @@ public class User_Controller {
 	        			break;
 	        		case "3":	// 주소
 	        			infoview = "user_address";
-	        			System.out.println("\n▶ 수정 전 주소 : " + user.getUser_address());
+	        			result = udao.recently_info(user,infoview);
+	        			System.out.println("\n▶ 수정 전 주소 : " + result);
 	        			System.out.println("※ 변경하지 않으려면 엔터하세요.");
 	        			System.out.print("▶ 변경 할 주소 : ");
 	        			fix_info = sc.nextLine();
@@ -264,7 +272,8 @@ public class User_Controller {
 	        			break;
 	        		case "4":	// 연락처
 	        			infoview = "user_tel";
-	        			System.out.println("\n▶ 수정 전 연락처 : " + user.getUser_tel());
+	        			result = udao.recently_info(user,infoview);
+	        			System.out.println("\n▶ 수정 전 연락처 : " + result);
 	        			System.out.println("※ 변경하지 않으려면 엔터하세요.");
 	        			System.out.print("▶ 변경 할 연락처 : ");
 	        			fix_info = sc.nextLine();
@@ -294,17 +303,29 @@ public class User_Controller {
 	        			break;
 	        		case "5":	// 주민번호
 	        			infoview = "user_security_num";
-	        			System.out.println("\n▶ 수정 전 주민번호 : " + user.getUser_security_num());
+	        			result = udao.recently_info(user,infoview);
+	        			System.out.println("\n▶ 수정 전 주민번호 : " + result);
 	        			System.out.println("※ 변경하지 않으려면 엔터하세요.");
 	        			System.out.print("▶ 변경 할 주민번호 : ");
 	        			fix_info = sc.nextLine();
 	        			
 	        			if(!(fix_info.isBlank() || user.getUser_security_num().equals(fix_info))) {
 	        				if(Set_util.Check_security_num(fix_info)) {
-	        					System.out.println(fix_info + "로 수정하시겠습니까? [Y/N]");
+	        					do {
+								System.out.println(fix_info + "로 수정하시겠습니까? [Y/N]");
+								yn = sc.nextLine();
+								if("y".equalsIgnoreCase(yn)) {
 	        					n = udao.fix_info(user, infoview, fix_info);
 	        					System.out.println(">>> 주민번호 수정 성공!! <<<");
-	        				}
+								}
+								else if("n".equalsIgnoreCase(yn)){
+	        						System.out.println(">>> 주민번호 수정 취소!! <<<");
+	        					}
+	        					else {
+	        						System.out.println(">>> [경고] Y 또는 N 만 입력해주세요. <<<");
+	        					}
+	        				} while (!("y".equalsIgnoreCase(yn) || "n".equalsIgnoreCase(yn)));
+	        			}
 	        				else {
 	        					System.out.println(">>> 주민번호 수정 실패!! <<<");
 	        					continue outer;
@@ -313,7 +334,8 @@ public class User_Controller {
 	        			break;
 	        		case "6":	// 이메일
 	        			infoview = "user_email";
-	        			System.out.println("\n▶ 수정 전 이메일 : " + user.getUser_email());
+	        			result = udao.recently_info(user,infoview);
+	        			System.out.println("\n▶ 수정 전 이메일 : " + result);
 	        			System.out.println("※ 변경하지 않으려면 엔터하세요.");
 	        			System.out.print("▶ 변경 할 이메일 : ");
 	        			fix_info = sc.nextLine();
@@ -536,130 +558,171 @@ public class User_Controller {
 		// ◆◆◆ === 나의 추가정보 입력 및 추가정보에 대한 수정 === ◆◆◆ //   
 	      private void insert_info(Scanner sc, User_DTO user) {
 	    	  
+	    	  Map<String,String> para = new HashMap<String, String>();
+	    	  
 	    	  System.out.println("-".repeat(80));
-	    	  if(user.getAcademy_name() == null) {
-	    		  user.setAcademy_name("미입력");
-	    	  }
-	    	  if(user.getPriority_name() == null) {
-	    		  user.setPriority_name("미입력");
+//	    	  if(user.getAcademy_name() == null) {
+//	    		  user.setAcademy_name("미입력");
+//	    	  }
+//	    	  if(user.getPriority_name() == null) {
+//	    		  user.setPriority_name("미입력");
+//	    	  }
+	    	  
+	    	  Map<String,String> select = udao.select_acaprio(user);
+	    	  if(select != null) {
+	    		  
+	    		  System.out.println("\n현재 학력 : " + select.get("priority_name"));
+		    	  System.out.println("현재 취업우대 : " + select.get("academy_name"));
+	    		  
 	    	  }
 	    	  
-	    	  System.out.println("\n현재 학력 : " + user.getAcademy_name());
-	    	  System.out.println("현재 취업우대 : " + user.getPriority_name());
 	    	  
 	         System.out.println("\n--------------------------------------"); 
 	         System.out.println("\t>>> 나의 추가정보 입력하기 <<<");
 	         System.out.println("--------------------------------------");
 	           
 	         String choice = "";
+	         
+	         String academy_code = "";
+	         String priority_code = "";
+
+	         String yn = "";
 	         do {
 	        	 System.out.println("1. 학력 2. 취업우대 3. 돌아가기");
 	        	 System.out.print("▶ 메뉴번호 선택(번호로 입력해주세요.) : ");
 	        	 choice = sc.nextLine();
-	        	 if("1".equals(choice) || "2".equals(choice)) {
-	                  break;
+	        	 
+	        	 
+	        	 if("1".equals(choice) ) {
+	        		 
+	        		 
+	        		 System.out.println("\n" + "-".repeat(80));
+		        	  System.out.print(">> 학력에 해당하는 번호를 입력하세요 << \n"
+		                    + "1.고등학교졸업미만 \t2.고등학교졸업 \t3.대학교 재학중 \t4.대학교 졸업2년제 \n"
+		                    + "5.대학교 졸업3년제 \t 6.대학교 졸업4년제 \t\t7.대학원 석사 졸업 \t8.대학원 박사 졸업\n"
+		                    + "[입력을 취소하시려면 Q키를 눌러주세요] \n");
+		        	   System.out.println("-".repeat(80));
+		        	   System.out.print("▶ 학력 입력 [숫자만 입력] : ");
+		        	   academy_code = sc.nextLine();
+		             
+		        	   if("q".equalsIgnoreCase(academy_code)) {
+		        		   return;
+		        	   }
+		        	   try {
+		                   int num = Integer.parseInt(academy_code);
+		                   
+		                   if(num >= 1 && num <= 8) {
+		                	   para.put("academy_code", academy_code);
+		                	   
+		                  	 System.out.print("\n>> 정말(수정)입력하시겠습니까 ? [Y/N] : ");
+		                  	 yn = sc.nextLine();
+		                  	 if("y".equalsIgnoreCase(yn)) {
+		                      
+		                  		 int n = udao.insert_anotherinfo(para , user.getUser_id());
+		                        
+		                  		 if(n==1) {
+		                  			 System.out.println(">> " + user.getUser_name() +  " 회원의 상세정보 입력 완료! <<");
+		                  			 return;
+		                  		 }
+		                  		 else {
+		                  			 System.out.println(">> " + user.getUser_name() +  " 회원의 상세정보 입력 실패! <<");
+		                  			 return;
+		                  		 }
+		                     
+		                   }
+		                  	 else if ("n".equalsIgnoreCase(yn))	 {
+		                  		 
+		                  		 System.out.println(">> 입력 취소 ! 이전메뉴로 돌아갑니다. << ");
+		                 		 
+		                 		 return;
+		                  		 
+		                  	 }
+		                  	 
+		                   else {
+		                      System.out.println(">> 메뉴에 있는 숫자만 입력하세요!");
+		                      
+		                      continue;
+		                      
+		                   		}
+		                   }
+		               } catch (NumberFormatException e) {
+		                  System.out.println(">> 메뉴에 있는 숫자를 반드시 입력하세요!");
+		                  
+		                  continue;
+		               }	// end of try~catch-------------------
+	        		 
+	        	 }
+	        		 
+	        	 else if( "2".equals(choice)) {
+        			 
+	        		 System.out.println("\n" + "-".repeat(80));
+		        	 System.out.print(">> 취업우대에 해당하는 번호를 입력하세요 << \n"
+		                    + "1.컴퓨터활용능력 우수 \t2.국가유공자 \t3.보훈대상자 \t4.고용촉진지원금 대상\n"
+		                    + "5.취업보호대상자 \t6.병역특례 \t7.공모전입상자 \t8.외국어가능자\n"
+		                    + "9.인근거주자 [입력을 취소하시려면 Q키를 눌러주세요]\n");
+		        	 System.out.println("-".repeat(80));
+		        	 System.out.print("▶ 번호 입력 [숫자만 입력] (해당하지않는다면 엔터를 입력하세요) : ");
+		        	 
+		        	 priority_code = sc.nextLine();
+		        	 if(priority_code.isBlank()) {
+		        		 System.out.println(" >> 해당없음으로 입력됩니다! << ");
+		        		 break;
+		        	 }
+		        	 if("Q".equalsIgnoreCase(priority_code)) {
+		        		   return;
+		        	   }
+		        	 try {
+		                  int num = Integer.parseInt(priority_code);
+		                  
+		                  if(num >= 1 && num <= 9) {
+		                	  para.put("priority_code", priority_code);
+		                	  
+		                	  System.out.print("\n>> 정말(수정)입력하시겠습니까 ? [Y/N] : ");
+		                 	 yn = sc.nextLine();
+		                 	 if("y".equalsIgnoreCase(yn)) {
+		                     
+		                 		 int n = udao.insert_anotherinfo(para , user.getUser_id());
+		                       
+		                 		 if(n==1) {
+		                 			 System.out.println(">> " + user.getUser_name() +  " 회원의 상세정보 입력 완료! <<");
+		                 			 break;
+		                 		 }
+		                 		 else {
+		                 			 System.out.println(">> " + user.getUser_name() +  " 회원의 상세정보 입력 실패! <<");
+		                 			 break;
+		                 		 }
+		         				 }
+		                 	 else if("n".equalsIgnoreCase(yn)) {
+		                 		 System.out.println(">> 입력 취소 ! 이전메뉴로 돌아갑니다. << ");
+		                 		 
+		                 		 return;
+		                 	 }
+		                	  
+		                     break;
+		                  }
+		                  else {
+		                     System.out.println(">> 메뉴에 있는 숫자만 입력하세요!");
+		                     
+		                     continue;
+		                  }
+		              } catch (NumberFormatException e) {
+		            	  System.out.println(">> 메뉴에 있는 숫자를 반드시 입력하세요!");
+		            	  continue;
+		              }
+
 	             }
-	             if("3".equals(choice)) {
+	        	 else if("3".equals(choice)) {
 	                  return;
 	             }
 	             else {
 	                 System.out.println("[경고] 메뉴에 있는 번호만 입력하세요!");
+	                 
+	                 continue;
 	             } 
-	         } while (true); 
-	            
-	         String academy_code = "";
-	         String priority_code = "";
-	         switch(choice) {
-	         case "1":
-	        	 do {
-	              ///////////////////////////////////////////////////////////
-	        	   System.out.println("\n" + "-".repeat(80));
-	        	   System.out.print(">> 학력에 해당하는 번호를 입력하세요 << \n"
-	                    + "1.고등학교졸업미만 \t2.고등학교졸업 \t3.대학교 재학중 \t4.대학교 졸업2년제 \n"
-	                    + "5.대학교 졸업3년제 \t 6.대학교 졸업4년제 \t\t7.대학원 석사 졸업 \t8.대학원 박사 졸업\n"
-	                    + "[입력을 취소하시려면 Z키를 눌러주세요] \n");
-	        	   System.out.println("-".repeat(80));
-	        	   System.out.print("▶ 학력 입력 [숫자만 입력] : ");
-	        	   academy_code = sc.nextLine();
-	             
-	        	   if("q".equalsIgnoreCase(academy_code)) {
-	        		   return;
-	        	   }
-	        	   try {
-	                   int num = Integer.parseInt(academy_code);
-	                   
-	                   if(num >= 1 && num <= 8) {
-	                      break;
-	                   }
-	                   else {
-	                      System.out.println(">> 메뉴에 있는 숫자만 입력하세요!");
-	                   }
-	               } catch (NumberFormatException e) {
-	                  System.out.println(">> 메뉴에 있는 숫자를 반드시 입력하세요!");
-	               }	// end of try~catch-------------------
-
-	            //////////////////////////////////////////////////////////
-	           } while(true);   // end of do~while-------------------------
-           case "2":
-	        	do {
-	            ///////////////////////////////////////////////////////////
-	        	 System.out.println("\n" + "-".repeat(80));
-	        	 System.out.print(">> 취업우대에 해당하는 번호를 입력하세요 << \n"
-	                    + "1.컴퓨터활용능력 우수 \t2.국가유공자 \t3.보훈대상자 \t4.고용촉진지원금 대상\n"
-	                    + "5.취업보호대상자 \t6.병역특례 \t7.공모전입상자 \t8.외국어가능자\n"
-	                    + "9.인근거주자 [입력을 취소하시려면 Q키를 눌러주세요]\n");
-	        	 System.out.println("-".repeat(80));
-	        	 System.out.print("▶ 번호 입력 [숫자만 입력] (해당하지않는다면 엔터를 입력하세요) : ");
 	        	 
-	        	 priority_code = sc.nextLine();
-	        	 if(priority_code.isBlank()) {
-	        		 System.out.println(" >> 해당없음으로 입력됩니다! << ");
-	        		 break;
-	        	 }
-	        	 if("Q".equalsIgnoreCase(priority_code)) {
-	        		   return;
-	        	   }
-	        	 try {
-	                  int num = Integer.parseInt(priority_code);
-	                  
-	                  if(num >= 1 && num <= 9) {
-	                     break;
-	                  }
-	                  else {
-	                     System.out.println(">> 메뉴에 있는 숫자만 입력하세요!");
-	                  }
-	              } catch (NumberFormatException e) {
-
-	              }		// end of try~catch----------------
-	        	}while(true);   // end of do~while-------------------------
-           case "3":
-        	   return;
-    	   default:
-    		   System.out.println(">>>[경고] 보기에 있는 번호를 입력해주세요. <<<");
-           }	// end of switch---------------
-	           
-	         String yn = "";
-	         
-	         do {
-	        	 System.out.print("\n>> 정말(수정)입력하시겠습니까 ? [Y/N] : ");
-	        	 yn = sc.nextLine();
-	        	 if("y".equalsIgnoreCase(yn)) {
-	            
-	        		 int n = udao.insert_anotherinfo(academy_code, priority_code, user.getUser_id());
-	              
-	        		 if(n==1) {
-	        			 System.out.println(">> " + user.getUser_name() +  " 회원의 상세정보 입력 완료! <<");
-	        			 break;
-	        		 }
-	        		 else {
-	        			 System.out.println(">> " + user.getUser_name() +  " 회원의 상세정보 입력 실패! <<");
-	        			 break;
-	        		 }
- 				 }
-	        	 else if("n".equalsIgnoreCase(yn)) {
-	        		 System.out.println(">> 입력 취소 ! 이전메뉴로 돌아갑니다. << ");
-	        	 }
-	         } while (!"n".equalsIgnoreCase(yn));
+	        	 
+	         } while (true);
+	        
 	      } // end of private void insert_info(Scanner sc, User_DTO user)
 
 	      
@@ -733,15 +796,20 @@ public class User_Controller {
 
 		                	  do {
 		                		  try{
-		                			  System.out.print("자세한 내용을 확인하시려면 글번호를 입력하세요. : " );
+		                			  System.out.print("(이전메뉴로 가시려면 Q를 눌러주세요.)\n"
+		                			  		+ "자세한 내용을 확인하시려면 글번호를 입력하세요. : " );
 		                			  u_Choice = sc.nextLine();
+		                			  if("q".equalsIgnoreCase(u_Choice) ) {
+		                				  return;
+		                				  
+		                			  }
 		                			  int u_Choice1 = Integer.parseInt(u_Choice);
 		                        
 		                			  if(u_Choice1 >= user.getPaper().getPaper_no() || u_Choice1 <= 0) {
 		                				  System.out.println("입력하신 글번호는 없는 글번호입니다.");
 		                				  continue;
 		                			  }
-		                			  else if(u_Choice1 < user.getPaper().getPaper_no()) {
+		                			  else if(u_Choice1 <= user.getPaper().getPaper_no()) {
 		                           
 		                				  user.getPaper().setPaper_no(Integer.parseInt(u_Choice));
 		                				  Map<String,String> paper = udao.paper_info_detail(u_Choice1, user);
@@ -761,7 +829,7 @@ public class User_Controller {
 		                				  System.out.println("▶ 취업우대사항 : " + paper.get("priority_name"));
 		                				  System.out.println("▶ 희망근무지역 : " + paper.get("hope_city"));
 		                				  System.out.println("▶ 신입/경력여부 : " + paper.get("career"));
-		                				  System.out.println("▶ 자격증명 :" + paper.get("license_name"));
+		                				  System.out.println("▶ 자격증명 : " + paper.get("license_name"));
 		                				  System.out.println("▶ 자격증 취득일자 : " + paper.get("license_day"));
 		                				  System.out.println("▶ 자격증 취득기관 : " + paper.get("license_company"));
 		                				  System.out.println("▶ 희망연봉 : " + paper.get("hope_money"));
@@ -959,6 +1027,134 @@ public class User_Controller {
 	    		  	n = 1;
 		         }	// end of if----------------
 		         
+/////////////////// 자격증ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ /////////////////////////////////
+		    	  
+		    	  Map<String, String> license_map = new HashMap<String, String>();
+		    	  
+		    	  if(n == 1) {
+		    		  
+		    		  n = 0; // 초기화
+		    		  String license_name = "";
+		    		  do {
+		    			 
+		    			  System.out.println("-".repeat(50));
+		    			  System.out.println("\n[자격증 등록]\n");
+		    			  System.out.print("(입력을 취소하시려면 Q를 누르세요.) \n"
+		    			  		+ "> 취득하신 자격증이 있나요? [Y/N] : ");
+		    			  String license_yn = sc.nextLine();
+		    			  
+		    			  if ("y".equalsIgnoreCase(license_yn)) {
+							
+		    				  System.out.print("취득하신 자격증을 입력하세요. : ");
+		    				  license_name = sc.nextLine();
+		    				  
+		    				  if(Set_util.Check_license(license_name)) {
+		    					  
+		    					  license_map.put("license_name", license_name);
+		    					  
+		    					  n=1;
+		    					  
+		    				  }
+		    				  else {
+		    					  
+		    					  System.out.println("[경고] 자격증명은 올바르게 입력해야 합니다.");
+		    					  
+		    				  }
+		    				  
+						} else if ("n".equalsIgnoreCase(license_yn)) {
+							
+							  n = 1;
+		    				  break;
+		    				   
+						}else if ("q".equalsIgnoreCase(license_yn)) {
+							
+		    				  System.out.println("> 입력을 취소하고 이전메뉴로 돌아갑니다. ");
+		    				  
+		    				  return;
+		    				    
+						} // end of else if
+		    			  
+					} while (!(n==1) );
+		    		   
+		    	  } // end of if (자격증명 n==1)
+		    	  
+		    	  if(n == 1) {
+		    		  n = 0; // 초기화
+		    		  
+		    		  String license_day = "";
+		    		  
+		    		  do {
+		    			 
+		    			  System.out.println("-".repeat(50));
+		    			  System.out.println("\n[자격증 취득일자]\n");
+		    			  System.out.print("(입력을 취소하시려면 Q를 누르세요.) \n"
+		    			  			+ "> 취득하신 자격증의 취득날짜를 입력하세요. : ");
+		    			  license_day = sc.nextLine();
+		    				  
+		    			  if(Set_util.Check_date_license(license_day)) {
+		    					  
+		    				  license_map.put("license_day", license_day);
+		    					  
+		    				  n=1;
+		    		
+		    				  
+						} else if ("q".equalsIgnoreCase(license_day)) {
+							
+		    				  System.out.println("");
+		    				  
+		    				  return;
+		    				    
+						} // end of else if
+		    			  
+					} while (!(n==1) );
+		    		  
+		    	  } // end of if (자격증 취득일자 n==1)
+		    	  
+		    	  if(n == 1) {
+		    		  
+		    		  n = 0; // 초기화
+		    		  String license_company = "";
+		    		  do {
+		    			  
+		    			  System.out.println("-".repeat(50));
+		    			  System.out.println("\n[자격증 취득기관]\n");
+		    			  System.out.print("(입력을 취소하시려면 Q를 누르세요.) \n"
+		    			  		+ "> 취득하신 자격증의 취득기관을 입력하세요. : ");
+		    			  license_company = sc.nextLine();
+		    			 	  
+		    				  if(license_company != null) {
+		    					  
+		    					  license_map.put("license_company", license_company);
+		    					  
+		    					  n=1;
+		    					  
+		    				  }
+		    				  else {
+		    					  
+		    					  System.out.println("[경고] 자격증명은 올바르게 입력해야 합니다.");
+		    					  
+		    					  continue;
+		    					  
+		    				  }
+		    				  
+						 if ("q".equalsIgnoreCase(license_company)) {
+							
+		    				  System.out.println("> 입력을 취소하고 이전메뉴로 돌아갑니다. ");
+		    				  
+		    				  return;
+		    				    
+						} // end of else if
+		    			  
+					} while (!(n==1) );
+		    		   
+		    	  } // end of if (자격증명 n==1)
+		    	  
+		    	  
+		    	  
+		         /////////////////////////////////////////////////////////////////////////////////////////// 
+		    	  
+		    	  
+		    	  
 		         if(n == 1) {
 		            String career_choice = "";
 		            n = 0;	// 다시 초기화
@@ -1121,7 +1317,7 @@ public class User_Controller {
 		               }
 		            }while(!(n==1) || "q".equalsIgnoreCase(career_choice));
 		            
-		            udao.write_paper_sql(user); 
+		            udao.write_paper_sql(user,license_map); 
 		         
 		         }
 		      }while(!(n==1));
@@ -1191,7 +1387,6 @@ public class User_Controller {
 		         else {
 		            System.out.println("-".repeat(60));
 		            System.out.println("[수정전 이력서제목] " + paperdto.getPaper_name());
-		            System.out.println("[수정전 자격증코드] " + paperdto.getFk_license_code());
 		            System.out.println("[수정전 지역코드] " + paperdto.getFk_local_code());
 		            System.out.println("[수정전 신입/경력여부] " + paperdto.getCareer());
 		            System.out.println("[수정전 희망연봉] " + paperdto.getHope_money());
@@ -1214,21 +1409,14 @@ public class User_Controller {
 		            if(paper_name != null && paper_name.length() == 0) {
 		               paper_name = paperdto.getFk_license_code();
 		            }
-		            
-		            System.out.print("2. 자격증코드 [변경하지 않으려면 엔터를 누르세요.] : ");
-		            String fk_license_code = sc.nextLine();
-		            if(fk_license_code != null && fk_license_code.length() == 0) {
-		               fk_license_code = paperdto.getFk_license_code();
-		            }
-		            
-		            System.out.print("3. 희망지역 [변경하지 않으려면 엔터를 누르세요.] : ");
-		            // String fk_local_code = sc.nextLine();
+		       
 		            String hope_local_name = "";
 		            String hope_city_name = "";
 		            
 		            outer:
 		            do {
-			            System.out.print("희망하는 지역을 입력하세요[예 : 서울] : ");
+			            System.out.print("[변경하지 않으려면 엔터를 누르세요.]\n"
+			            		+ "2-1. 희망하는 지역을 입력하세요[예 : 서울] : ");
 			            hope_local_name = sc.nextLine();
 		               
 			            if(hope_local_name != null && hope_local_name.length() == 0 ||hope_local_name.isEmpty()) {
@@ -1240,7 +1428,7 @@ public class User_Controller {
 			            else {
 		                    user.getPaper().setHope_local_name(hope_local_name);
 		                 
-		                    System.out.print("희망하는 도시명을 입력하세요[예 : 마포구] : ");
+		                    System.out.print("2-2. 희망하는 도시명을 입력하세요[예 : 마포구] : ");
 		                    hope_city_name = sc.nextLine();
 		                    
 		                    if(hope_city_name != null && hope_city_name.length() == 0 ||hope_city_name.isEmpty()) {
@@ -1262,13 +1450,13 @@ public class User_Controller {
 		               fk_local_code = String.valueOf(paperdto.getFk_local_code());
 		            }
 		            */
-		            System.out.print("4. 신입/경력여부 [변경하지 않으려면 엔터를 누르세요.] : ");
+		            System.out.print("3. 신입/경력여부 [변경하지 않으려면 엔터를 누르세요.] : ");
 		            String career = sc.nextLine();
 		            if(career != null && career.length() == 0) {
 		               career = paperdto.getCareer();
 		            }
 		            
-		            System.out.print("5. 희망연봉 [변경하지 않으려면 엔터를 누르세요.] : ");
+		            System.out.print("4. 희망연봉 [변경하지 않으려면 엔터를 누르세요.] : ");
 		            String hope_money = sc.nextLine();
 		            if(hope_money != null && hope_money.length() == 0) {
 		               hope_money = paperdto.getHope_money();
@@ -1285,7 +1473,7 @@ public class User_Controller {
 		                  Map<String, String> paraMap = new HashMap<>();
 		                  
 		                  paraMap.put("paper_name", paper_name);
-		                  paraMap.put("fk_license_code", fk_license_code);
+		                  
 		                  paraMap.put("fk_local_code", user.getPaper().getFk_local_code());
 		                  paraMap.put("career", career);
 		                  paraMap.put("hope_money", hope_money);
@@ -1352,7 +1540,7 @@ public class User_Controller {
 	         String input_rcno = "";
 	         String yn = "";
 	         do {
-	            System.out.print(">> 삭제할 이력서번호를 입력하세요 [삭제를 취소하려면 Q키를 누르세오] : ");
+	            System.out.print(">> 삭제할 이력서번호를 입력하세요 [삭제를 취소하려면 Q키를 누르세요] : ");
 	              input_rcno = sc.nextLine();
 
 	              if("q".equalsIgnoreCase(input_rcno)) {
@@ -1539,11 +1727,19 @@ public class User_Controller {
 	                             
 	                             do { // 채용지원
 	                                ////////////////////////////////////////////////////////////
+	                            	 
 	                                System.out.print("\n>>> 채용공고명 < " + rdto.getRecruit_title() + " > 에 지원하시겠습니까? [Y/N] => ");
 	                                
 	                                yn = sc.nextLine();
 	                                
 	                                if("y".equalsIgnoreCase(yn)) {
+	                                   boolean chk = radao.chk_apply(user.getUser_id(), search_recruint_no);
+	                                   if(!chk) {
+	                                	   
+	                                	   System.out.println(">> 이미 지원한공고에 다시 지원할 수 없습니다! <<");
+	                                	   return;
+	                                   }
+	                                	
 	                                   radao.recruit_apply(search_recruint_no, sc, user); 
 	                                   break;
 	                                }
@@ -1591,7 +1787,7 @@ public class User_Controller {
 
 		// ◆◆◆ === 구인회사 조회 === ◆◆◆ //
 		public void company_search(Scanner sc, User_DTO user, Company_DTO company) {
-			System.out.println("\n >>> --- 구인회사 조회 --- <<<");
+			System.out.println("\n >>> --- 구인회사 검색 --- <<<");
 		      
 		      System.out.print("▶ 기업명 : ");
 		      String search_company_name = sc.nextLine().trim().toLowerCase();;
@@ -1924,10 +2120,10 @@ public class User_Controller {
 			StringBuilder sb = new StringBuilder();
 			
 			if(applyList.size() > 0) {
-				System.out.println("\n" + "-".repeat(10) + " " + user.getUser_name() + " 님이 지원한 공고 "
-						+ "-".repeat(10));
+				System.out.println("\n" + "-".repeat(20) + " " + user.getUser_name() + " 님이 지원한 공고 "
+						+ "-".repeat(20));
 				System.out.println("공고번호\t\t경력\t지원동기\t이력서번호\t이력서명\t학력\t취업우대");
-				System.out.println("-".repeat(40));
+				System.out.println("-".repeat(70));
 				
 				sb = new StringBuilder();
 				
@@ -1938,7 +2134,7 @@ public class User_Controller {
 					sb.append(recruit_apply.getPaper().getPaper_code() + "\t");
 					sb.append(recruit_apply.getPaper().getPaper_name() + "\t");
 					sb.append(recruit_apply.getAcademy_name() + "\t");
-					sb.append(recruit_apply.getPriority_name() + "\t");
+					sb.append(recruit_apply.getPriority_name() + "\n");
 				}	// end of for----------
 				System.out.println(sb.toString());
 			}

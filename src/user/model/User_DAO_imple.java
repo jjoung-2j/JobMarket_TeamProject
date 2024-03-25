@@ -12,6 +12,8 @@ import java.util.Scanner;
 import common.MYDBConnection;
 import user.domain.Paper_DTO;
 import user.domain.User_DTO;
+import java.security.SecureRandom;
+import java.util.Date;
 
 public class User_DAO_imple implements User_DAO {
 
@@ -636,31 +638,59 @@ public class User_DAO_imple implements User_DAO {
    
    
    // ◆◆◆ === 이력서 작성 === ◆◆◆ //
-   public int write_paper_sql(User_DTO user) {
-	      int result = 0;
-	        // career_detail(sc, user);
+   public int write_paper_sql(User_DTO user, Map<String, String> license_map) {
+	   int result = 0;
+       // career_detail(sc, user);
+       
+       try {
+       	
+       	 conn.setAutoCommit(false); 
+
+ 	       
+	        String sql1 = " insert into tbl_license_detail (license_code, license_name, license_day, license_company) "
+	                     + " values (seq_license_code.nextval, ?, to_date(?, 'yyyy-mm-dd'), ?) ";
+	        pstmt = conn.prepareStatement(sql1);
+	        pstmt.setString(1, license_map.get("license_name"));
+	        pstmt.setString(2, license_map.get("license_day"));
+	        pstmt.setString(3, license_map.get("license_company"));
+	        result = pstmt.executeUpdate();
+
 	        
+	        String sql2 = "select seq_license_code.currval from dual";
+	        pstmt = conn.prepareStatement(sql2);
+	        rs = pstmt.executeQuery();
+	        int licenseCode = 0;
+	        if (rs.next()) {
+	            licenseCode = rs.getInt(1);
+	        } 
+
+	        String sql3 = " insert into tbl_paper(fk_user_id, fk_license_code, fk_local_code,"
+	        		      + " user_security_num, career, hope_money, paper_name, paper_code) "
+	                      + " values (?, ?, ?, ?, ?, ?, ?, paper_code.nextval) ";
+	        pstmt = conn.prepareStatement(sql3);
+	        pstmt.setString(1, user.getUser_id());
+	        pstmt.setInt(2, licenseCode); 
+	        pstmt.setString(3, user.getPaper().getFk_local_code());
+	        pstmt.setString(4, user.getUser_security_num());
+	        pstmt.setString(5, user.getPaper().getCareer());
+	        pstmt.setString(6, user.getPaper().getHope_money());
+	        pstmt.setString(7, user.getPaper().getPaper_name());
+	        result = pstmt.executeUpdate();
+	        
+
+	        conn.commit();
+	        
+	    } catch (SQLException e2) {
+	        e2.printStackTrace();
 	        try {
-	           String sql = " insert into tbl_paper(fk_user_id , fk_license_code, fk_local_code, user_security_num, career, hope_money, paper_name, paper_code) "
-	                 + " values(?, ?, ?, ?, ?,?, ?, paper_code.nextval ) ";      
-	              
-	           pstmt = conn.prepareStatement(sql);         
-	           pstmt.setString(1, user.getUser_id());
-	           pstmt.setString(2, user.getPaper().getFk_license_code());
-	           pstmt.setString(3, user.getPaper().getFk_local_code());
-	           pstmt.setString(4, user.getUser_security_num());
-	           pstmt.setString(5, user.getPaper().getCareer());
-	           pstmt.setString(6, user.getPaper().getHope_money());
-	           pstmt.setString(7, user.getPaper().getPaper_name());
-	           
-	           
-	           result = pstmt.executeUpdate();      // SQL문 실행
-	        } catch (SQLException e) { 
-	              e.printStackTrace();
-	        } finally {
-	           close();
-	        }   // end of try~catch~finally-------------------
-	        return result;
+	            conn.rollback();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }  finally {
+	        close();
+	    }
+	    return result;
 	   }
    
    
@@ -675,7 +705,7 @@ public class User_DAO_imple implements User_DAO {
       Paper_DTO paperdto = null;
       
       try {
-         String sql = " SELECT U.user_id, P.fk_user_id, P.paper_code, P.fk_license_code, P.fk_local_code, P.career, P.hope_money, P.paper_name "
+         String sql = " SELECT U.user_id, P.fk_user_id, P.paper_code, nvl(P.fk_license_code, '미입력') as fk_license_code, P.fk_local_code, P.career, P.hope_money, P.paper_name "
                   + " FROM TBL_USER_INFO U RIGHT JOIN TBL_PAPER P "
                   + " ON U.user_id = P.fk_user_id "
                   + " WHERE U.user_id = ? and P.paper_code = ? ";
@@ -723,19 +753,20 @@ public class User_DAO_imple implements User_DAO {
    // ◆◆◆ === 나의 이력서 수정하기 === ◆◆◆ //
    public int update_paper(Map<String, String> paraMap, String paper_code) {
       
+	  
       int result = 0;
       
       try {
-         String sql = " update TBL_PAPER set fk_license_code = ?, fk_local_code = ?, career = ?, hope_money = ?, paper_name = ? "
+         String sql = " update TBL_PAPER set  fk_local_code = ?, career = ?, hope_money = ?, paper_name = ? "
                   + " where paper_code = ? ";
          
          pstmt = conn.prepareStatement(sql);
-         pstmt.setString(1, paraMap.get("fk_license_code"));
-         pstmt.setString(2, paraMap.get("fk_local_code"));
-         pstmt.setString(3, paraMap.get("career"));
-         pstmt.setString(4, paraMap.get("hope_money"));
-         pstmt.setString(5, paraMap.get("paper_name"));
-         pstmt.setString(6, paper_code);
+         
+         pstmt.setString(1, paraMap.get("fk_local_code"));
+         pstmt.setString(2, paraMap.get("career"));
+         pstmt.setString(3, paraMap.get("hope_money"));
+         pstmt.setString(4, paraMap.get("paper_name"));
+         pstmt.setString(5, paper_code);
       
          result = pstmt.executeUpdate(); // SQL문 실행
          
@@ -761,8 +792,10 @@ public class User_DAO_imple implements User_DAO {
 	
 
 	// ◆◆◆ === 나의 추가 정보 입력(학력, 취업우대) === ◆◆◆ //
-	public int insert_anotherinfo(String academy_code, String priority_code, String user_id) {
+   public int insert_anotherinfo(Map<String, String> para, String user_id) {
 		   
+		
+		
 	      int result = 0; 
 	       try {
 	         String sql = " update tbl_user_info set fk_academy_code = ? , fk_priority_code = ? "
@@ -770,8 +803,8 @@ public class User_DAO_imple implements User_DAO {
 	   
 	         pstmt = conn.prepareStatement(sql);
 	          
-	         pstmt.setString(1, academy_code);
-	         pstmt.setString(2, priority_code);
+	         pstmt.setString(1, para.get("academy_code"));
+	         pstmt.setString(2, para.get("priority_code"));
 	         pstmt.setString(3, user_id);
 	            
 	       result = pstmt.executeUpdate();   
@@ -780,7 +813,7 @@ public class User_DAO_imple implements User_DAO {
 	             e.printStackTrace();
 	       } finally {
 	          close();
-	       }   // end try~catch~finally--------------------   
+	       }   // end try~catch~finally--------------------    
 	      return result;
 	   } // end of public int insert_anotherinfo(String academy_code, String priority_code, String user_id)
 
@@ -981,10 +1014,11 @@ public class User_DAO_imple implements User_DAO {
 // ◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
    
    
-	// ◆◆◆ ===  비밀번호 찾기 === ◆◆◆ //
-   @Override
-   public String findpasswd(User_DTO user) {
-	   User_DTO userdto = null;
+	   //   비밀번호 찾기
+	   @Override
+	   public String findpasswd(User_DTO user) {
+	      User_DTO userdto = null;
+	      String new_passwd = "";
 	      
 	      try {
 	         String sql = " select user_passwd "
@@ -1003,6 +1037,10 @@ public class User_DAO_imple implements User_DAO {
 	              userdto = new User_DTO();
 	              userdto.setUser_passwd(rs.getString("user_passwd"));
 	              
+	              new_passwd = getRamdomPassword(9);
+	              
+	              passwd_re(user, new_passwd);
+	              
 	              }
 	           else if (user.getUser_passwd() == null) {
 	              return "값이 없습니다.";
@@ -1020,10 +1058,142 @@ public class User_DAO_imple implements User_DAO {
 	        
 	           } finally {
 	              close();   
-	           }    // end of try~catch~fianlly------------------  
-	      return "비밀번호 : " + userdto.getUser_passwd();
+	           }    // end of try~catch~fianlly------------------
+	      
+	      return "임시비밀번호 : " + new_passwd + "\n나의 정보 수정에서 비밀벉호를 수정해주세요.";
+	      
+	      // end of try~catch~finally----------------
+	   }
+	   
 
-   }	// end of public String findpasswd(User_DTO user)--------------
+
+
+	private int passwd_re(User_DTO user, String new_passwd) {
+	   int result = 0;
+	      
+	      try {
+	        String sql = " update tbl_user_info set user_passwd = ? "
+	                    + " where user_id = ? ";
+	               
+	      
+	           pstmt = conn.prepareStatement(sql);
+	           pstmt.setString(1, new_passwd);
+	           pstmt.setString(2, user.getUser_id());
+	           
+	           
+	         result = pstmt.executeUpdate();   // sql 문 실행
+	         
+	         
+	       } catch (SQLException e) {
+	          e.printStackTrace();
+	       } finally {
+	          close();   
+	       }    // end of try~catch~fianlly------------------  
+	       return result;
+	    
+	      
+	   }
+
+
+
+
+
+	// 임시비밀번호
+	   public String getRamdomPassword(int size) {
+	        char[] charSet = new char[] {
+	                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '!', '@', '#', '$', '%', '^', '&' };
+	        StringBuffer sb = new StringBuffer();
+	        SecureRandom sr = new SecureRandom();
+	        sr.setSeed(new Date().getTime());
+
+	        int idx = 0;
+	        int len = charSet.length;
+	        for (int i=0; i<size; i++) {
+	            // idx = (int) (len * Math.random());
+	            idx = sr.nextInt(len);    // 강력한 난수를 발생시키기 위해 SecureRandom을 사용한다.
+	            sb.append(charSet[idx]);
+	        }
+	        return sb.toString();
+	   }
+
+
+
+// ◆◆◆ === 자격증,취업우대 가져오기  === ◆◆◆ //
+@Override
+public Map<String, String> select_acaprio(User_DTO user) {
+		
+	Map<String, String> result = null;
+	
+	try {
+        String sql = " select P.priority_name , A.academy_name "
+        		+ " from tbl_user_info U join "
+        		+ " tbl_priority P "
+        		+ " on U.fk_priority_code = P.priority_code "
+        		+ " join tbl_academy A "
+        		+ " on U.fk_academy_code = A.academy_code "
+        		+ " where U.user_id = ? ";
+        
+        pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, user.getUser_id()); 
+     
+          rs = pstmt.executeQuery(); // sql문 실행
+          
+          if(rs.next()) {
+        	  
+        	  result = new HashMap<String, String>();
+        	  
+        	  result.put("priority_name", rs.getString("priority_name"));
+        	  result.put("academy_name", rs.getString("academy_name"));
+             
+          }
+  
+          
+     	} catch (SQLException e) {
+             e.printStackTrace();
+        } finally {
+             close();   
+        }   
+	
+	return result;
+} // end of public Map<String, String> select_acaprio(User_DTO user)
+
+
+//◆◆◆ === db에서 최신화된 유저정보 가져오기  === ◆◆◆ //
+@Override
+public String recently_info(User_DTO user, String infoview) {
+	
+	String result = "";
+	
+
+	try {
+        String sql = " select " + infoview
+        		+ " from tbl_user_info "
+        		+ " where user_id = ? ";
+        
+        pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, user.getUser_id()); 
+     
+          rs = pstmt.executeQuery(); // sql문 실행
+          
+          if(rs.next()) {
+        	  
+        	  result = rs.getString(1);
+             
+          }
+  
+          
+     	} catch (SQLException e) {
+             e.printStackTrace();
+        } finally {
+             close();   
+        }   
+	
+	
+	return result;
+} // end of public String recently_info(User_DTO user, String infoview)
+
+
+
 
 
 

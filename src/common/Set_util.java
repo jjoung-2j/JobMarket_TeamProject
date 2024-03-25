@@ -413,9 +413,68 @@ public class Set_util {
 		return result;
 	}	// end of public static boolean Check_year_salary(String salary)---------------
 
+	////////////////////////////////////////////////////////////////////////////////
+	// ◆◆◆ === 자격 유효성 검사하기 === ◆◆◆ //
+	public static boolean Check_license(String license) {
+		boolean result = false;
+		if(license == null || license.isBlank()) {	// 공백일 경우 
+			System.out.println(">>> [경고] 성명은 공백이 아닌 글자로 입력하셔야 합니다. <<<");
+		} 
+		else {
+			// 정규표현식 패턴 사용
+			Pattern p = Pattern.compile("^[A-Za-z가-힣0-9]{2,15}$");
+			// 시작 ^, 끝 $, 가~힣 최소 2글자에서 최대 37글자로 하기
+			
+			// user_name 가 정규표현식 패턴과 일치하는지 확인 정보 넣기
+			Matcher m = p.matcher(license);
+			
+			// 확인 정보 보기
+			if(m.matches()) {	// 확인 정보가 참이라면 
+				result = true;	
+			}
+			else {
+				System.out.println(">>> [경고] 2~37자리 / 영문, 한글만 사용 가능합니다. <<<");
+				result = false;
+			}	// end of if~else-----------
+		}	// end of if~else------------------
+		return result;
+	}	// end of public static boolean Check_name(String name)--------------
+	
+	
+	
+	// ◆◆◆ === 취득일자 유효성 검사하기 === ◆◆◆ //
+	public static boolean Check_date_license(String license_date) {
+		
+		boolean result = false;
+		
+		String[] license_date_arr = license_date.split("[-]");
+		license_date = String.join("", license_date_arr);
+		
+        SimpleDateFormat sdformat = new SimpleDateFormat("yyyyMMdd");
+        
+        sdformat.setLenient(false);      // 존재하지 않는 날짜는 false로 출력
+        
+        try {
+           Date date_begin_day = sdformat.parse(license_date);   // try~catch(ParseException) 선언
+           Date now = new Date();   // 현재 날짜시각
+           String str_now = sdformat.format(now);      // 현재 날짜시각 string 타입(보고싶은 타입 변환)
+           now = sdformat.parse(str_now);            // 문자열 -> date 타입
+        
+           if(date_begin_day.compareTo(now) == 0 
+        		   || date_begin_day.compareTo(now) < 0) {  	// 자격증 취득일자가 오늘이거나 과거인 경우
+              result = true;
+           }
+           else {                    // 자격증 취득일자가 미래인 경우
+        	   System.out.println(">>> [경고] 자격증 취득일자가 미래입니다. <<<");
+        	   result = false;
+           }		// end of if~else------------
+        } catch (ParseException e) {
+        	System.out.println(">>> [경고] 유효하지 않는 날짜입니다. <<<");
+        	result = false;
+        }   // end of try~catch------------------
+        return result;
+	}	// end of public static boolean Check_date(String deadline)--------
 
-
-
-
+	///////////////////////////////////////////////////////////////////////////////
 
 }
