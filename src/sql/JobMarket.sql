@@ -744,17 +744,6 @@ FOREIGN KEY(fk_paper_code) REFERENCES tbl_paper(paper_code) on delete cascade;
 -- Table TBL_RECRUIT_APPLY이(가) 변경되었습니다.
 
 commit;
-                      select * from tbl_local where local_code = 8
-                      
-                      select * from tbl_paper where paper_code = 144
-                      
-  constraint FK_rc_apply_fk_paper_code foreign key(fk_paper_code) references tbl_paper(paper_code)
-                      
-                      
-                select * from tbl_recruit_apply
-                      
-                      
-                      
-                     select fk_paper_code , fk_recruit_no, success_status 
-                from tbl_recruit_apply 
-                where fk_paper_code = 99 and fk_recruit_no = '20240321-69' and success_status in( 1 , 2) 
+
+select *
+from tbl_user_info;

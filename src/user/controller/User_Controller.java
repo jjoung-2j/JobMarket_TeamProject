@@ -94,6 +94,7 @@ public class User_Controller {
 			String u_Choice = "";
 		      
 			do {
+				User_DTO result = udao.view_userinfo(user);
 				System.out.println("\n>>> ---- " + user.getUser_name() + "님의 정보 메뉴 ---- <<<\n"
 			                   + "1. 나의 정보 보기\n"
 			                   + "2. 나의 정보 수정\n"
@@ -106,7 +107,7 @@ public class User_Controller {
 			    switch (u_Choice) {
 			        
 					case "1": // 나의 정보 보기
-						User_DTO result = udao.view_userinfo(user);
+						result = udao.view_userinfo(user);
 						
 						System.out.println("\n" + "-".repeat(50));
 						System.out.println("[ " + result.getUser_name()+ " 님의 정보 보기]");
@@ -774,7 +775,7 @@ public class User_Controller {
 		                     }while((!("y".equalsIgnoreCase(yn) || "n".equalsIgnoreCase(yn)))); 
 		                  }
 		                  else {
-		                	  System.out.println("\n[ " + user.getUser_id() + " 님의 이력서 보기]");
+		                	  System.out.println("\n[ " + user.getUser_name() + " 님의 이력서 보기]");
 		                	  System.out.print("▶ 번호\t▶ 이력서 제목\t▶ 작성일\n");
 		                       
 		                	  StringBuilder sb = new StringBuilder();

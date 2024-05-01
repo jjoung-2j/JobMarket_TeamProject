@@ -274,6 +274,7 @@ public class User_DAO_imple implements User_DAO {
 	       	 }
 	   		 result = pstmt.executeUpdate(); 	// sql문 실행하기 
 	   		 conn.setAutoCommit(true);
+	   		 user.setUser_name(fix_info);
         } catch (SQLException e) {
            e.printStackTrace();
         } finally {
@@ -994,7 +995,7 @@ public class User_DAO_imple implements User_DAO {
 	           }
 	           else {
 	              
-	              System.out.println("값이 없습니다.");
+	              System.out.println("해당되는 아이디가 없습니다.");
 	              
 	           }
 	           
@@ -1047,7 +1048,7 @@ public class User_DAO_imple implements User_DAO {
 	           }
 	           else {
 	              
-	              System.out.println("값이 없습니다.");
+	              System.out.println("해당되는 비밀번호가 없습니다.");
 	              
 	           }
 	           
